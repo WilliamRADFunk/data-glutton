@@ -1,1 +1,40 @@
-
+{
+  "name": "factbookjs",
+  "version": "0.1.0",
+  "description": "The node version of geraldb's Ruby concoction to access, scrape, parse, and query the data found in the CIA's world-factbook.",
+  "main": "index.js",
+  "scripts": {
+    "clean:dist": "rimraf dist/*.json",
+    "clean:logs": "rimraf logs/*log*",
+    "scrape": "node index.js",
+    "start": "run-s clean:logs clean:dist scrape",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "CIA",
+    "factbook",
+    "world",
+    "factbook",
+    "world-factbook",
+    "factbook.json",
+    "countries",
+    "data",
+    "big",
+    "data"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WilliamRADFunk/factbookjs.git"
+  },
+  "author": "William R.A.D. Funk",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
+    "html-to-text": "^4.0.0",
+    "npm-run-all": "^4.1.5",
+    "request": "^2.34.0",
+    "request-promise": "^4.2.4",
+    "rimraf": "^2.6.3",
+    "uuid-by-string": "^2.1.0"
+  }
+}
