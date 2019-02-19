@@ -1,5 +1,5 @@
 {
-  "name": "factbookjs",
+  "name": "factbook",
   "version": "0.1.0",
   "description": "The node version of geraldb's Ruby concoction to access, scrape, parse, and query the data found in the CIA's world-factbook.",
   "main": "index.js",
@@ -24,7 +24,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/WilliamRADFunk/factbookjs.git"
+    "url": "https://github.com/WilliamRADFunk/factbook.git"
   },
   "author": "William R.A.D. Funk",
   "license": "UNLICENSED",
