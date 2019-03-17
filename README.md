@@ -1,2 +1,2 @@
-# factbook
-(In Progress) The node equivalent of geraldb's factbook.json library.
+# data-glutton
+(In Progress) Simple service to scrape website data from multiple places to create a rich, ontologically defined, store of linked data.
