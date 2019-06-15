@@ -1,21 +1,45 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-primary mb-3">
+  <a class="navbar-brand mr-5 stroke-shadow font-weight-bold" [routerLink]="'/dashboard'" routerLinkActive="active">
+    <img
+      alt="Data Glutton Logo"
+      class="d-inline-block align-top mr-2"
+      height="30"
+      src="assets/images/data-glutton-icon-light-2.png"
+      width="30">
+    Data Glutton
+  </a>
+  <div class="collapse navbar-collapse" [class.show]="!collapsed" id="navMenu">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0 font-weight-bold">
+      <li class="nav-item mr-2">
+        <a class="nav-link stroke-shadow" [routerLink]="'/dashboard'" routerLinkActive="active">Dashboard</a>
+      </li>
+      <li class="nav-item mr-2">
+        <a class="nav-link stroke-shadow" [routerLink]="'/controls'" routerLinkActive="active">Controls</a>
+      </li>
+      <li class="nav-item mr-2">
+        <a class="nav-link stroke-shadow" [routerLink]="'/ontology'" routerLinkActive="active">Ontology</a>
+      </li>
+      <li class="nav-item mr-2">
+        <a class="nav-link stroke-shadow" [routerLink]="'/sources'" routerLinkActive="active">Sources</a>
+      </li>
+      <li class="nav-item d-block d-lg-none" (click)="collapsed = true">
+        <a class="nav-link stroke-shadow" href="#">Close Menu</a>
+      </li>
+    </ul>
+  </div>
+
+  <button
+    aria-controls="navMenu"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+    class="navbar-toggler"
+    [class.d-none]="!collapsed"
+    (click)="toggleNavbar()"
+    data-toggle="collapse"
+    data-target="#navMenu"
+    type="button">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</nav>
 
 <router-outlet></router-outlet>

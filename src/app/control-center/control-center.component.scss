@@ -1,0 +1,26 @@
+.control {
+  box-shadow: 0 0 0 0.1rem rgba(23, 20, 31, 0.5);
+  height: 4rem;
+  max-height: 4rem;
+  min-height: 4rem;
+}
+
+.control-box {
+  box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
+  height: 40vh;
+  max-height: 40vh;
+  min-height: 40vh;
+}
+
+.control-box:first-child {
+  margin-bottom: 5vh;
+}
+
+.display-box {
+  box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
+  height: 85vh;
+  max-height: 85vh;
+  min-height: 85vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

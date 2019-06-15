@@ -1,0 +1,102 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 col-sm-4">
+      <div class="rounded bg-secondary control-box p-2">
+        <div class="row no-gutters border-bottom pb-2 mb-2">
+          <div class="col">
+            <div class="h3 text-light text-outline stroke-shadow">Store</div>
+          </div>
+          <div class="col">
+            <button class="btn btn-danger rounded pull-right ml-2" (click)="flushStore()" type="button">Reset</button>
+            <button class="btn btn-primary rounded pull-right" type="button">Seed All</button>
+          </div>
+        </div>
+
+        <div class="row no-gutters rounded bg-info control mb-1">
+          <div class="col my-auto">
+            <div class="h4 text-dark pl-2">Seed Countries</div>
+          </div>
+          <div class="col no-outline p-1">
+            <button class="btn btn-outline-primary rounded pull-right" (click)="initStore('countries')">
+              <span class="fa fa-3x fa-circle-o-notch" [class.fa-spin]="isSeedingStore['countries']"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="row no-gutters rounded bg-info control mb-1">
+          <div class="col my-auto">
+            <div class="h4 text-dark pl-2">Seed Airports</div>
+          </div>
+          <div class="col no-outline p-1">
+            <button class="btn btn-outline-primary rounded pull-right" (click)="initStore('airports')">
+              <span class="fa fa-3x fa-circle-o-notch" [class.fa-spin]="isSeedingStore['airports']"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="row no-gutters rounded bg-info control mb-1">
+          <div class="col my-auto">
+            <div class="h4 text-dark pl-2">Seed World Leaders</div>
+          </div>
+          <div class="col no-outline p-1">
+            <button class="btn btn-outline-primary rounded pull-right" (click)="initStore('leaders')">
+              <span class="fa fa-3x fa-circle-o-notch" [class.fa-spin]="isSeedingStore['leaders']"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="rounded bg-secondary control-box p-2">
+        <div class="row no-gutters border-bottom pb-2 mb-2">
+          <div class="col">
+            <div class="h3 text-light text-outline stroke-shadow">Ingestion</div>
+          </div>
+          <div class="col">
+            <button class="btn btn-primary rounded pull-right" (click)="scrapeAll()" type="button">Scrape All</button>
+          </div>
+        </div>
+
+        <div class="row no-gutters rounded bg-info control mb-1">
+          <div class="col my-auto">
+            <div class="h4 text-dark pl-2">CIA World Factbook</div>
+          </div>
+          <div class="col no-outline p-1">
+            <button class="btn btn-outline-primary rounded pull-right" (click)="initScraping('factbook')">
+              <span class="fa fa-3x fa-circle-o-notch" [class.fa-spin]="isScraping['factbook']"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="row no-gutters rounded bg-info control mb-1">
+          <div class="col my-auto">
+            <div class="h4 text-dark pl-2">CIA World Leaders</div>
+          </div>
+          <div class="col no-outline p-1">
+            <button class="btn btn-outline-primary rounded pull-right" (click)="initScraping('leaders')">
+              <span class="fa fa-3x fa-circle-o-notch" [class.fa-spin]="isScraping['leaders']"></span>
+            </button>
+          </div>
+        </div>
+
+        <div class="row no-gutters rounded bg-info control mb-1">
+          <div class="col my-auto">
+            <div class="h4 text-dark pl-2">World Airports</div>
+          </div>
+          <div class="col no-outline p-1">
+            <button class="btn btn-outline-primary rounded pull-right" (click)="initScraping('airports')">
+              <span class="fa fa-3x fa-circle-o-notch" [class.fa-spin]="isScraping['airports']"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-8">
+      <div class="rounded bg-secondary display-box p-2">
+        <div class="row no-gutters border-bottom pb-2 mb-2">
+          <div class="col">
+            <div class="h3 text-light text-outline stroke-shadow">Stuff happens here...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
