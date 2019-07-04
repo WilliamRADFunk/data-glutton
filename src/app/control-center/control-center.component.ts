@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
 
 @Component({
   selector: 'app-control-center',
@@ -23,7 +24,7 @@ export class ControlCenterComponent implements OnInit {
     leaders: false,
   };
 
-  constructor() { }
+  constructor(private readonly fetchService: FetchCoordinator) { }
 
   ngOnInit() {
   }
@@ -32,12 +33,14 @@ export class ControlCenterComponent implements OnInit {
     // Dump the store and reset controls
   }
 
-  initScraping(type?: string) {
+  async initScraping(type?: string): Promise<void> {
     if (this.isScraping) {
       return;
     }
+    await this.fetchService.fetchCountries();
     if (!type) {
       // Scrape all sources
+      await this.fetchService.runFactbookFetcher();
     } else {
       // Scrape selected source
     }
@@ -54,8 +57,10 @@ export class ControlCenterComponent implements OnInit {
     }
   }
 
-  scrapeAll() {
+  async scrapeAll(): Promise<void> {
     // Scrape all the data
+    await this.fetchService.fetchCountries();
+    await this.fetchService.runFactbookFetcher();
   }
 
 }
