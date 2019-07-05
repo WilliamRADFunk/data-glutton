@@ -1,9 +1,9 @@
 import * as getUuid from 'uuid-by-string';
 
-import { consts } from '../../constants/constants';
-import { store } from '../../constants/globalStore';
-import { entityMaker } from '../../utils/entity-maker';
-import { entityRefMaker } from '../../utils/entity-ref-maker';
+import { consts } from '../../../../constants/constants';
+import { store } from '../../../../constants/globalStore';
+import { entityMaker } from '../../../../utils/entity-maker';
+import { entityRefMaker } from '../../../../utils/entity-ref-maker';
 
 export function parsedThreeValStrings(
 	origParams: { cheerioElem: CheerioSelector; country: string; countryId: string; },
@@ -17,7 +17,7 @@ export function parsedThreeValStrings(
 	label: string,
 	delimiters: [ RegExp, RegExp, RegExp ]
 ): void {
-	const objectProperties = store.countries[origParams.countryId].objectProperties;
+	const objectProperties = store.getObjectStore('countries')[origParams.countryId].objectProperties;
 	const prevHasList = objectProperties.filter(rel => rel[consts.ONTOLOGY[hasProp]]);
 	origParams.cheerioElem(dataId).each((index: number, element: CheerioElement) => {
 		const rawScrapedList = origParams.cheerioElem(element).find('div.category_data.subfield.numeric').text().trim().replace(/\\n/g, '');
@@ -33,11 +33,11 @@ export function parsedThreeValStrings(
                     consts.ONTOLOGY[baseOntProp],
                     guid,
                     `${label} for ${country}`);
-                store[storeKey][guid] = objectProp[consts.ONTOLOGY[hasProp]];
+                store.getObjectStore(storeKey)[guid] = objectProp[consts.ONTOLOGY[hasProp]];
                 objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropNames[0]]] = val1;
                 objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropNames[1]]] = val2;
                 objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropNames[2]]] = val3 || 'N/A';
-                store.countries[origParams.countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY[hasProp], objectProp));
+                store.getObjectStore('countries')[origParams.countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY[hasProp], objectProp));
             }
         } else {
 			return;

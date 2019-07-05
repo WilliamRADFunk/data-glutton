@@ -1,31 +1,31 @@
 import * as getUuid from 'uuid-by-string';
 
-import { consts } from '../../constants/constants';
-import { store } from '../../constants/globalStore';
-import { entityMaker } from '../../utils/entity-maker';
-import { entityRefMaker } from '../../utils/entity-ref-maker';
-import { getRelation } from '../../utils/get-objectProperty';
+import { consts } from '../../../constants/constants';
+import { store } from '../../../constants/globalStore';
+import { entityMaker } from '../../../utils/entity-maker';
+import { entityRefMaker } from '../../../utils/entity-ref-maker';
+import { getRelation } from '../../../utils/get-objectProperty';
 
 export function getElevation(cheerioElem: CheerioSelector, country: string, countryId: string) {
-    const objectProperties = store.countries[countryId].objectProperties;
+    const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_ELEVATION);
 	const eId = consts.ONTOLOGY.INST_ELEVATION + getUuid(country);
     let objectProp = {};
     let bailOut = true;
     cheerioElem('#field-elevation').each(() => {
         if (!map) {
-            if (store.elevations[eId]) {
-                objectProp[consts.ONTOLOGY.HAS_ELEVATION] = store.elevations[eId];
+            if (store.getObjectStore('elevations')[eId]) {
+                objectProp[consts.ONTOLOGY.HAS_ELEVATION] = store.getObjectStore('elevations')[eId];
             } else {
                 objectProp = entityMaker(
                     consts.ONTOLOGY.HAS_ELEVATION,
                     consts.ONTOLOGY.ONT_ELEVATION,
                     eId,
                     `Elevation for ${country}`);
-                store.elevations[eId] = objectProp[consts.ONTOLOGY.HAS_ELEVATION];
+                store.getObjectStore('elevations')[eId] = objectProp[consts.ONTOLOGY.HAS_ELEVATION];
             }
             map = objectProp[consts.ONTOLOGY.HAS_ELEVATION];
-            store.countries[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_ELEVATION, objectProp));
+            store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_ELEVATION, objectProp));
         }
         bailOut = false;
     });

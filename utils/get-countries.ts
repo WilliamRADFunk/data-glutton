@@ -24,15 +24,16 @@ export async function getCountries(): Promise<any> {
             
             store.countriesInList.push(...cNames);
 
-            store.countriesInList.forEach(country => {
+            store.countriesInList.forEach(async country => {
                 const id: string = countryToId(country.dataCode);
-                store.countries[id] = entityMaker(
+                const countryInstance = entityMaker(
                     consts.ONTOLOGY.HAS_COUNTRY,
                     consts.ONTOLOGY.ONT_COUNTRY,
                     id,
                     country.name)[consts.ONTOLOGY.HAS_COUNTRY];
-                    store.countries[id].datatypeProperties[consts.ONTOLOGY.DT_GEC_CODE] = country.dataCode;
-                    store.countries[id].datatypeProperties[consts.ONTOLOGY.DT_ISO_CODE] = country.isoCode;
+                countryInstance.datatypeProperties[consts.ONTOLOGY.DT_GEC_CODE] = country.dataCode;
+                countryInstance.datatypeProperties[consts.ONTOLOGY.DT_ISO_CODE] = country.isoCode;
+                await store.addToObjectStore('countries', countryInstance);
             });
         })
         .catch((err: Error) => {

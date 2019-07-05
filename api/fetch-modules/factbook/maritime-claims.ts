@@ -1,31 +1,31 @@
 import * as getUuid from 'uuid-by-string';
 
-import { consts } from '../../constants/constants';
-import { store } from '../../constants/globalStore';
-import { entityMaker } from '../../utils/entity-maker';
-import { entityRefMaker } from '../../utils/entity-ref-maker';
-import { getRelation } from '../../utils/get-objectProperty';
+import { consts } from '../../../constants/constants';
+import { store } from '../../../constants/globalStore';
+import { entityMaker } from '../../../utils/entity-maker';
+import { entityRefMaker } from '../../../utils/entity-ref-maker';
+import { getRelation } from '../../../utils/get-objectProperty';
 
 export function getMaritimeClaims(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.countries[countryId].objectProperties;
+	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_MARITIME_CLAIM);
 	const mcId = consts.ONTOLOGY.INST_MARITIME_CLAIM + getUuid(country);
 	let objectProp = {};
     let bailOut = true;
     cheerioElem('#field-maritime-claims').each(() => {
 		if (!map) {
-			if (store.maritimeClaims[mcId]) {
-				objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM] = store.maritimeClaims[mcId];
+			if (store.getObjectStore('maritimeClaims')[mcId]) {
+				objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM] = store.getObjectStore('maritimeClaims')[mcId];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_MARITIME_CLAIM,
 					consts.ONTOLOGY.ONT_MARITIME_CLAIM,
 					mcId,
 					`Maritime Claim for ${country}`);
-				store.maritimeClaims[mcId] = objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM];
+				store.getObjectStore('maritimeClaims')[mcId] = objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM];
 			}
 			map = objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM];
-			store.countries[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MARITIME_CLAIM, objectProp));
+			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MARITIME_CLAIM, objectProp));
 		}
         bailOut = false;
     });

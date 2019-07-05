@@ -7,7 +7,7 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-objectProperty';
 
 export function getClimate(cheerioElem: CheerioSelector, country: string, countryId: string) {
-    const objectProperties = store.countries[countryId].objectProperties;
+    const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_CLIMATE);
 	let mapZone;
     let bailOut = true;
@@ -15,26 +15,26 @@ export function getClimate(cheerioElem: CheerioSelector, country: string, countr
 		if (!map) {
 			const cId = consts.ONTOLOGY.INST_CLIMATE + getUuid(country);
 			let objectProp = {};
-			if (store.climates[cId]) {
-				objectProp[consts.ONTOLOGY.HAS_CLIMATE] = store.climates[cId];
+			if (store.getObjectStore('climates')[cId]) {
+				objectProp[consts.ONTOLOGY.HAS_CLIMATE] = store.getObjectStore('climates')[cId];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_CLIMATE,
 					consts.ONTOLOGY.ONT_CLIMATE,
 					cId,
 					`Climate for ${country}`);
-				store.climates[cId] = objectProp[consts.ONTOLOGY.HAS_CLIMATE];
+				store.getObjectStore('climates')[cId] = objectProp[consts.ONTOLOGY.HAS_CLIMATE];
 			}
 			map = objectProp[consts.ONTOLOGY.HAS_CLIMATE];
-			store.countries[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_CLIMATE, objectProp));
+			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_CLIMATE, objectProp));
 		}
 
 		mapZone = getRelation(map.objectProperties, consts.ONTOLOGY.HAS_CLIMATE_ZONE);
 		if (!mapZone) {
 			let zone = {};
 			const czId = consts.ONTOLOGY.INST_CLIMATE_ZONE + getUuid(country);
-			if (store.climateZones[czId]) {
-				zone[consts.ONTOLOGY.HAS_CLIMATE_ZONE] = store.climateZones[czId];
+			if (store.getObjectStore('climateZones')[czId]) {
+				zone[consts.ONTOLOGY.HAS_CLIMATE_ZONE] = store.getObjectStore('climateZones')[czId];
 			} else {
 				const attr = {};
 				attr[consts.ONTOLOGY.DT_CLIMATE_ZONE_NAME] = 'N/A';
@@ -45,7 +45,7 @@ export function getClimate(cheerioElem: CheerioSelector, country: string, countr
 					consts.ONTOLOGY.ONT_CLIMATE_ZONE,
 					czId,
 					`Climate Zone for ${country}`);
-				store.climateZones[czId] = zone[consts.ONTOLOGY.HAS_CLIMATE_ZONE];
+				store.getObjectStore('climateZones')[czId] = zone[consts.ONTOLOGY.HAS_CLIMATE_ZONE];
 			}
 			mapZone = zone[consts.ONTOLOGY.HAS_CLIMATE_ZONE];
 			map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_CLIMATE_ZONE, zone));

@@ -1,31 +1,31 @@
 import * as getUuid from 'uuid-by-string';
 
-import { consts } from '../../constants/constants';
-import { store } from '../../constants/globalStore';
-import { entityMaker } from '../../utils/entity-maker';
-import { entityRefMaker } from '../../utils/entity-ref-maker';
-import { getRelation } from '../../utils/get-objectProperty';
+import { consts } from '../../../constants/constants';
+import { store } from '../../../constants/globalStore';
+import { entityMaker } from '../../../utils/entity-maker';
+import { entityRefMaker } from '../../../utils/entity-ref-maker';
+import { getRelation } from '../../../utils/get-objectProperty';
 
 export function getArea(cheerioElem: CheerioSelector, country: string, countryId: string) {
-    const objectProperties = store.countries[countryId].objectProperties;
+    const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_DOMAIN_AREA);
 	const daId = consts.ONTOLOGY.INST_DOMAIN_AREA + getUuid(country);
 	let objectProp = {};
     let bailOut = true;
     cheerioElem('#field-area').each(() => {
 		if (!map) {
-			if (store.domainAreas[daId]) {
-				objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA] = store.domainAreas[daId];
+			if (store.getObjectStore('domainAreas')[daId]) {
+				objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA] = store.getObjectStore('domainAreas')[daId];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_DOMAIN_AREA,
 					consts.ONTOLOGY.ONT_DOMAIN_AREA,
 					daId,
 					`Area of Domain for ${country}`);
-				store.domainAreas[daId] = objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA];
+				store.getObjectStore('domainAreas')[daId] = objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA];
 			}
 			map = objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA];
-			store.countries[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_DOMAIN_AREA, objectProp));
+			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_DOMAIN_AREA, objectProp));
 		}
         bailOut = false;
     });

@@ -1,13 +1,13 @@
 import * as htmlToText from 'html-to-text';
 import * as getUuid from 'uuid-by-string';
 
-import { consts } from '../../constants/constants';
-import { store } from '../../constants/globalStore';
-import { entityMaker } from '../../utils/entity-maker';
-import { entityRefMaker } from '../../utils/entity-ref-maker';
+import { consts } from '../../../constants/constants';
+import { store } from '../../../constants/globalStore';
+import { entityMaker } from '../../../utils/entity-maker';
+import { entityRefMaker } from '../../../utils/entity-ref-maker';
 
 export function getSupplementalImages(cheerioElem: CheerioSelector, country: string, countryId: string) {
-    const objectProperties = store.countries[countryId].objectProperties;
+    const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
     cheerioElem('div.item.photo-all').each((index: number, element: CheerioElement) => {
         const suppImages = objectProperties.filter(rel => rel[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]);
 
@@ -26,17 +26,17 @@ export function getSupplementalImages(cheerioElem: CheerioSelector, country: str
 		}
         if (suppImgUrl && !suppImages.some(img => img[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]['@id'].includes(imgId))) {
 			let objectProp = {};
-			if (store.images[imgId]) {
-				objectProp[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG] = store.images[imgId];
+			if (store.getObjectStore('images')[imgId]) {
+				objectProp[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG] = store.getObjectStore('images')[imgId];
 			} else {
                 objectProp = entityMaker(
                     consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG,
                     consts.ONTOLOGY.ONT_IMAGE,
                     imgId,
                     `Supplemental Image for ${country}`);
-				store.images[imgId] = objectProp[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG];
+				store.getObjectStore('images')[imgId] = objectProp[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG];
 			}
-			store.countries[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG, objectProp));
+			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG, objectProp));
 
 			const datatypeProp = {};
 			datatypeProp[consts.ONTOLOGY.DT_LOCATOR_URI] = suppImgUrl;

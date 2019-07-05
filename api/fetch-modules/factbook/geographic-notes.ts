@@ -1,13 +1,13 @@
 import * as getUuid from 'uuid-by-string';
 
-import { consts } from '../../constants/constants';
-import { store } from '../../constants/globalStore';
-import { entityMaker } from '../../utils/entity-maker';
-import { entityRefMaker } from '../../utils/entity-ref-maker';
+import { consts } from '../../../constants/constants';
+import { store } from '../../../constants/globalStore';
+import { entityMaker } from '../../../utils/entity-maker';
+import { entityRefMaker } from '../../../utils/entity-ref-maker';
 import { parsedSingleLine } from './scraper-forms/parsed-single-line';
 
 export function getGeographicNotes(cheerioElem: CheerioSelector, country: string, countryId: string) {
-    const objectProperties = store.countries[countryId].objectProperties;
+    const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
 	const prevHasList = objectProperties.filter(rel => rel[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE]);
     let bailOut = true;
     cheerioElem('#field-geography-note').each(() => {
@@ -47,18 +47,18 @@ export function getGeographicNotes(cheerioElem: CheerioSelector, country: string
                     const guid = consts.ONTOLOGY.INST_GEOGRAPHIC_NOTE + getUuid(dataPropItem);
                     const hasPropAlready = prevHasList.some(p => p[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE]['@id'].includes(guid));
                     if (dataPropItem && !hasPropAlready) {
-                        if (store.geographicNotes[guid]) {
-                            objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE] = store.geographicNotes[guid];
+                        if (store.getObjectStore('geographicNotes')[guid]) {
+                            objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE] = store.getObjectStore('geographicNotes')[guid];
                         } else {
                             objectProp = entityMaker(
                                 consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE,
                                 consts.ONTOLOGY.ONT_GEOGRAPHIC_NOTE,
                                 guid,
                                 `Geographic Note (${dataPropItem})`);
-                            store.geographicNotes[guid] = objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE];
+                            store.getObjectStore('geographicNotes')[guid] = objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE];
                         }
                         objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE].datatypeProperties[consts.ONTOLOGY.DT_DESCRIPTION] = dataPropItem;
-                        store.countries[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE, objectProp));
+                        store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE, objectProp));
                     }
                 });
             }
