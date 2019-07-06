@@ -9,4 +9,4 @@ export function hasProp(base: Entity|EntityContainer, propName: string[]): any {
         return null;
     }
     return hasProp(base[name], propName.slice(1));
-};
+}

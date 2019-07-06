@@ -3,12 +3,12 @@ import * as rp from 'request-promise-native';
 
 import { consts } from '../constants/constants';
 import { store } from '../constants/globalStore';
-import { countryToId } from './country-to-id';
 import { dataCodeToIsoCode } from './country-code-lookup-tables';
+import { countryToId } from './country-to-id';
 import { entityMaker } from './entity-maker';
 
 export async function getCountries(): Promise<any> {
-    return await rp('https://www.cia.gov/library/publications/the-world-factbook/')
+    return await rp.get('https://www.cia.gov/library/publications/the-world-factbook/')
         .then((html: string) => {
             const $ = cheerio.load(html);
             const cNames = $('#search-place option').toArray()
@@ -20,11 +20,11 @@ export async function getCountries(): Promise<any> {
                         name: $(c).prev().text().replace(/\\n/g, ' ').trim()
                     };
                 })
-                .filter(country => !!country.name && !consts.BASE.COUNTRY_BLACKLIST.includes(country.name.toLowerCase()));
-            
+                .filter((country) => !!country.name && !consts.BASE.COUNTRY_BLACKLIST.includes(country.name.toLowerCase()));
+
             store.countriesInList.push(...cNames);
 
-            store.countriesInList.forEach(async country => {
+            store.countriesInList.forEach(async (country) => {
                 const id: string = countryToId(country.dataCode);
                 const countryInstance = entityMaker(
                     consts.ONTOLOGY.HAS_COUNTRY,
@@ -39,4 +39,4 @@ export async function getCountries(): Promise<any> {
         .catch((err: Error) => {
             store.errorLogger(new Date().toISOString() + '\n\ngetCountries\n\n' + err.toString() + '\n\n');
         });
-};
+}
