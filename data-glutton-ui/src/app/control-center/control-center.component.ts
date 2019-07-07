@@ -7,6 +7,7 @@ import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinato
   styleUrls: ['./control-center.component.scss']
 })
 export class ControlCenterComponent implements OnInit {
+  countries: string[] = [];
   /**
    * Flag to track if scaping is underway.
    */
@@ -34,10 +35,14 @@ export class ControlCenterComponent implements OnInit {
   }
 
   async initScraping(type?: string): Promise<void> {
-    if (this.isScraping) {
+    if (Object.values(this.isScraping).some(k => !!k)) {
       return;
     }
-    await this.fetchService.fetchCountries();
+    console.log('Fetching countries...');
+    this.fetchService.fetchCountries().subscribe(countries => {
+        console.log('Countries', countries);
+        this.countries = countries.map(c => c.name);
+      });
     if (!type) {
       // Scrape all sources
       await this.fetchService.runFactbookFetcher();
@@ -47,7 +52,7 @@ export class ControlCenterComponent implements OnInit {
   }
 
   initStore(type?: string) {
-    if (this.isSeedingStore) {
+    if  (Object.values(this.isSeedingStore).some(k => !!k)) {
       return;
     }
     if (!type) {

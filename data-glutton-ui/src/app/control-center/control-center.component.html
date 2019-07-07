@@ -93,7 +93,14 @@
       <div class="rounded bg-secondary display-box p-2">
         <div class="row no-gutters border-bottom pb-2 mb-2">
           <div class="col">
-            <div class="h3 text-light text-outline stroke-shadow">Stuff happens here...</div>
+            <div class="h3 text-light text-outline stroke-shadow">
+              Countries
+            </div>
+          </div>
+        </div>
+        <div class="row" *ngFor="let country of countries">
+          <div class="col-12">
+            {{ country }}
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-// import { getCountries } from '../../utils/get-countries';
 import { FactbookFetchService } from '../factbook-fetch/factbook-fetch.service';
 
 @Injectable({
@@ -8,10 +9,12 @@ import { FactbookFetchService } from '../factbook-fetch/factbook-fetch.service';
 })
 export class FetchCoordinator {
 
-  constructor(private readonly factbookFetch: FactbookFetchService) { }
+  constructor(
+    private readonly factbookFetch: FactbookFetchService,
+    private readonly http: HttpClient) { }
 
-  async fetchCountries(): Promise<void> {
-    // return await getCountries();
+  fetchCountries(): Observable<any> {
+    return this.http.get('http://localhost:3000/countries');
   }
 
   async runFactbookFetcher(): Promise<void> {

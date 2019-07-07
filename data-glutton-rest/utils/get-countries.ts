@@ -9,7 +9,7 @@ import { entityMaker } from './entity-maker';
 
 export async function getCountries(): Promise<any> {
     return await rp.get('https://www.cia.gov/library/publications/the-world-factbook/')
-        .then((html: string) => {
+        .then(async (html: string) => {
             const $ = cheerio.load(html);
             const cNames = $('#search-place option').toArray()
                 .map(c => {
@@ -24,7 +24,7 @@ export async function getCountries(): Promise<any> {
 
             store.countriesInList.push(...cNames);
 
-            store.countriesInList.forEach(async (country) => {
+            store.countriesInList.forEach(country => {
                 const id: string = countryToId(country.dataCode);
                 const countryInstance = entityMaker(
                     consts.ONTOLOGY.HAS_COUNTRY,
@@ -33,7 +33,7 @@ export async function getCountries(): Promise<any> {
                     country.name)[consts.ONTOLOGY.HAS_COUNTRY];
                 countryInstance.datatypeProperties[consts.ONTOLOGY.DT_GEC_CODE] = country.dataCode;
                 countryInstance.datatypeProperties[consts.ONTOLOGY.DT_ISO_CODE] = country.isoCode;
-                await store.addToObjectStore('countries', countryInstance);
+                store.countries.insert(countryInstance);
             });
         })
         .catch((err: Error) => {
