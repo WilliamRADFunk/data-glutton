@@ -12,7 +12,7 @@ const numberOfScrapers: number = Object.keys(dataScrapers).length;
 export function getCountryData(country: CountryReference, url: string): any {
     if (country && url) {
         return rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
-            .then((html) => {
+            .then((html: CheerioElement) => {
                 const $ = cheerio.load(html);
                 const countryId = countryToId(country.dataCode);
                 dataScrapers.getArea($, country.name, countryId);
@@ -57,7 +57,7 @@ export function getCountryData(country: CountryReference, url: string): any {
                 store.progressLogger(country.name, 20 / numberOfScrapers);
                 store.debugLogger(`Data scrape for ${country.name} is complete`);
             })
-            .catch((err) => {
+            .catch((err: Error) => {
                 store.failedCountries.push(country);
                 const errMsg = `${
                     new Date().toISOString()

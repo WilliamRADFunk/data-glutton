@@ -45,7 +45,11 @@ export class ControlCenterComponent implements OnInit {
       });
     if (!type) {
       // Scrape all sources
-      await this.fetchService.runFactbookFetcher();
+      this.fetchService.runFactbookFetcher().then(done => {
+        console.log('done', done);
+      }).catch(err => {
+        console.error('initScraping Error: ', err);
+      });
     } else {
       // Scrape selected source
     }
