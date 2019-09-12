@@ -1,9 +1,9 @@
 import * as getUuid from "uuid-by-string";
 
-import { consts } from "../../../constants/constants";
-import { store } from "../../../constants/globalStore";
-import { entityMaker } from "../../../utils/entity-maker";
-import { entityRefMaker } from "../../../utils/entity-ref-maker";
+import { consts } from "../../constants/constants";
+import { store } from "../../constants/globalStore";
+import { entityMaker } from "../../utils/entity-maker";
+import { entityRefMaker } from "../../utils/entity-ref-maker";
 import { parsedSingleLine } from "./scraper-forms/parsed-single-line";
 
 export function getGeographicNotes(cheerioElem: CheerioSelector, country: string, countryId: string) {
@@ -42,7 +42,7 @@ export function getGeographicNotes(cheerioElem: CheerioSelector, country: string
             const notes = geographicalNotes.split(/note [0-9]+\:/);
             if (notes.length) {
                 notes.forEach((note) => {
-                    let objectProp = {};
+                    let objectProp: EntityContainer = {};
                     const dataPropItem = note.trim();
                     const guid = consts.ONTOLOGY.INST_GEOGRAPHIC_NOTE + getUuid(dataPropItem);
                     const hasPropAlready = prevHasList.some((p) => p[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE]["@id"].includes(guid));

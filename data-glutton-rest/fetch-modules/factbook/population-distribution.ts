@@ -1,5 +1,5 @@
-import { consts } from "../../../constants/constants";
-import { store } from "../../../constants/globalStore";
+import { consts } from "../../constants/constants";
+import { store } from "../../constants/globalStore";
 
 export function getPopDist(cheerioElem: CheerioSelector, country: string, countryId: string) {
 	cheerioElem("#field-population-distribution").each((index: number, element: CheerioElement) => {

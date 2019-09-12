@@ -10,7 +10,7 @@ export function getBorders(cheerioElem: CheerioSelector, country: string, countr
     const objectProperties = store.getObjectStore("countries")[countryId].objectProperties;
     let brdMap = getRelation(objectProperties, consts.ONTOLOGY.HAS_BORDER);
     const brdId = consts.ONTOLOGY.INST_BORDER + getUuid(country);
-    let objectProp = {};
+    let objectProp: EntityContainer = {};
     if (!brdMap) {
         if (store.getObjectStore("borders")[brdId]) {
             objectProp[consts.ONTOLOGY.HAS_BORDER] = store.getObjectStore("borders")[brdId];

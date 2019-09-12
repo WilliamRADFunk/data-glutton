@@ -18,7 +18,7 @@ export function getBorderMapImg(cheerioElem: CheerioSelector, country: string, c
             borderMapUrl = consts.BASE.URL_BASE_FACTBOOK + a.replace("../", "");
             bmId = consts.ONTOLOGY.INST_BORDER_MAP + getUuid(borderMapId);
         }
-        let objectProp = {};
+        let objectProp: EntityContainer = {};
         if (!map) {
             if (store.getObjectStore("borderMaps")[bmId]) {
                 objectProp[consts.ONTOLOGY.HAS_BORDER_MAP] = store.getObjectStore("borderMaps")[bmId];
@@ -34,7 +34,7 @@ export function getBorderMapImg(cheerioElem: CheerioSelector, country: string, c
             store.getObjectStore("countries")[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_BORDER_MAP, objectProp));
         }
         if (borderMapUrl) {
-			const datatypeProp = {};
+			const datatypeProp: { [key: string]: string|number } = {};
 			datatypeProp[consts.ONTOLOGY.DT_LOCATOR_URI] = borderMapUrl;
 			map.datatypeProperties = datatypeProp;
         }

@@ -28,7 +28,7 @@ export function parsedSingleLineCaveat(
 				const guid = consts.ONTOLOGY[instProp] + getUuid(dataPropItem);
 				const hasPropAlready = prevHasList.some((p) => p[consts.ONTOLOGY[hasProp]]["@id"].includes(guid));
 				if (dataPropItem && !hasPropAlready) {
-					let objectProp = {};
+					let objectProp: EntityContainer = {};
 					if (store.getObjectStore(storeKey)[guid]) {
 						objectProp[consts.ONTOLOGY[hasProp]] = store.getObjectStore(storeKey)[guid];
 					} else {

@@ -1,16 +1,17 @@
 import * as getUuid from "uuid-by-string";
 
-import { consts } from "../../../constants/constants";
-import { store } from "../../../constants/globalStore";
-import { entityMaker } from "../../../utils/entity-maker";
-import { entityRefMaker } from "../../../utils/entity-ref-maker";
-import { getRelation } from "../../../utils/get-objectProperty";
+import { consts } from "../../constants/constants";
+import { store } from "../../constants/globalStore";
+import { entityMaker } from "../../utils/entity-maker";
+import { entityRefMaker } from "../../utils/entity-ref-maker";
+import { getRelation } from "../../utils/get-relations";
+import { EntityContainer } from "../../models/entity-container";
 
-export function getFlag(cheerioElem, country, countryId) {
+export function getFlag(cheerioElem: CheerioSelector, country: string, countryId: string) {
     const objectProperties = store.getObjectStore("countries")[countryId].objectProperties;
 	   let flag = getRelation(objectProperties, consts.ONTOLOGY.HAS_FLAG);
-	   const fId = consts.ONTOLOGY.INST_FLAG + getUuid(country);
-	   let objectProp = {};
+	   const fId = consts.ONTOLOGY.INST_FLAG + getUuid.default(country);
+	   let objectProp: EntityContainer = {};
     let bailOut = true;
     cheerioElem("div.flagBox").each(() => {
 		if (!flag) {

@@ -1,15 +1,16 @@
 import * as htmlToText from "html-to-text";
 import * as getUuid from "uuid-by-string";
 
-import { consts } from "../../../constants/constants";
-import { store } from "../../../constants/globalStore";
-import { entityMaker } from "../../../utils/entity-maker";
-import { entityRefMaker } from "../../../utils/entity-ref-maker";
+import { consts } from "../../constants/constants";
+import { store } from "../../constants/globalStore";
+import { entityMaker } from "../../utils/entity-maker";
+import { entityRefMaker } from "../../utils/entity-ref-maker";
+import { EntityContainer } from "../../models/entity-container";
 
 export function getSupplementalImages(cheerioElem: CheerioSelector, country: string, countryId: string) {
     const objectProperties = store.getObjectStore("countries")[countryId].objectProperties;
     cheerioElem("div.item.photo-all").each((index: number, element: CheerioElement) => {
-        const suppImages = objectProperties.filter((rel) => rel[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]);
+        const suppImages = objectProperties.filter((rel: EntityContainer) => rel[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]);
 
 		      const a = cheerioElem(element).find("img").attr("src");
 		      let b = cheerioElem(element).find("img").attr("alt");
@@ -17,15 +18,15 @@ export function getSupplementalImages(cheerioElem: CheerioSelector, country: str
 		      const imageProps: string[] = [];
 		      c.each(() => { imageProps.push(cheerioElem(element).text().trim()); });
 		      b = b && htmlToText.fromString(b);
-		      let imgId;
-		      let suppImgUrl;
+		      let imgId: string;
+		      let suppImgUrl: string;
         if (a && a.replace("../", "")) {
 			const cleanSrc = a.replace("../", "");
-			imgId = consts.ONTOLOGY.INST_IMAGE + getUuid(cleanSrc);
+			imgId = consts.ONTOLOGY.INST_IMAGE + getUuid.default(cleanSrc);
    suppImgUrl = consts.BASE.URL_BASE_FACTBOOK + cleanSrc;
 		}
-        if (suppImgUrl && !suppImages.some((img) => img[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]["@id"].includes(imgId))) {
-			let objectProp = {};
+        if (suppImgUrl && !suppImages.some((img: EntityContainer) => img[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]["@id"].includes(imgId))) {
+			let objectProp: EntityContainer = {};
 			if (store.getObjectStore("images")[imgId]) {
 				objectProp[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG] = store.getObjectStore("images")[imgId];
 			} else {
@@ -38,7 +39,7 @@ export function getSupplementalImages(cheerioElem: CheerioSelector, country: str
 			}
 			store.getObjectStore("countries")[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG, objectProp));
 
-			const datatypeProp = {};
+			const datatypeProp: { [key: string]: string|number } = {};
 			datatypeProp[consts.ONTOLOGY.DT_LOCATOR_URI] = suppImgUrl;
 			datatypeProp[consts.ONTOLOGY.DT_CONTENT_DESCRIPTION] = b || null;
 			datatypeProp[consts.ONTOLOGY.DT_IMAGE_DIMENSIONS] = imageProps[0] || "N/A";

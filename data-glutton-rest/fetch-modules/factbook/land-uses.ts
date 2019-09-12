@@ -1,16 +1,17 @@
 import * as getUuid from "uuid-by-string";
 
-import { consts } from "../../../constants/constants";
-import { store } from "../../../constants/globalStore";
-import { entityMaker } from "../../../utils/entity-maker";
-import { entityRefMaker } from "../../../utils/entity-ref-maker";
-import { getRelation } from "../../../utils/get-objectProperty";
+import { consts } from "../../constants/constants";
+import { store } from "../../constants/globalStore";
+import { entityMaker } from "../../utils/entity-maker";
+import { entityRefMaker } from "../../utils/entity-ref-maker";
+import { getRelation } from "../../utils/get-relations";
+import { EntityContainer } from "../../models/entity-container";
 
 export function getLandUses(cheerioElem: CheerioSelector, country: string, countryId: string) {
     const objectProperties = store.getObjectStore("countries")[countryId].objectProperties;
 	   let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_LAND_USE);
-	   const luId = consts.ONTOLOGY.INST_LAND_USE + getUuid(country);
-    let objectProp = {};
+	   const luId = consts.ONTOLOGY.INST_LAND_USE + getUuid.default(country);
+    let objectProp: EntityContainer = {};
     let bailOut = true;
     cheerioElem("#field-land-use").each(() => {
         if (!map) {
@@ -38,10 +39,10 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
   const date1Data = cheerioElem(element).find("span.subfield-date").text().trim();
   const refinedValue1 = landUse1Data.replace(/[^0-9\-\.]/g, "").trim() || null;
   if (refinedValue1) {
-            let objectP = {};
+            let objectP: EntityContainer = {};
             switch (landUse1Switch) {
                 case "agricultural land:":
-                    const alId = consts.ONTOLOGY.INST_AGRICULTURAL_LAND + getUuid(country);
+                    const alId = consts.ONTOLOGY.INST_AGRICULTURAL_LAND + getUuid.default(country);
                     objectP = entityMaker(
                         consts.ONTOLOGY.HAS_AGRICULTURAL_LAND,
                         consts.ONTOLOGY.ONT_AGRICULTURAL_LAND,
@@ -54,7 +55,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
                     agLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = date1Data.substring(date1Data.indexOf("("), date1Data.indexOf(")") + 1).trim() || "N/A";
                     break;
                 case "forest:":
-                    const fId = consts.ONTOLOGY.INST_FOREST_LAND + getUuid(country);
+                    const fId = consts.ONTOLOGY.INST_FOREST_LAND + getUuid.default(country);
                     objectP = entityMaker(
                         consts.ONTOLOGY.HAS_FOREST_LAND,
                         consts.ONTOLOGY.ONT_FOREST_LAND,
@@ -67,7 +68,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
                     fLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = date1Data.substring(date1Data.indexOf("("), date1Data.indexOf(")") + 1).trim() || "N/A";
                     break;
                 case "other:":
-                    const oId = consts.ONTOLOGY.INST_OTHER_LAND + getUuid(country);
+                    const oId = consts.ONTOLOGY.INST_OTHER_LAND + getUuid.default(country);
                     objectP = entityMaker(
                         consts.ONTOLOGY.HAS_OTHER_LAND,
                         consts.ONTOLOGY.ONT_OTHER_LAND,
@@ -89,7 +90,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
         const dates = groupSplit.map((land) => land.substring(land.indexOf("("), land.indexOf(")") + 1).trim());
         if (percentages.length) {
             // Arable Land
-            const arbId = consts.ONTOLOGY.INST_ARABLE_LAND + getUuid(country);
+            const arbId = consts.ONTOLOGY.INST_ARABLE_LAND + getUuid.default(country);
             const objectPropArable = entityMaker(
                 consts.ONTOLOGY.HAS_ARABLE_LAND,
                 consts.ONTOLOGY.ONT_ARABLE_LAND,
@@ -101,7 +102,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
             arbLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percentages[0] || null;
             arbLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = dates[0] || "N/A";
             // Permanent Crops Land
-            const pcId = consts.ONTOLOGY.INST_PERMANENT_CROPS_LAND + getUuid(country);
+            const pcId = consts.ONTOLOGY.INST_PERMANENT_CROPS_LAND + getUuid.default(country);
             const objectPropPermCrop = entityMaker(
                 consts.ONTOLOGY.HAS_PERMANENT_CROPS_LAND,
                 consts.ONTOLOGY.ONT_PERMANENT_CROPS_LAND,
@@ -113,7 +114,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
             pcLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percentages[1] || null;
             pcLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = dates[1] || "N/A";
             // Permanent Pasture Land
-            const ppId = consts.ONTOLOGY.INST_PERMANENT_PASTURE_LAND + getUuid(country);
+            const ppId = consts.ONTOLOGY.INST_PERMANENT_PASTURE_LAND + getUuid.default(country);
             const objectPropPermPast = entityMaker(
                 consts.ONTOLOGY.HAS_PERMANENT_PASTURE_LAND,
                 consts.ONTOLOGY.ONT_PERMANENT_PASTURE_LAND,

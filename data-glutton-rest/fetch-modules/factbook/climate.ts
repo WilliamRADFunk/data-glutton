@@ -4,7 +4,7 @@ import { consts } from "../../constants/constants";
 import { store } from "../../constants/globalStore";
 import { entityMaker } from "../../utils/entity-maker";
 import { entityRefMaker } from "../../utils/entity-ref-maker";
-import { getRelation } from "../../utils/get-objectProperty";
+import { getRelation } from "../../utils/get-relations";
 
 export function getClimate(cheerioElem: CheerioSelector, country: string, countryId: string) {
     const objectProperties = store.getObjectStore("countries")[countryId].objectProperties;
@@ -14,7 +14,7 @@ export function getClimate(cheerioElem: CheerioSelector, country: string, countr
     cheerioElem("#field-climate").each(() => {
 		if (!map) {
 			const cId = consts.ONTOLOGY.INST_CLIMATE + getUuid(country);
-			let objectProp = {};
+			let objectProp: EntityContainer = {};
 			if (store.getObjectStore("climates")[cId]) {
 				objectProp[consts.ONTOLOGY.HAS_CLIMATE] = store.getObjectStore("climates")[cId];
 			} else {

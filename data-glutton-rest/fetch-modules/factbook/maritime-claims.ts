@@ -1,16 +1,17 @@
 import * as getUuid from "uuid-by-string";
 
-import { consts } from "../../../constants/constants";
-import { store } from "../../../constants/globalStore";
-import { entityMaker } from "../../../utils/entity-maker";
-import { entityRefMaker } from "../../../utils/entity-ref-maker";
-import { getRelation } from "../../../utils/get-objectProperty";
+import { consts } from "../../constants/constants";
+import { store } from "../../constants/globalStore";
+import { entityMaker } from "../../utils/entity-maker";
+import { entityRefMaker } from "../../utils/entity-ref-maker";
+import { getRelation } from "../../utils/get-relations";
+import { EntityContainer } from "../../models/entity-container";
 
 export function getMaritimeClaims(cheerioElem: CheerioSelector, country: string, countryId: string) {
 	const objectProperties = store.getObjectStore("countries")[countryId].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_MARITIME_CLAIM);
-	const mcId = consts.ONTOLOGY.INST_MARITIME_CLAIM + getUuid(country);
-	let objectProp = {};
+	const mcId = consts.ONTOLOGY.INST_MARITIME_CLAIM + getUuid.default(country);
+	let objectProp: EntityContainer = {};
  let bailOut = true;
  cheerioElem("#field-maritime-claims").each(() => {
 		if (!map) {
