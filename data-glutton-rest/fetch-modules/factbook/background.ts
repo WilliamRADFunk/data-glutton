@@ -1,5 +1,5 @@
-import { consts } from "../../../constants/constants";
-import { store } from "../../../constants/globalStore";
+import { consts } from "../../constants/constants";
+import { store } from "../../constants/globalStore";
 
 export function getBackground(cheerioElem: CheerioSelector, country: string, countryId: string): void {
 	cheerioElem("#field-background").each((index: number, element: CheerioElement) => {

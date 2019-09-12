@@ -1,10 +1,10 @@
 import * as getUuid from "uuid-by-string";
 
-import { consts } from "../../../constants/constants";
-import { store } from "../../../constants/globalStore";
-import { entityMaker } from "../../../utils/entity-maker";
-import { entityRefMaker } from "../../../utils/entity-ref-maker";
-import { getRelation } from "../../../utils/get-objectProperty";
+import { consts } from "../../constants/constants";
+import { store } from "../../constants/globalStore";
+import { entityMaker } from "../../utils/entity-maker";
+import { entityRefMaker } from "../../utils/entity-ref-maker";
+import { getRelation } from "../../utils/get-relations";
 
 export function getBorderMapImg(cheerioElem: CheerioSelector, country: string, countryId: string): void {
     const objectProperties = store.getObjectStore("countries")[countryId].objectProperties;

@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import * as rp from "request-promise-native";
+import rp from "request-promise-native";
 
 import { consts } from "../../constants/constants";
 import { store } from "../../constants/globalStore";
@@ -9,7 +9,7 @@ import { countryToId } from "../../utils/country-to-id";
 
 const numberOfScrapers: number = Object.keys(dataScrapers).length;
 
-export function getCountryData(country: CountryReference, url: string): any {
+export function getCountryData(country: CountryReference, url: string): Promise<any> {
     if (country && url) {
         return rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
             .then((html: CheerioElement) => {

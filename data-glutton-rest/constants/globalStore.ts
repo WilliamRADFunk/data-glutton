@@ -1,9 +1,9 @@
 import * as loki from 'lokijs';
 
 import { CountryReference } from '../models/country-reference';
+import { EntityListWrapper } from '../models/entity-list-wrapper';
 import { ImageScrapableObject } from '../models/image-scrapable-object';
 import { consoleError, consoleLog } from '../utils/logger';
-import { EntityListWrapper } from '../models/entity-list-wrapper';
 
 // const noop = () => { /* Noop */ };
 const noop = (a: string, b: number) => { consoleLog(`${a} is ${Math.floor(b * 100)} done`); };
@@ -18,7 +18,6 @@ class GlobalStore {
 	public progressLogger: any = noop;
 	public failedCountries: CountryReference[] = [];
 	public failedImages: ImageScrapableObject[] = [];
-	private db: Loki;
 
 	public agriculturalLands: Collection<EntityListWrapper>;
 	public arableLands: Collection<EntityListWrapper>;
@@ -46,6 +45,8 @@ class GlobalStore {
 	public permanentPastureLands: Collection<EntityListWrapper>;
 	public regionMaps: Collection<EntityListWrapper>;
 	public terrains: Collection<EntityListWrapper>;
+
+	private db: Loki;
 
 	constructor() {
 		this.db = new loki.default('loki.json');
@@ -75,6 +76,10 @@ class GlobalStore {
 		this.permanentPastureLands = this.db.addCollection('permanentPastureLands');
 		this.regionMaps = this.db.addCollection('regionMaps');
 		this.terrains = this.db.addCollection('terrains');
+	}
+
+	public getObjectStore(key: string): any {
+		return ''
 	}
 }
 
