@@ -14,10 +14,14 @@ export class FetchCoordinator {
     private readonly http: HttpClient) { }
 
   fetchCountries(): Observable<any> {
-    return this.http.get('http://localhost:3000/countries');
+    return this.http.get('http://localhost:3000/country-list');
   }
 
-  async runFactbookFetcher(): Promise<void> {
-    return await this.factbookFetch.fetchFactbookData();
+  scrapeFactbook(): Observable<any> {
+    return this.http.get('http://localhost:3000/scrape-factbook');
+  }
+
+  async runFactbookFetcher(): Promise<any> {
+    return this.scrapeFactbook().toPromise();
   }
 }
