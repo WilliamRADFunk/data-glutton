@@ -1,5 +1,5 @@
 export interface CountryReference {
-    dataCode: string;
-    isoCode: string;
-    name: string;
+	dataCode: string;
+	isoCode: string;
+	name: string;
 };

@@ -1,62 +1,67 @@
-import * as getUuid from "uuid-by-string";
+import * as getUuid from 'uuid-by-string';
 
-import { consts } from "../../constants/constants";
-import { store } from "../../constants/globalStore";
-import { entityMaker } from "../../utils/entity-maker";
-import { entityRefMaker } from "../../utils/entity-ref-maker";
-import { getRelation } from "../../utils/get-relations";
-import { EntityContainer } from "../../models/entity-container";
+import { consts } from '../../constants/constants';
+import { store } from '../../constants/globalStore';
+import { EntityContainer } from '../../models/entity-container';
+import { entityMaker } from '../../utils/entity-maker';
+import { entityRefMaker } from '../../utils/entity-ref-maker';
+import { getRelation } from '../../utils/get-relations';
 
 export function getMaritimeClaims(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.getObjectStore("countries")[countryId].objectProperties;
+	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_MARITIME_CLAIM);
 	const mcId = consts.ONTOLOGY.INST_MARITIME_CLAIM + getUuid.default(country);
 	let objectProp: EntityContainer = {};
- let bailOut = true;
- cheerioElem("#field-maritime-claims").each(() => {
+	let bailOut = true;
+	cheerioElem('#field-maritime-claims').each(() => {
 		if (!map) {
-			if (store.getObjectStore("maritimeClaims")[mcId]) {
-				objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM] = store.getObjectStore("maritimeClaims")[mcId];
+			if (store.getObjectStore('maritimeClaims')[mcId]) {
+				objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM] = store.getObjectStore('maritimeClaims')[mcId];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_MARITIME_CLAIM,
 					consts.ONTOLOGY.ONT_MARITIME_CLAIM,
 					mcId,
 					`Maritime Claim for ${country}`);
-				store.getObjectStore("maritimeClaims")[mcId] = objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM];
+				store.getObjectStore('maritimeClaims')[mcId] = objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM];
 			}
 			map = objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM];
-			store.getObjectStore("countries")[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MARITIME_CLAIM, objectProp));
+			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MARITIME_CLAIM, objectProp));
 		}
-  bailOut = false;
-    });
- if (bailOut) {
-        return;
-    }
-	cheerioElem("#field-maritime-claims > div.category_data.subfield.numeric").each((index: number, element: CheerioElement) => {
-		const seaSwitch = cheerioElem(element).find("span.subfield-name").text().trim();
-		const seaData = cheerioElem(element).find("span.subfield-number").text().trim();
+		bailOut = false;
+	});
+	if (bailOut) {
+		return;
+	}
+	cheerioElem('#field-maritime-claims > div.category_data.subfield.numeric').each((index: number, element: CheerioElement) => {
+		const seaSwitch = cheerioElem(element).find('span.subfield-name').text().trim();
+		const seaData = cheerioElem(element).find('span.subfield-number').text().trim();
 		switch (seaSwitch) {
-			case "territorial sea:":
-				map.datatypeProperties[consts.ONTOLOGY.DT_TERRITORIAL_SEA] = seaData.replace(/,|[a-z]/g, "").trim();
+			case 'territorial sea:': {
+				map.datatypeProperties[consts.ONTOLOGY.DT_TERRITORIAL_SEA] = seaData.replace(/,|[a-z]/g, '').trim();
 				break;
-			case "exclusive economic zone:":
-				map.datatypeProperties[consts.ONTOLOGY.DT_EXCLUSIVE_ECONOMIC_ZONE] = seaData.replace(/,|[a-z]/g, "").trim();
+			}
+			case 'exclusive economic zone:': {
+				map.datatypeProperties[consts.ONTOLOGY.DT_EXCLUSIVE_ECONOMIC_ZONE] = seaData.replace(/,|[a-z]/g, '').trim();
 				break;
-			case "contiguous zone:":
-				map.datatypeProperties[consts.ONTOLOGY.DT_CONTIGUOUS_ZONE] = seaData.replace(/,|[a-z]/g, "").trim();
+			}
+			case 'contiguous zone:': {
+				map.datatypeProperties[consts.ONTOLOGY.DT_CONTIGUOUS_ZONE] = seaData.replace(/,|[a-z]/g, '').trim();
 				break;
-			case "exclusive fishing zone:":
-				map.datatypeProperties[consts.ONTOLOGY.DT_EXCLUSIVE_FISHING_ZONE] = seaData.replace(/,|[a-z]/g, "").trim();
+			}
+			case 'exclusive fishing zone:': {
+				map.datatypeProperties[consts.ONTOLOGY.DT_EXCLUSIVE_FISHING_ZONE] = seaData.replace(/,|[a-z]/g, '').trim();
 				break;
-			case "continental shelf:":
-				map.datatypeProperties[consts.ONTOLOGY.DT_CONTINENTAL_SHELF] = seaData.replace(/,|[a-z]/g, "").trim();
-				map.datatypeProperties[consts.ONTOLOGY.DT_CONTINENTAL_SHELF_MODIFIER] = seaData.substring(seaData.indexOf("nm or") + 5).trim();
+			}
+			case 'continental shelf:': {
+				map.datatypeProperties[consts.ONTOLOGY.DT_CONTINENTAL_SHELF] = seaData.replace(/,|[a-z]/g, '').trim();
+				map.datatypeProperties[consts.ONTOLOGY.DT_CONTINENTAL_SHELF_MODIFIER] = seaData.substring(seaData.indexOf('nm or') + 5).trim();
 				break;
+			}
 		}
 	});
-	map.datatypeProperties[consts.ONTOLOGY.DT_UNIT] = "nm";
-	cheerioElem("#field-maritime-claims > div.category_data.note").each((index: number, element: CheerioElement) => {
-		map.datatypeProperties[consts.ONTOLOGY.DT_SUPPLEMENTAL_EXPLANATION] = cheerioElem(element).text().replace(/\\n/g, " ").trim();
+	map.datatypeProperties[consts.ONTOLOGY.DT_UNIT] = 'nm';
+	cheerioElem('#field-maritime-claims > div.category_data.note').each((index: number, element: CheerioElement) => {
+		map.datatypeProperties[consts.ONTOLOGY.DT_SUPPLEMENTAL_EXPLANATION] = cheerioElem(element).text().replace(/\\n/g, ' ').trim();
 	});
 }

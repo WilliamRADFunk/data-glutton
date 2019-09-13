@@ -4,9 +4,9 @@ const logger = getLogger();
 logger.level = 'debug';
 
 export function consoleLog(msg: string): void {
-    logger.info(msg);
+	logger.info(msg);
 };
 
 export function consoleError(msg: string): void {
-    logger.error(msg);
+	logger.error(msg);
 };
