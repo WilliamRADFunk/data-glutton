@@ -9,7 +9,7 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 
 function parseSingleCoordinates(cheerio: Cheerio, country: string, countryId: string) {
 	const geoId = consts.ONTOLOGY.INST_GEO_LOCATION + getUuid.default(country);
-	const locations = store.getObjectStore('countries')[countryId].objectProperties
+	const locations = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties
 		.filter((objProp: EntityContainer) => objProp[consts.ONTOLOGY.HAS_LOCATION]);
 	const foundEntityContainer = locations.find((loc: EntityContainer) => loc && loc[consts.ONTOLOGY.HAS_LOCATION]['@id'] === geoId);
 	let geoAttr = foundEntityContainer && foundEntityContainer[consts.ONTOLOGY.HAS_LOCATION];
@@ -17,20 +17,20 @@ function parseSingleCoordinates(cheerio: Cheerio, country: string, countryId: st
 
 	let objectProp: EntityContainer = {};
 	if (!geoAttr) {
-		if (store.getObjectStore('locations')[geoId]) {
-			objectProp[consts.ONTOLOGY.HAS_LOCATION] = store.getObjectStore('locations')[geoId];
+		if (store.locations.find({ '@id': { $eq: geoId } })[0]) {
+			objectProp[consts.ONTOLOGY.HAS_LOCATION] = store.locations.find({ '@id': { $eq: geoId } })[0];
 		} else {
 			objectProp = entityMaker(
 				consts.ONTOLOGY.HAS_LOCATION,
 				consts.ONTOLOGY.ONT_GEO_LOCATION,
 				geoId,
 				`Geographic Location for ${country}`);
-			store.getObjectStore('locations')[geoId] = objectProp[consts.ONTOLOGY.HAS_LOCATION];
+			store.locations.insert(objectProp[consts.ONTOLOGY.HAS_LOCATION]);
 		}
 		geoAttr = objectProp[consts.ONTOLOGY.HAS_LOCATION];
-		store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_LOCATION, objectProp));
+		store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_LOCATION, objectProp));
 	} else {
-		geoAttr = store.getObjectStore('locations')[geoId];
+		geoAttr = store.locations.find({ '@id': { $eq: geoId } })[0];
 	}
 
 	if (content) {
@@ -58,7 +58,7 @@ function parseMultipleCoordinates(cheerioElem: CheerioSelector, country: string,
 	cheerioElem(scope).find('p').each((index: number, element: CheerioElement) => {
 		const content = cheerioElem(element).text().trim().split(':')[1];
 		const strongTag = cheerioElem(element).find('strong').text().trim().slice(0, -1);
-		const locations = store.getObjectStore('countries')[countryId].objectProperties
+		const locations = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties
 			.filter((objProp: EntityContainer) => objProp[consts.ONTOLOGY.HAS_LOCATION])
 			.map((objProp: EntityContainer) => objProp[consts.ONTOLOGY.HAS_LOCATION]);
 		let objectProp: EntityContainer = {};
@@ -67,20 +67,20 @@ function parseMultipleCoordinates(cheerioElem: CheerioSelector, country: string,
 			const geoId = consts.ONTOLOGY.INST_GEO_LOCATION + getUuid.default(country) + getUuid.default(strongTag);
 			let geoAttr = locations.find((loc: Entity) => loc && loc['@id'] === geoId);
 			if (!geoAttr) {
-				if (store.getObjectStore('locations')[geoId]) {
-					objectProp[consts.ONTOLOGY.HAS_LOCATION] = store.getObjectStore('locations')[geoId];
+				if (store.locations.find({ '@id': { $eq: geoId } })[0]) {
+					objectProp[consts.ONTOLOGY.HAS_LOCATION] = store.locations.find({ '@id': { $eq: geoId } })[0];
 				} else {
 					objectProp = entityMaker(
 						consts.ONTOLOGY.HAS_LOCATION,
 						consts.ONTOLOGY.ONT_GEO_LOCATION,
 						geoId,
 						`Geographic Location for ${country} - ${strongTag}`);
-					store.getObjectStore('locations')[geoId] = objectProp[consts.ONTOLOGY.HAS_LOCATION];
+					store.locations.insert(objectProp[consts.ONTOLOGY.HAS_LOCATION]);
 				}
 				geoAttr = objectProp[consts.ONTOLOGY.HAS_LOCATION];
-				store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_LOCATION, objectProp));
+				store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_LOCATION, objectProp));
 			} else {
-				geoAttr = store.getObjectStore('locations')[geoId];
+				geoAttr = store.locations.find({ '@id': { $eq: geoId } })[0];
 			}
 
 			if (content) {

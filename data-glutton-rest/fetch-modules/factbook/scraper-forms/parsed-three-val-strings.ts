@@ -18,7 +18,7 @@ export function parsedThreeValStrings(
 	label: string,
 	delimiters: [ RegExp, RegExp, RegExp ]
 ): void {
-	const objectProperties = store.getObjectStore('countries')[origParams.countryId].objectProperties;
+	const objectProperties = store.countries.find({ '@id': { $eq: origParams.countryId } })[0].objectProperties;
 	const prevHasList = objectProperties.filter((rel: EntityContainer) => rel[consts.ONTOLOGY[hasProp]]);
 	origParams.cheerioElem(dataId).each((index: number, element: CheerioElement) => {
 		const rawScrapedList = origParams.cheerioElem(element).find('div.category_data.subfield.numeric').text().trim().replace(/\\n/g, '');
@@ -34,11 +34,11 @@ export function parsedThreeValStrings(
 					consts.ONTOLOGY[baseOntProp],
 					guid,
 					`${label} for ${country}`);
-				store.getObjectStore(storeKey)[guid] = objectProp[consts.ONTOLOGY[hasProp]];
+				(<any>store)[storeKey].insert(objectProp[consts.ONTOLOGY[hasProp]]);
 				objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropNames[0]]] = val1;
 				objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropNames[1]]] = val2;
 				objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropNames[2]]] = val3 || 'N/A';
-				store.getObjectStore('countries')[origParams.countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY[hasProp], objectProp));
+				store.countries.find({ '@id': { $eq: origParams.countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY[hasProp], objectProp));
 			}
 		} else {
 			return;

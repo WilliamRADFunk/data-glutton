@@ -8,7 +8,7 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { parsedSingleLine } from './scraper-forms/parsed-single-line';
 
 export function getGeographicNotes(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
+	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
 	const prevHasList = objectProperties.filter((rel: EntityContainer) => rel[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE]);
 	let bailOut = true;
 	cheerioElem('#field-geography-note').each(() => {
@@ -48,18 +48,18 @@ export function getGeographicNotes(cheerioElem: CheerioSelector, country: string
 					const guid = consts.ONTOLOGY.INST_GEOGRAPHIC_NOTE + getUuid.default(dataPropItem);
 					const hasPropAlready = prevHasList.some((p: EntityContainer) => p[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE]['@id'].includes(guid));
 					if (dataPropItem && !hasPropAlready) {
-						if (store.getObjectStore('geographicNotes')[guid]) {
-							objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE] = store.getObjectStore('geographicNotes')[guid];
+						if (store.geographicNotes.find({ '@id': { $eq: guid } })[0]) {
+							objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE] = store.geographicNotes.find({ '@id': { $eq: guid } })[0];
 						} else {
 							objectProp = entityMaker(
 								consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE,
 								consts.ONTOLOGY.ONT_GEOGRAPHIC_NOTE,
 								guid,
 								`Geographic Note (${dataPropItem})`);
-							store.getObjectStore('geographicNotes')[guid] = objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE];
+							store.geographicNotes.insert(objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE]);
 						}
 						objectProp[consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE].datatypeProperties[consts.ONTOLOGY.DT_DESCRIPTION] = dataPropItem;
-						store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE, objectProp));
+						store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_GEOGRAPHIC_NOTE, objectProp));
 					}
 				});
 			}

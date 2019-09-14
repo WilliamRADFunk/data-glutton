@@ -8,25 +8,25 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 export function getFlag(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
+	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
 	let flag = getRelation(objectProperties, consts.ONTOLOGY.HAS_FLAG);
 	const fId = consts.ONTOLOGY.INST_FLAG + getUuid.default(country);
 	let objectProp: EntityContainer = {};
 	let bailOut = true;
 	cheerioElem('div.flagBox').each(() => {
 		if (!flag) {
-			if (store.getObjectStore('nationalFlags')[fId]) {
-				objectProp[consts.ONTOLOGY.HAS_FLAG] = store.getObjectStore('nationalFlags')[fId];
+			if (store.nationalFlags.find({ '@id': { $eq: fId } })[0]) {
+				objectProp[consts.ONTOLOGY.HAS_FLAG] = store.nationalFlags.find({ '@id': { $eq: fId } })[0];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_FLAG,
 					consts.ONTOLOGY.ONT_FLAG,
 					fId,
 					`National Flag of ${country}`);
-				store.getObjectStore('nationalFlags')[fId] = objectProp[consts.ONTOLOGY.HAS_FLAG];
+				store.nationalFlags.insert(objectProp[consts.ONTOLOGY.HAS_FLAG]);
 			}
 			flag = objectProp[consts.ONTOLOGY.HAS_FLAG];
-			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_FLAG, objectProp));
+			store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_FLAG, objectProp));
 		}
 		bailOut = false;
 	});

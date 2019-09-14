@@ -68,6 +68,7 @@ class GlobalStore {
 		this.images = this.db.addCollection('images');
 		this.geographicNotes = this.db.addCollection('geographicNotes');
 		this.landUses = this.db.addCollection('landUses');
+		this.locations = this.db.addCollection('locations');
 		this.maritimeClaims = this.db.addCollection('maritimeClaims');
 		this.nationalFlags = this.db.addCollection('nationalFlags');
 		this.naturalHazards = this.db.addCollection('naturalHazards');
@@ -77,10 +78,6 @@ class GlobalStore {
 		this.permanentPastureLands = this.db.addCollection('permanentPastureLands');
 		this.regionMaps = this.db.addCollection('regionMaps');
 		this.terrains = this.db.addCollection('terrains');
-	}
-
-	public getObjectStore(key: string): any {
-		return {} as EntityListWrapper;
 	}
 }
 

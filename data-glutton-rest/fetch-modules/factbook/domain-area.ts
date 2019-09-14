@@ -8,25 +8,25 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 export function getArea(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
+	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_DOMAIN_AREA);
 	const daId = consts.ONTOLOGY.INST_DOMAIN_AREA + getUuid.default(country);
 	let objectProp: EntityContainer = {};
 	let bailOut = true;
 	cheerioElem('#field-area').each(() => {
 		if (!map) {
-			if (store.getObjectStore('domainAreas')[daId]) {
-				objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA] = store.getObjectStore('domainAreas')[daId];
+			if (store.domainAreas.find({ '@id': { $eq: daId } })[0]) {
+				objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA] = store.domainAreas.find({ '@id': { $eq: daId } })[0];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_DOMAIN_AREA,
 					consts.ONTOLOGY.ONT_DOMAIN_AREA,
 					daId,
 					`Area of Domain for ${country}`);
-				store.getObjectStore('domainAreas')[daId] = objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA];
+				store.domainAreas.insert(objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA]);
 			}
 			map = objectProp[consts.ONTOLOGY.HAS_DOMAIN_AREA];
-			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_DOMAIN_AREA, objectProp));
+			store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_DOMAIN_AREA, objectProp));
 		}
 		bailOut = false;
 	});

@@ -8,25 +8,25 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 export function getCoastLength(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
+	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_COAST);
 	const clId = consts.ONTOLOGY.INST_COAST + getUuid.default(country);
 	let objectProp: EntityContainer = {};
 	let bailOut = true;
 	cheerioElem('#field-coastline').each(() => {
 		if (!map) {
-			if (store.getObjectStore('coasts')[clId]) {
-				objectProp[consts.ONTOLOGY.HAS_COAST] = store.getObjectStore('coasts')[clId];
+			if (store.coasts.find({ '@id': { $eq: clId } })[0]) {
+				objectProp[consts.ONTOLOGY.HAS_COAST] = store.coasts.find({ '@id': { $eq: clId } })[0];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_COAST,
 					consts.ONTOLOGY.ONT_COAST,
 					clId,
 					`Coast of ${country}`);
-				store.getObjectStore('coasts')[clId] = objectProp[consts.ONTOLOGY.HAS_COAST];
+				store.coasts.insert(objectProp[consts.ONTOLOGY.HAS_COAST]);
 			}
 			map = objectProp[consts.ONTOLOGY.HAS_COAST];
-			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_COAST, objectProp));
+			store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_COAST, objectProp));
 		}
 		bailOut = false;
 	});

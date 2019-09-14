@@ -8,7 +8,7 @@ import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
 export function getSupplementalImages(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
+	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
 	cheerioElem('div.item.photo-all').each((index: number, element: CheerioElement) => {
 		const suppImages = objectProperties.filter((rel: EntityContainer) => rel[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]);
 		const a = cheerioElem(element).find('img').attr('src');
@@ -26,17 +26,17 @@ export function getSupplementalImages(cheerioElem: CheerioSelector, country: str
 		}
 		if (suppImgUrl && !suppImages.some((img: EntityContainer) => img[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]['@id'].includes(imgId))) {
 			let objectProp: EntityContainer = {};
-			if (store.getObjectStore('images')[imgId]) {
-				objectProp[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG] = store.getObjectStore('images')[imgId];
+			if (store.images.find({ '@id': { $eq: imgId } })[0]) {
+				objectProp[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG] = store.images.find({ '@id': { $eq: imgId } })[0];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG,
 					consts.ONTOLOGY.ONT_IMAGE,
 					imgId,
 					`Supplemental Image for ${country}`);
-				store.getObjectStore('images')[imgId] = objectProp[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG];
+				store.images.insert(objectProp[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]);
 			}
-			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG, objectProp));
+			store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG, objectProp));
 
 			const datatypeProp: { [key: string]: string|number } = {};
 			datatypeProp[consts.ONTOLOGY.DT_LOCATOR_URI] = suppImgUrl;

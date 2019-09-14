@@ -5,7 +5,7 @@ export function getPopDist(cheerioElem: CheerioSelector, country: string, countr
 	cheerioElem('#field-population-distribution').each((index: number, element: CheerioElement) => {
 		const popGrd = cheerioElem(element).find('div.category_data.subfield.text').text().trim().replace(/\\n/g, '');
 		if (popGrd) {
-			store.getObjectStore('countries')[countryId].datatypeProperties[consts.ONTOLOGY.DT_POPULATION_DISTRIBUTION] = popGrd;
+			store.countries.find({ '@id': { $eq: countryId } })[0].datatypeProperties[consts.ONTOLOGY.DT_POPULATION_DISTRIBUTION] = popGrd;
 		}
 	});
 }

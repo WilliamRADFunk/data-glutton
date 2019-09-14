@@ -8,25 +8,25 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 export function getLandUses(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
+	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_LAND_USE);
 	const luId = consts.ONTOLOGY.INST_LAND_USE + getUuid.default(country);
 	let objectProp: EntityContainer = {};
 	let bailOut = true;
 	cheerioElem('#field-land-use').each(() => {
 		if (!map) {
-			if (store.getObjectStore('landUses')[luId]) {
-				objectProp[consts.ONTOLOGY.HAS_LAND_USE] = store.getObjectStore('landUses')[luId];
+			if (store.landUses.find({ '@id': { $eq: luId } })[0]) {
+				objectProp[consts.ONTOLOGY.HAS_LAND_USE] = store.landUses.find({ '@id': { $eq: luId } })[0];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_LAND_USE,
 					consts.ONTOLOGY.ONT_LAND_USE,
 					luId,
 					`Land Use for ${country}`);
-				store.getObjectStore('landUses')[luId] = objectProp[consts.ONTOLOGY.HAS_LAND_USE];
+				store.landUses.insert(objectProp[consts.ONTOLOGY.HAS_LAND_USE]);
 			}
 			map = objectProp[consts.ONTOLOGY.HAS_LAND_USE];
-			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_LAND_USE, objectProp));
+			store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_LAND_USE, objectProp));
 		}
 		bailOut = false;
 	});
@@ -49,7 +49,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
 						alId,
 						`Agricultural Land Use for ${country}`);
 					const agLandRef = objectP[consts.ONTOLOGY.HAS_AGRICULTURAL_LAND];
-					store.getObjectStore('agriculturalLands')[alId] = agLandRef;
+					store.agriculturalLands.insert(agLandRef);
 					map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_AGRICULTURAL_LAND, objectP));
 					agLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = landUse1Data.replace(/[^0-9\-\.]/g, '').trim() || null;
 					agLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = date1Data.substring(date1Data.indexOf('('), date1Data.indexOf(')') + 1).trim() || 'N/A';
@@ -63,7 +63,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
 						fId,
 						`Forest Land Use for ${country}`);
 					const fLandRef = objectP[consts.ONTOLOGY.HAS_FOREST_LAND];
-					store.getObjectStore('forestLands')[fId] = fLandRef;
+					store.forestLands.insert(fLandRef);
 					map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_FOREST_LAND, objectP));
 					fLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = landUse1Data.replace(/[^0-9\-\.]/g, '').trim() || null;
 					fLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = date1Data.substring(date1Data.indexOf('('), date1Data.indexOf(')') + 1).trim() || 'N/A';
@@ -77,7 +77,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
 						oId,
 						`Other Land Use for ${country}`);
 					const oLandRef = objectP[consts.ONTOLOGY.HAS_OTHER_LAND];
-					store.getObjectStore('otherLands')[oId] = oLandRef;
+					store.otherLands.insert(oLandRef);
 					map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_OTHER_LAND, objectP));
 					oLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = landUse1Data.replace(/[^0-9\-\.]/g, '').trim() || null;
 					oLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = date1Data.substring(date1Data.indexOf('('), date1Data.indexOf(')') + 1).trim() || 'N/A';
@@ -100,7 +100,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
 				arbId,
 				`Arable Land Use for ${country}`);
 			const arbLandRef = objectPropArable[consts.ONTOLOGY.HAS_ARABLE_LAND];
-			store.getObjectStore('arableLands')[arbId] = arbLandRef;
+			store.arableLands.insert(arbLandRef);
 			map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_ARABLE_LAND, objectPropArable));
 			arbLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percentages[0] || null;
 			arbLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = dates[0] || 'N/A';
@@ -112,7 +112,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
 				pcId,
 				`Permanent Crops Land Use for ${country}`);
 			const pcLandRef = objectPropPermCrop[consts.ONTOLOGY.HAS_PERMANENT_CROPS_LAND];
-			store.getObjectStore('permanentCropsLands')[pcId] = pcLandRef;
+			store.permanentCropsLands.insert(pcLandRef);
 			map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_PERMANENT_CROPS_LAND, objectPropPermCrop));
 			pcLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percentages[1] || null;
 			pcLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = dates[1] || 'N/A';
@@ -124,7 +124,7 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
 				ppId,
 				`Permanent Pasture Land Use for ${country}`);
 			const ppLandRef = objectPropPermPast[consts.ONTOLOGY.HAS_PERMANENT_PASTURE_LAND];
-			store.getObjectStore('permanentPastureLands')[ppId] = ppLandRef;
+			store.permanentPastureLands.insert(ppLandRef);
 			map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_PERMANENT_PASTURE_LAND, objectPropPermPast));
 			ppLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percentages[2] || null;
 			ppLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = dates[2] || 'N/A';

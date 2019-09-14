@@ -18,7 +18,7 @@ export function parsedSingleLineCaveat(
  delimiter: (string | RegExp),
  upto: string
 ): void {
-	const objectProperties = store.getObjectStore('countries')[origParams.countryId].objectProperties || [];
+	const objectProperties = store.countries.find({ '@id': { $eq: origParams.countryId } })[0].objectProperties || [];
 	const prevHasList = objectProperties.filter((rel: EntityContainer) => rel[consts.ONTOLOGY[hasProp]]);
 	origParams.cheerioElem(dataId).each((index: number, element: CheerioElement) => {
 		const rawScrapedList = origParams.cheerioElem(element).find('div.category_data.subfield.text').text().trim();
@@ -30,18 +30,18 @@ export function parsedSingleLineCaveat(
 				const hasPropAlready = prevHasList.some((p: EntityContainer) => p[consts.ONTOLOGY[hasProp]]['@id'].includes(guid));
 				if (dataPropItem && !hasPropAlready) {
 					let objectProp: EntityContainer = {};
-					if (store.getObjectStore(storeKey)[guid]) {
-						objectProp[consts.ONTOLOGY[hasProp]] = store.getObjectStore(storeKey)[guid];
+					if ((<any>store)[storeKey].find({ '@id': { $eq: guid } })[0]) {
+						objectProp[consts.ONTOLOGY[hasProp]] = (<any>store)[storeKey].find({ '@id': { $eq: guid } })[0];
 					} else {
 						objectProp = entityMaker(
 							consts.ONTOLOGY[hasProp],
 							consts.ONTOLOGY[baseOntProp],
 							guid,
 							`${label} (${dataPropItem})`);
-						store.getObjectStore(storeKey)[guid] = objectProp[consts.ONTOLOGY[hasProp]];
+						(<any>store)[storeKey].insert(objectProp[consts.ONTOLOGY[hasProp]]);
 					}
 					objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropName]] = dataPropItem;
-					store.getObjectStore('countries')[origParams.countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY[hasProp], objectProp));
+					store.countries.find({ '@id': { $eq: origParams.countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY[hasProp], objectProp));
 				}
 			});
 		} else {

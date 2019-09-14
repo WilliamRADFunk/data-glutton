@@ -8,25 +8,25 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 export function getMaritimeClaims(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
+	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
 	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_MARITIME_CLAIM);
 	const mcId = consts.ONTOLOGY.INST_MARITIME_CLAIM + getUuid.default(country);
 	let objectProp: EntityContainer = {};
 	let bailOut = true;
 	cheerioElem('#field-maritime-claims').each(() => {
 		if (!map) {
-			if (store.getObjectStore('maritimeClaims')[mcId]) {
-				objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM] = store.getObjectStore('maritimeClaims')[mcId];
+			if (store.maritimeClaims.find({ '@id': { $eq: mcId } })[0]) {
+				objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM] = store.maritimeClaims.find({ '@id': { $eq: mcId } })[0];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_MARITIME_CLAIM,
 					consts.ONTOLOGY.ONT_MARITIME_CLAIM,
 					mcId,
 					`Maritime Claim for ${country}`);
-				store.getObjectStore('maritimeClaims')[mcId] = objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM];
+				store.maritimeClaims.insert(objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM]);
 			}
 			map = objectProp[consts.ONTOLOGY.HAS_MARITIME_CLAIM];
-			store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MARITIME_CLAIM, objectProp));
+			store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MARITIME_CLAIM, objectProp));
 		}
 		bailOut = false;
 	});

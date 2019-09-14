@@ -8,15 +8,15 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 export function getRegionMapImg(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	const objectProperties = store.getObjectStore('countries')[countryId].objectProperties;
+	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
 	cheerioElem('div.mapBox').each((index: number, element: CheerioElement) => {
 		let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_REGION_MAP);
 		const rmId = consts.ONTOLOGY.INST_REGION_MAP + getUuid.default(country);
 		let objectProp: EntityContainer = {};
 		objectProp[consts.ONTOLOGY.HAS_REGION_MAP] = map;
 		if (!map) {
-			if (store.getObjectStore('regionMaps')[rmId]) {
-				objectProp[consts.ONTOLOGY.HAS_REGION_MAP] = store.getObjectStore('regionMaps')[rmId];
+			if (store.regionMaps.find({ '@id': { $eq: rmId } })[0]) {
+				objectProp[consts.ONTOLOGY.HAS_REGION_MAP] = store.regionMaps.find({ '@id': { $eq: rmId } })[0];
 			} else {
 				objectProp = entityMaker(
 					consts.ONTOLOGY.HAS_REGION_MAP,
@@ -34,8 +34,8 @@ export function getRegionMapImg(cheerioElem: CheerioSelector, country: string, c
 				const datatypeProp: { [key: string]: string|number } = {};
 				datatypeProp[consts.ONTOLOGY.DT_LOCATOR_URI] = regionMapImgUrl;
 				map.datatypeProperties = datatypeProp;
-				store.getObjectStore('regionMaps')[rmId] = map;
-				store.getObjectStore('countries')[countryId].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_REGION_MAP, objectProp));
+				store.regionMaps.insert(map);
+				store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_REGION_MAP, objectProp));
 			}
 		}
 		// TODO: scrape physical image from url and store it.

@@ -9,7 +9,6 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 export function getBorders(cheerioElem: CheerioSelector, country: string, countryId: string) {
-	console.log('Helloooooo', country);
 	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
 	let brdMap = getRelation(objectProperties, consts.ONTOLOGY.HAS_BORDER);
 	const brdId = consts.ONTOLOGY.INST_BORDER + getUuid.default(country);
