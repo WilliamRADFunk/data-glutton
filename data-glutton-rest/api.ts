@@ -17,7 +17,7 @@ app.get('/country-list', async (req, res) => {
     if (!store.countriesInList.length) {
         await getCountries();
     }
-    // store.countries.find({ '@id': { $eq: 'http://williamrobertfunk.com/instance/Country/d1e62250-7595-3a6e-a06d-b24b1debf110'} });
+
     return res.send(store.countriesInList);
 });
 

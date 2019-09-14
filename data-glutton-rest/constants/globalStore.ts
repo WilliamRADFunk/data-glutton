@@ -1,7 +1,7 @@
 import * as loki from 'lokijs';
 
 import { CountryReference } from '../models/country-reference';
-import { EntityContainer } from '../models/entity-container';
+import { Entity } from '../models/entity';
 import { EntityListWrapper } from '../models/entity-list-wrapper';
 import { ImageScrapableObject } from '../models/image-scrapable-object';
 import { consoleError, consoleLog } from '../utils/logger';
@@ -20,32 +20,32 @@ class GlobalStore {
 	public failedCountries: CountryReference[] = [];
 	public failedImages: ImageScrapableObject[] = [];
 
-	public agriculturalLands: Collection<EntityListWrapper>;
-	public arableLands: Collection<EntityListWrapper>;
-	public artificiallyIrrigatedLands: Collection<EntityListWrapper>;
-	public borderCountries: Collection<EntityListWrapper>;
-	public borderMaps: Collection<EntityListWrapper>;
-	public borders: Collection<EntityListWrapper>;
-	public climates: Collection<EntityListWrapper>;
-	public climateZones: Collection<EntityListWrapper>;
-	public coasts: Collection<EntityListWrapper>;
-	public countries: Collection<EntityListWrapper>;
-	public domainAreas: Collection<EntityListWrapper>;
-	public elevations: Collection<EntityListWrapper>;
-	public forestLands: Collection<EntityListWrapper>;
-	public images: Collection<EntityListWrapper>;
-	public geographicNotes: Collection<EntityListWrapper>;
-	public landUses: Collection<EntityListWrapper>;
-	public locations: Collection<EntityListWrapper>;
-	public maritimeClaims: Collection<EntityListWrapper>;
-	public nationalFlags: Collection<EntityListWrapper>;
-	public naturalHazards: Collection<EntityListWrapper>;
-	public naturalResources: Collection<EntityListWrapper>;
-	public otherLands: Collection<EntityListWrapper>;
-	public permanentCropsLands: Collection<EntityListWrapper>;
-	public permanentPastureLands: Collection<EntityListWrapper>;
-	public regionMaps: Collection<EntityListWrapper>;
-	public terrains: Collection<EntityListWrapper>;
+	public agriculturalLands: Collection<Entity>;
+	public arableLands: Collection<Entity>;
+	public artificiallyIrrigatedLands: Collection<Entity>;
+	public borderCountries: Collection<Entity>;
+	public borderMaps: Collection<Entity>;
+	public borders: Collection<Entity>;
+	public climates: Collection<Entity>;
+	public climateZones: Collection<Entity>;
+	public coasts: Collection<Entity>;
+	public countries: Collection<Entity>;
+	public domainAreas: Collection<Entity>;
+	public elevations: Collection<Entity>;
+	public forestLands: Collection<Entity>;
+	public images: Collection<Entity>;
+	public geographicNotes: Collection<Entity>;
+	public landUses: Collection<Entity>;
+	public locations: Collection<Entity>;
+	public maritimeClaims: Collection<Entity>;
+	public nationalFlags: Collection<Entity>;
+	public naturalHazards: Collection<Entity>;
+	public naturalResources: Collection<Entity>;
+	public otherLands: Collection<Entity>;
+	public permanentCropsLands: Collection<Entity>;
+	public permanentPastureLands: Collection<Entity>;
+	public regionMaps: Collection<Entity>;
+	public terrains: Collection<Entity>;
 
 	private db: Loki;
 
@@ -80,7 +80,7 @@ class GlobalStore {
 	}
 
 	public getObjectStore(key: string): any {
-		return {} as EntityContainer;
+		return {} as EntityListWrapper;
 	}
 }
 
