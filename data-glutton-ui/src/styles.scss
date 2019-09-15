@@ -7,9 +7,7 @@ $enable-gradients: true;
 $enable-shadows: true;
 $modal-header-padding-y: 0.25rem;
 
-@import "~bootswatch/dist/pulse/variables";
 @import "~bootstrap/scss/bootstrap";
-@import "~bootswatch/dist/pulse/bootswatch";
 
 .bg-scifi-blue {
   background-color: #016599;

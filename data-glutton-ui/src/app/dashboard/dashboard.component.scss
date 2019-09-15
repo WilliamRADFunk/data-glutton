@@ -1,0 +1,39 @@
+.control {
+    box-shadow: 0 0 0 0.1rem rgba(23, 20, 31, 0.5);
+    height: 4rem;
+    max-height: 4rem;
+    min-height: 4rem;
+}
+
+.control-box {
+    box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
+    height: 41vh;
+    max-height: 41vh;
+    min-height: 41vh;
+    overflow-y: auto;
+}
+
+.dashboard-box {
+    box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
+    height: 30vh;
+    margin-bottom: 20px;
+    max-height: 30vh;
+    min-height: 30vh;
+    overflow-y: auto;
+}
+
+.display-box {
+    box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
+    height: 41vh;
+    max-height: 41vh;
+    min-height: 41vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.display-item {
+    box-shadow: 0 0 0 0.1rem rgba(23, 20, 31, 0.5);
+    height: 2.4rem;
+    max-height: 2.4rem;
+    min-height: 2.4rem;
+}
