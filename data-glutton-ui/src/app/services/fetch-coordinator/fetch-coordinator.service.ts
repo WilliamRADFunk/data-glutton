@@ -17,6 +17,10 @@ export class FetchCoordinator {
     return this.http.get('http://localhost:3000/country-list');
   }
 
+  fetchCountry(countryName: string): Observable<any> {
+    return this.http.get(`http://localhost:3000/country/${countryName}`);
+  }
+
   scrapeFactbook(): Observable<any> {
     return this.http.get('http://localhost:3000/scrape-factbook');
   }

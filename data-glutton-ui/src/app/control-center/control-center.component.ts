@@ -7,13 +7,13 @@ import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinato
   styleUrls: ['./control-center.component.scss']
 })
 export class ControlCenterComponent implements OnInit {
-  countries: string[] = [];
+  countries: { dataCode: string; isoCode: string; name: string; status: number; }[] = [];
   /**
    * Flag to track if scaping is underway.
    */
   isScraping: { [key: string]: boolean } = {
     airports: false,
-    factbook: false,
+    factbook: true,
     leaders: false,
   };
   /**
@@ -28,21 +28,23 @@ export class ControlCenterComponent implements OnInit {
   constructor(private readonly fetchService: FetchCoordinator) { }
 
   ngOnInit() {
+    console.log('Fetching countries...');
+    this.fetchService.fetchCountries().subscribe(countries => {
+      console.log('Countries', countries);
+      this.countries = countries.slice();
+      this.isScraping.factbook = false;
+    });
   }
 
   flushStore() {
     // Dump the store and reset controls
   }
 
-  async initScraping(type?: string): Promise<void> {
+  public async initScraping(type?: string): Promise<void> {
     if (Object.values(this.isScraping).some(k => !!k)) {
       return;
     }
-    console.log('Fetching countries...');
-    this.fetchService.fetchCountries().subscribe(countries => {
-        console.log('Countries', countries);
-        this.countries = countries.map(c => c.name);
-      });
+    
     if (!type) {
       // Scrape all sources
       this.fetchService.runFactbookFetcher().then(done => {
@@ -52,10 +54,16 @@ export class ControlCenterComponent implements OnInit {
       });
     } else {
       // Scrape selected source
+      switch(type) {
+        case 'factbook': {
+          this.isScraping.factbook = true;
+          break;
+        }
+      }
     }
   }
 
-  initStore(type?: string) {
+  public initStore(type?: string) {
     if  (Object.values(this.isSeedingStore).some(k => !!k)) {
       return;
     }
@@ -66,10 +74,30 @@ export class ControlCenterComponent implements OnInit {
     }
   }
 
-  async scrapeAll(): Promise<void> {
+  public isScrapingBusy(): boolean {
+    return Object.values(this.isScraping).some(k => !!k);
+  }
+
+  public async scrapeAll(): Promise<void> {
     // Scrape all the data
     await this.fetchService.fetchCountries();
     await this.fetchService.runFactbookFetcher();
+  }
+
+  public scrapeCountry(countryName: string): void {
+    const country = this.countries.find(c => c.name === countryName);
+    country.status = 1;
+    this.fetchService.fetchCountry(countryName).toPromise()
+      .then(done => {
+        country.status = 2;
+      })
+      .catch(err => {
+        country.status = -1;
+      });
+  }
+
+  public scrapeFactbook(): void {
+
   }
 
 }
