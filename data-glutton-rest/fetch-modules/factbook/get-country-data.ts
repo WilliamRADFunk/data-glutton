@@ -12,10 +12,10 @@ const numberOfScrapers: number = Object.keys(dataScrapers).length;
 
 export function getCountryPromise(country: CountryReference): Promise<any> {
 	const url = getCountryURL(country.dataCode);
-	return  getCountryData(country, url);
+	return getCountryData(country, url);
 };
 
-export function getCountryData(country: CountryReference, url: string): Promise<any> {
+export function getCountryData(country: CountryReference, url: string): Promise<void> {
 	if (country && url) {
 		return new Promise((resolve, reject) => {
 			rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })

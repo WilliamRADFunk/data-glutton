@@ -7,8 +7,7 @@
             <div class="h4 text-light text-outline stroke-shadow">Data Sources</div>
           </div>
           <div class="col">
-            <button class="btn btn-sm btn-danger rounded pull-right ml-2" (click)="flushStore()" type="button">Reset</button>
-            <button class="btn btn-sm btn-primary rounded pull-right" (click)="scrapeAll()" type="button">Scrape All</button>
+            <button class="btn btn-sm btn-danger rounded pull-right" (click)="flushStore()" type="button">Reset</button>
           </div>
         </div>
 
@@ -56,22 +55,22 @@
           </div>
         </div>
         <div class="row" *ngFor="let country of countries">
-          <div class="col-12">
+          <div *ngIf="country.status !== 2" class="col-12">
             <div
-              class="row no-gutters rounded bg-info control mb-1"
+              class="row no-gutters rounded bg-info display-item mb-1"
               [ngClass]="{'alert-primary': country.status === 0, 'alert-danger': country.status === -1, 'alert-success': country.status === 2}">
               <div class="col my-auto">
-                <div class="h5 text-dark pl-2">{{ country.name }}</div>
+                <div class="h8 text-dark pl-2">{{ country.name }}</div>
               </div>
-              <div *ngIf="country.status !== 2" class="col no-outline p-1">
-                <button *ngIf="country.status === 0"  class="btn btn-outline-primary rounded pull-right" (click)="scrapeCountry(country.name)">
-                  <span class="fa fa-3x fa-play-circle-o"></span>
+              <div class="col no-outline p-1">
+                <button *ngIf="country.status === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(country.name)">
+                  <span class="fa fa-play-circle-o"></span>
                 </button>
-                <button *ngIf="country.status === 1"  class="btn btn-outline-primary rounded pull-right">
-                  <span class="fa fa-3x fa-spinner fa-spin"></span>
+                <button *ngIf="country.status === 1"  class="btn btn-sm btn-outline-primary rounded pull-right" disabled=true>
+                  <span class="fa fa-spinner fa-spin"></span>
                 </button>
-                <button *ngIf="country.status === -1"  class="btn btn-outline-primary rounded pull-right" (click)="scrapeCountry(country.name)">
-                  <span class="fa fa-3x fa-refresh"></span>
+                <button *ngIf="country.status === -1"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(country.name)">
+                  <span class="fa fa-refresh"></span>
                 </button>
               </div>
             </div>

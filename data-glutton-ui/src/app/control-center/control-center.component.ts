@@ -36,58 +36,9 @@ export class ControlCenterComponent implements OnInit {
     });
   }
 
-  flushStore() {
-    // Dump the store and reset controls
-  }
-
-  public async initScraping(type?: string): Promise<void> {
-    if (Object.values(this.isScraping).some(k => !!k)) {
-      return;
-    }
-    
-    if (!type) {
-      // Scrape all sources
-      this.fetchService.runFactbookFetcher().then(done => {
-        console.log('done', done);
-      }).catch(err => {
-        console.error('initScraping Error: ', err);
-      });
-    } else {
-      // Scrape selected source
-      switch(type) {
-        case 'factbook': {
-          this.isScraping.factbook = true;
-          break;
-        }
-      }
-    }
-  }
-
-  public initStore(type?: string) {
-    if  (Object.values(this.isSeedingStore).some(k => !!k)) {
-      return;
-    }
-    if (!type) {
-      // Seed store with all files
-    } else {
-      // Seed store with selected type
-    }
-  }
-
-  public isScrapingBusy(): boolean {
-    return Object.values(this.isScraping).some(k => !!k);
-  }
-
-  public async scrapeAll(): Promise<void> {
-    // Scrape all the data
-    await this.fetchService.fetchCountries();
-    await this.fetchService.runFactbookFetcher();
-  }
-
-  public scrapeCountry(countryName: string): void {
-    const country = this.countries.find(c => c.name === countryName);
+  private scrapeCountry(country: { dataCode: string; isoCode: string; name: string; status: number; }): void {
     country.status = 1;
-    this.fetchService.fetchCountry(countryName).toPromise()
+    this.fetchService.fetchCountry(country.name).toPromise()
       .then(done => {
         country.status = 2;
       })
@@ -96,8 +47,23 @@ export class ControlCenterComponent implements OnInit {
       });
   }
 
-  public scrapeFactbook(): void {
+  public flushStore() {
+    // Dump the store and reset controls
+  }
 
+  public isScrapingBusy(): boolean {
+    return Object.values(this.isScraping).some(k => !!k);
+  }
+
+  public scrapeCountryByName(countryName: string): void {
+    const country = this.countries.find(c => c.name === countryName);
+    this.scrapeCountry(country);
+  }
+
+  public scrapeFactbook(): void {
+    this.countries.forEach(country => {
+      this.scrapeCountry(country);
+    });
   }
 
 }

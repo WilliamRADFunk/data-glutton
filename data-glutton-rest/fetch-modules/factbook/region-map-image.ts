@@ -34,7 +34,16 @@ export function getRegionMapImg(cheerioElem: CheerioSelector, country: string, c
 				const datatypeProp: { [key: string]: string|number } = {};
 				datatypeProp[consts.ONTOLOGY.DT_LOCATOR_URI] = regionMapImgUrl;
 				map.datatypeProperties = datatypeProp;
-				store.regionMaps.insert(map);
+
+				const previousElement = store.regionMaps.find({ '@id': { $eq: map["@id"] } })[0];
+				if (previousElement) {
+					Object.keys(map).forEach(key => {
+						previousElement[key] = map[key];
+					});
+					store.regionMaps.update(previousElement);
+				} else {
+					store.regionMaps.insert(map);
+				}
 				store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_REGION_MAP, objectProp));
 			}
 		}

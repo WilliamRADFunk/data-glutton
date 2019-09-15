@@ -26,6 +26,9 @@ export async function getCountries(): Promise<any> {
 			store.countriesInList.push(...cNames);
 
 			store.countriesInList.forEach(country => {
+				if (store.countries.find({ '@id': { $eq: countryToId(country.dataCode) } })[0]) {
+					return;
+				}
 				const id: string = countryToId(country.dataCode);
 				const countryInstance = entityMaker(
 					consts.ONTOLOGY.HAS_COUNTRY,
