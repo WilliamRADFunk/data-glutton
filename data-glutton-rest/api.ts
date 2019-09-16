@@ -59,6 +59,39 @@ app.get('/scrape-factbook', async (req, res) => {
     });
 });
 
+app.get('/dashboard', async (req, res) => {
+    const dashboard: { [key: string]: number } = {
+        'Agricultural Lands': store.agriculturalLands.count(),
+        'Arable Lands': store.arableLands.count(),
+        'Artificially Irrigated Lands': store.artificiallyIrrigatedLands.count(),
+        'Border Countries': store.borderCountries.count(),
+        'Border Maps': store.borderMaps.count(),
+        'Borders': store.borders.count(),
+        'Climates': store.climates.count(),
+        'Climate Zones': store.climateZones.count(),
+        'Coasts': store.coasts.count(),
+        'Countries': store.countries.count(),
+        'Domain Areas': store.domainAreas.count(),
+        'Elevations': store.elevations.count(),
+        'Forest Lands': store.forestLands.count(),
+        'Images': store.images.count(),
+        'Geographic Notes': store.geographicNotes.count(),
+        'Land Uses': store.landUses.count(),
+        'Locations': store.locations.count(),
+        'Maritime Claims': store.maritimeClaims.count(),
+        'National Flags': store.nationalFlags.count(),
+        'Natural Hazards': store.naturalHazards.count(),
+        'Natural Resources': store.naturalResources.count(),
+        'Other Lands': store.otherLands.count(),
+        'Permanent Crops Lands': store.permanentCropsLands.count(),
+        'Permanent Pasture Lands': store.permanentPastureLands.count(),
+        'Region Maps': store.regionMaps.count(),
+        'terrains': store.terrains.count()
+    };
+
+    return res.send({ dashboard });
+});
+
 app.listen(port, () => {
     console.log(`Data Glutton Backend listening on port ${port}!`);
 });

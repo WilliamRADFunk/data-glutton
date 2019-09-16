@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { FactbookFetchService } from '../factbook-fetch/factbook-fetch.service';
 
@@ -15,6 +16,10 @@ export class FetchCoordinator {
 
   fetchCountries(): Observable<any> {
     return this.http.get('http://localhost:3000/country-list');
+  }
+
+  fetchDashboard(): Observable<any> {
+    return timer(0, 2000).pipe(switchMap(() => this.http.get<any>('http://localhost:3000/dashboard')));
   }
 
   fetchCountry(countryName: string): Observable<any> {

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { take } from 'rxjs/operators';
+
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
 
 export interface CountryReference {
@@ -15,6 +17,7 @@ export interface CountryReference {
 })
 export class DashboardComponent implements OnInit {
   countries: CountryReference[] = [];
+  dashboard: { [key: string]: number };
   /**
    * Flag to track if scaping is underway.
    */
@@ -24,10 +27,13 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     console.log('Fetching countries...');
-    this.fetchService.fetchCountries().subscribe(countries => {
+    this.fetchService.fetchCountries().pipe(take(1)).subscribe(countries => {
       console.log('Countries', countries);
       this.countries = countries.slice();
       this.isScraping = false;
+    });
+    this.fetchService.fetchDashboard().subscribe(data => {
+      this.dashboard = data.dashboard;
     });
   }
 
