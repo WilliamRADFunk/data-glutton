@@ -86,7 +86,7 @@ app.get('/dashboard', async (req, res) => {
         'Permanent Crops Lands': store.permanentCropsLands.count(),
         'Permanent Pasture Lands': store.permanentPastureLands.count(),
         'Region Maps': store.regionMaps.count(),
-        'terrains': store.terrains.count()
+        'Terrains': store.terrains.count()
     };
 
     return res.send({ dashboard });

@@ -34,6 +34,7 @@ export class DashboardComponent implements OnInit {
     });
     this.fetchService.fetchDashboard().subscribe(data => {
       this.dashboard = data.dashboard;
+      console.log('~~~', this.dashboard);
     });
   }
 

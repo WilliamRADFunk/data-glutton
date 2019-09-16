@@ -2,7 +2,9 @@
   <div class="row">
     <div class="col-12">
       <div class="rounded bg-secondary dashboard-box px-2 py-1">
-        Bob
+        <div *ngFor="let item of dashboard | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
+          <div>{{ item.key }}: {{ item.value }}</div>
+        </div>
       </div>
     </div>
   </div>
