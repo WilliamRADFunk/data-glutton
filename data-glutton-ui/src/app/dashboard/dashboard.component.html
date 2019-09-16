@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-12">
-      <div class="rounded bg-secondary control-box px-2 py-1">
+      <div class="rounded bg-secondary dashboard-box px-2 py-1">
         Bob
       </div>
     </div>
@@ -15,7 +15,7 @@
             <div class="h4 text-light text-outline stroke-shadow">Data Sources</div>
           </div>
           <div class="col">
-            <button class="btn btn-sm btn-danger rounded pull-right" (click)="flushStore()" type="button">Reset</button>
+            <button class="btn btn-sm btn-danger rounded pull-right mt-1" (click)="flushStore()" type="button">Reset</button>
           </div>
         </div>
 
@@ -25,7 +25,7 @@
           </div>
           <div class="col-3 no-outline p-1">
             <button class="btn btn-outline-primary rounded pull-right" (click)="scrapeFactbook()" [disabled]="isScrapingBusy()">
-              <span class="fa fa-2x fa-circle-o-notch" [class.fa-spin]="isScraping['factbook']"></span>
+              <span class="fa fa-2x fa-circle-o-notch" [class.fa-spin]="isScraping"></span>
             </button>
           </div>
         </div>
@@ -35,8 +35,8 @@
             <div class="h5 text-dark pl-2">CIA World Leaders</div>
           </div>
           <div class="col-3 no-outline p-1">
-            <button class="btn btn-outline-primary rounded pull-right" (click)="initScraping('leaders')">
-              <span class="fa fa-2x fa-circle-o-notch" [class.fa-spin]="isScraping['leaders']"></span>
+            <button class="btn btn-outline-primary rounded pull-right" (click)="scrapeLeaders()">
+              <span class="fa fa-2x fa-circle-o-notch" [class.fa-spin]="isScraping"></span>
             </button>
           </div>
         </div>
@@ -46,8 +46,8 @@
             <div class="h5 text-dark pl-2">World Airports</div>
           </div>
           <div class="col-3 no-outline p-1">
-            <button class="btn btn-outline-primary rounded pull-right" (click)="initScraping('airports')">
-              <span class="fa fa-2x fa-circle-o-notch" [class.fa-spin]="isScraping['airports']"></span>
+            <button class="btn btn-outline-primary rounded pull-right" (click)="scrapeAirports()">
+              <span class="fa fa-2x fa-circle-o-notch" [class.fa-spin]="isScraping"></span>
             </button>
           </div>
         </div>
@@ -63,21 +63,21 @@
           </div>
         </div>
         <div class="row" *ngFor="let country of countries">
-          <div *ngIf="country.status !== 2" class="col-12">
+          <div *ngIf="country.status.factbook !== 2" class="col-12">
             <div
               class="row no-gutters rounded bg-info display-item mb-1"
-              [ngClass]="{'alert-info': country.status === 0, 'alert-warning': country.status === 1, 'alert-danger': country.status === -1}">
+              [ngClass]="{'alert-info': country.status.factbook === 0, 'alert-warning': country.status.factbook === 1, 'alert-danger': country.status.factbook === -1}">
               <div class="col my-auto">
                 <div class="text-dark pl-2">{{ country.name }}</div>
               </div>
               <div class="col no-outline pr-1 pt-1">
-                <button *ngIf="country.status === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(country.name)">
+                <button *ngIf="country.status.factbook === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(country.name)">
                   <span class="fa fa-play-circle-o"></span>
                 </button>
-                <button *ngIf="country.status === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                <button *ngIf="country.status.factbook === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                   <span class="fa fa-spinner fa-spin"></span>
                 </button>
-                <button *ngIf="country.status === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeCountryByName(country.name)">
+                <button *ngIf="country.status.factbook === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeCountryByName(country.name)">
                   <span class="fa fa-refresh"></span>
                 </button>
               </div>

@@ -1,29 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
 
+export interface CountryReference {
+  dataCode: string;
+  isoCode: string;
+  name: string;
+  status: { factbook: number; leaders: number; };
+}
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
-  countries: { dataCode: string; isoCode: string; name: string; status: number; }[] = [];
+  countries: CountryReference[] = [];
   /**
    * Flag to track if scaping is underway.
    */
-  isScraping: { [key: string]: boolean } = {
-    airports: false,
-    factbook: true,
-    leaders: false,
-  };
-  /**
-   * Flag to track if store initialization is underway.
-   */
-  isSeedingStore: { [key: string]: boolean } = {
-    airports: false,
-    countries: false,
-    leaders: false,
-  };
+  isScraping: boolean = true;
 
   constructor(private readonly fetchService: FetchCoordinator) { }
 
@@ -32,18 +27,29 @@ export class DashboardComponent implements OnInit {
     this.fetchService.fetchCountries().subscribe(countries => {
       console.log('Countries', countries);
       this.countries = countries.slice();
-      this.isScraping.factbook = false;
+      this.isScraping = false;
     });
   }
 
-  private scrapeCountry(country: { dataCode: string; isoCode: string; name: string; status: number; }): void {
-    country.status = 1;
+  private scrapeCountry(country: CountryReference): void {
+    country.status.factbook = 1;
     this.fetchService.fetchCountry(country.name).toPromise()
       .then(done => {
-        country.status = 2;
+        country.status.factbook = 2;
       })
       .catch(err => {
-        country.status = -1;
+        country.status.factbook = -1;
+      });
+  }
+
+  private scrapeLeadersOfCountry(country: CountryReference): void {
+    country.status.leaders = 1;
+    this.fetchService.fetchCountry(country.name).toPromise()
+      .then(done => {
+        country.status.leaders = 2;
+      })
+      .catch(err => {
+        country.status.leaders = -1;
       });
   }
 
@@ -52,7 +58,12 @@ export class DashboardComponent implements OnInit {
   }
 
   public isScrapingBusy(): boolean {
-    return Object.values(this.isScraping).some(k => !!k);
+    return this.isScraping;
+  }
+
+  public scrapeAirports(): void {
+    this.isScraping = true;
+    this.isScraping = false;
   }
 
   public scrapeCountryByName(countryName: string): void {
@@ -61,8 +72,23 @@ export class DashboardComponent implements OnInit {
   }
 
   public scrapeFactbook(): void {
-    this.countries.filter(c => c.status === 0 || c.status === -1).forEach(country => {
+    this.isScraping = true;
+    this.countries.filter(c => c.status.factbook === 0 || c.status.factbook === -1).forEach(country => {
       this.scrapeCountry(country);
     });
+    this.isScraping = false;
+  }
+
+  public scrapeLeadersOfCountryByName(countryName: string): void {
+    const country = this.countries.find(c => c.name === countryName);
+    this.scrapeLeadersOfCountry(country);
+  }
+
+  public scrapeLeaders(): void {
+    this.isScraping = true;
+    this.countries.filter(c => c.status.leaders === 0 || c.status.leaders === -1).forEach(country => {
+      this.scrapeLeadersOfCountry(country);
+    });
+    this.isScraping = false;
   }
 }

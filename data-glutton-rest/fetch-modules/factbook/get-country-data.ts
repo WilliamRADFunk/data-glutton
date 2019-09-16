@@ -63,7 +63,7 @@ export function getCountryData(country: CountryReference, url: string): Promise<
 					dataScrapers.getTerrains($, country.name, countryId);
 					store.progressLogger(country.name, 20 / numberOfScrapers);
 					store.debugLogger(`Data scrape for ${country.name} is complete`);
-					store.countriesInList.find(c => c.name === country.name).status = 2;
+					store.countriesInList.find(c => c.name === country.name).status.factbook = 2;
 					const doug = store.countries.find({ '@id': { $eq: countryId } })[0];
 					console.log('country', country.name, doug);
 					resolve();
@@ -75,7 +75,7 @@ export function getCountryData(country: CountryReference, url: string): Promise<
 					}\n\nIndividual country query failed:  ${
 					country.name}\n${url}\n${err.toString().trim()}\n\n`;
 					store.errorLogger(errMsg);
-					store.countriesInList.find(c => c.name === country.name).status = -1;
+					store.countriesInList.find(c => c.name === country.name).status.factbook = -1;
 					reject();
 				});
 			});

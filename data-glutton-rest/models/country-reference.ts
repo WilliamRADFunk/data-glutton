@@ -2,5 +2,5 @@ export interface CountryReference {
 	dataCode: string;
 	isoCode: string;
 	name: string;
-	status: number;
+	status: { factbook: number; leaders: number; };
 };
