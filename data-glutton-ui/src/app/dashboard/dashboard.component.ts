@@ -3,11 +3,16 @@ import { take } from 'rxjs/operators';
 
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
 
+export interface AirportSpurceReference {
+  name: string;
+  status: number;
+}
+
 export interface CountryReference {
   dataCode: string;
   isoCode: string;
   name: string;
-  status: { factbook: number; leaders: number; };
+  status: { airports: number; factbook: number; leaders: number; };
 }
 
 @Component({
@@ -16,12 +21,14 @@ export interface CountryReference {
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit {
+  airportSources: AirportSpurceReference[] [];
   countries: CountryReference[] = [];
   dashboard: { [key: string]: number };
   /**
    * Flag to track if scaping is underway.
    */
   isScraping: boolean = true;
+  selected: string = 'factbook';
 
   constructor(private readonly fetchService: FetchCoordinator) { }
 
@@ -64,8 +71,36 @@ export class DashboardComponent implements OnInit {
     // Dump the store and reset controls
   }
 
-  public isScrapingBusy(): boolean {
-    return this.isScraping;
+  public getAlertStatus(dataSource: string): {'alert-info': boolean; 'alert-warning': boolean; 'alert-danger': boolean; } {
+    const isBusy = this.isScrapingBusy(dataSource);
+    const hasErrors = !isBusy && this.hasFailedStatus(dataSource);
+    const infoMode = !isBusy && !this.hasFailedStatus(dataSource);
+    return {
+      'alert-info': infoMode,
+      'alert-warning': isBusy,
+      'alert-danger': hasErrors
+    };
+  }
+  public getButtonStatus(dataSource: string): { info: boolean; warning: boolean; danger: boolean; } {
+    const isBusy = this.isScrapingBusy(dataSource);
+    const hasErrors = !isBusy && this.hasFailedStatus(dataSource);
+    const infoMode = !isBusy && !this.hasFailedStatus(dataSource);
+    return {
+      info: infoMode,
+      warning: isBusy,
+      danger: hasErrors
+    };
+  }
+  public hasFailedStatus(datasource: string): boolean {
+    return this.countries.some(c => c.status[datasource] === -1);
+  }
+
+  public isComplete(datasource: string): boolean {
+    return !this.countries.every(c => c.status[datasource] === 2);
+  }
+
+  public isScrapingBusy(datasource: string): boolean {
+    return this.isScraping || this.countries.some(c => c.status[datasource] === 1);
   }
 
   public scrapeAirports(): void {
@@ -97,5 +132,9 @@ export class DashboardComponent implements OnInit {
       this.scrapeLeadersOfCountry(country);
     });
     this.isScraping = false;
+  }
+
+  public switchSelected(dataSource: string): void {
+    this.selected = dataSource;
   }
 }

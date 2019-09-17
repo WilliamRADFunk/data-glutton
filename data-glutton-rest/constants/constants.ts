@@ -1,5 +1,7 @@
 const ASSET_ONT_PATH = 'http://www.daedafusion.com/Asset#';
 const FACTBOOK_ONT_PATH = 'http://williamrobertfunk.com/ontologies/world-factbook#';
+const LEADERS_ONT_PATH = 'http://williamrobertfunk.com/ontologies/world-leaders#';
+const FOAF_ONT_PATH = 'http://xmlns.com/foaf/0.1/';
 const GEO_ONT_PATH = 'http://www.w3.org/2003/01/geo/wgs84_pos#';
 const MAIN_INSTANCE_PATH = 'http://williamrobertfunk.com/instance/';
 const WGS84_POS = {
@@ -19,7 +21,8 @@ const BASE = {
 	],
 	DATA_REQUEST_TIMEOUT: 40000,
 	URL_BASE_FACTBOOK: 'https://www.cia.gov/library/publications/the-world-factbook/',
-	URL_COUNTRY_BASE_FACTBOOK: 'https://www.cia.gov/library/publications/the-world-factbook/geos/'
+	URL_COUNTRY_BASE_FACTBOOK: 'https://www.cia.gov/library/publications/the-world-factbook/geos/',
+	URL_LEADER_BASE: 'https://www.cia.gov/library/publications/resources/world-leaders-1/'
 };
 
 const ONTOLOGY: { [key: string]: string } = {
@@ -47,6 +50,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_IMAGE_SIZE: FACTBOOK_ONT_PATH + 'imageSize',
 	DT_ISO_CODE: FACTBOOK_ONT_PATH + 'countryCodeISO',
 	DT_LAND_AREA: FACTBOOK_ONT_PATH + 'landArea',
+	DT_LAST_NAME: FOAF_ONT_PATH + 'lastName',
 	DT_LAST_ESTIMATED: FACTBOOK_ONT_PATH + 'lastEstimated',
 	DT_LENGTH: FACTBOOK_ONT_PATH + 'length',
 	DT_LENGTH_MODIFIER: FACTBOOK_ONT_PATH + 'lengthModifier',
@@ -58,11 +62,14 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_MAP_REFERENCES: FACTBOOK_ONT_PATH + 'mapReferences',
 	DT_MEAN_ELEVATION: FACTBOOK_ONT_PATH + 'meanElevation',
 	DT_MIME_TYPE: ASSET_ONT_PATH + 'mimeType',
+	DT_NAME: FOAF_ONT_PATH + 'name',
 	DT_PERCENTAGE: FACTBOOK_ONT_PATH + 'percentage',
 	DT_POPULATION_DISTRIBUTION: FACTBOOK_ONT_PATH + 'populationDistribution',
+	DT_REGION_SPECIFIC: LEADERS_ONT_PATH + 'regionSpecific',
 	DT_RESOURCE_NAME: FACTBOOK_ONT_PATH + 'resourceName',
 	DT_SUPPLEMENTAL_EXPLANATION: FACTBOOK_ONT_PATH + 'supplementalExplanation',
 	DT_TERRITORIAL_SEA: FACTBOOK_ONT_PATH + 'territorialSea',
+	DT_TITLE: LEADERS_ONT_PATH + 'title',
 	DT_TOTAL_AREA: FACTBOOK_ONT_PATH + 'totalArea',
 	DT_TOTAL_BORDER: FACTBOOK_ONT_PATH + 'totalLandBorder',
 	DT_TOTAL_BORDER_COUNTRIES: FACTBOOK_ONT_PATH + 'totalBorderCountries',
@@ -70,8 +77,10 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_WATER_AREA: FACTBOOK_ONT_PATH + 'waterArea',
 	// Base path for all things ontology definition
 	FACTBOOK_ONT_PATH,
+	LEADERS_ONT_PATH,
 	// Ontology definition paths for (predicate) object/relation properties
 	HAS_AGRICULTURAL_LAND: FACTBOOK_ONT_PATH + 'hasAgriculturalLand',
+	HAS_APPOINTED_GOVERNMENT_OFFICE: LEADERS_ONT_PATH + 'appointedGovernmentOffice',
 	HAS_ARABLE_LAND: FACTBOOK_ONT_PATH + 'hasArableLand',
 	HAS_ARTIFICIALLY_IRRIGATED_LAND: FACTBOOK_ONT_PATH + 'hasArtificiallyIrrigatedLand',
 	HAS_BORDER: FACTBOOK_ONT_PATH + 'hasBorder',
@@ -86,6 +95,8 @@ const ONTOLOGY: { [key: string]: string } = {
 	HAS_FLAG: FACTBOOK_ONT_PATH + 'hasNationalFlag',
 	HAS_FOREST_LAND: FACTBOOK_ONT_PATH + 'hasForestLand',
 	HAS_GEOGRAPHIC_NOTE: FACTBOOK_ONT_PATH + 'hasGeographicNote',
+	HAS_GOVERNMENT_OFFICE: LEADERS_ONT_PATH + 'hasGovernmentOffice',
+	HAS_GOVERNMENT_OFFICIAL: LEADERS_ONT_PATH + 'hasGovernmentOfficial',
 	HAS_LAND_USE: FACTBOOK_ONT_PATH + 'hasLandUse',
 	HAS_LOCATION: FACTBOOK_ONT_PATH + 'hasLocation',
 	HAS_MARITIME_CLAIM: FACTBOOK_ONT_PATH + 'hasMaritimeClaim',
@@ -114,6 +125,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	INST_FOREST_LAND: MAIN_INSTANCE_PATH + 'ForestLand/',
 	INST_GEOGRAPHIC_NOTE: MAIN_INSTANCE_PATH + 'GeographicNote/',
 	INST_GEO_LOCATION: MAIN_INSTANCE_PATH + 'Location/',
+	INST_GOVERNMENT_OFFICE: MAIN_INSTANCE_PATH + 'GovernmentOffice/',
 	INST_IMAGE: MAIN_INSTANCE_PATH + 'Image/',
 	INST_LAND_USE: MAIN_INSTANCE_PATH + 'LandUse/',
 	INST_MARITIME_CLAIM: MAIN_INSTANCE_PATH + 'MaritimeClaim/',
@@ -122,6 +134,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	INST_OTHER_LAND: MAIN_INSTANCE_PATH + 'OtherLand/',
 	INST_PERMANENT_CROPS_LAND: MAIN_INSTANCE_PATH + 'PermanentCropsLand/',
 	INST_PERMANENT_PASTURE_LAND: MAIN_INSTANCE_PATH + 'PermanentPastureLand/',
+	INST_PERSON: MAIN_INSTANCE_PATH + 'Person/',
 	INST_REGION_MAP: MAIN_INSTANCE_PATH + 'RegionMap/',
 	INST_TERRAIN: MAIN_INSTANCE_PATH + 'Terrain/',
 	// Base path for all things instance definition
@@ -143,6 +156,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	ONT_FOREST_LAND: FACTBOOK_ONT_PATH + 'ForestLand',
 	ONT_GEOGRAPHIC_NOTE: FACTBOOK_ONT_PATH + 'GeographicNote',
 	ONT_GEO_LOCATION: FACTBOOK_ONT_PATH + 'Location',
+	ONT_GOVERNMENT_OFFICE: LEADERS_ONT_PATH + 'GovernmentOffice',
 	ONT_IMAGE: FACTBOOK_ONT_PATH + 'Image',
 	ONT_LAND_USE: FACTBOOK_ONT_PATH + 'LandUse',
 	ONT_MARITIME_CLAIM: FACTBOOK_ONT_PATH + 'MaritimeClaim',
@@ -151,6 +165,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	ONT_OTHER_LAND: FACTBOOK_ONT_PATH + 'OtherLand',
 	ONT_PERMANENT_CROPS_LAND: FACTBOOK_ONT_PATH + 'PermanentCropsLand',
 	ONT_PERMANENT_PASTURE_LAND: FACTBOOK_ONT_PATH + 'PermanentPastureLand',
+	ONT_PERSON: LEADERS_ONT_PATH + 'Person',
 	ONT_REGION_MAP: FACTBOOK_ONT_PATH + 'RegionMap',
 	ONT_TERRAIN: FACTBOOK_ONT_PATH + 'Terrain'
 };

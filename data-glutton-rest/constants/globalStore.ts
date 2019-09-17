@@ -2,7 +2,6 @@ import * as loki from 'lokijs';
 
 import { CountryReference } from '../models/country-reference';
 import { Entity } from '../models/entity';
-import { EntityListWrapper } from '../models/entity-list-wrapper';
 import { ImageScrapableObject } from '../models/image-scrapable-object';
 import { consoleError, consoleLog } from '../utils/logger';
 
@@ -35,6 +34,7 @@ class GlobalStore {
 	public forestLands: Collection<Entity>;
 	public images: Collection<Entity>;
 	public geographicNotes: Collection<Entity>;
+	public govOffices: Collection<Entity>;
 	public landUses: Collection<Entity>;
 	public locations: Collection<Entity>;
 	public maritimeClaims: Collection<Entity>;
@@ -44,6 +44,7 @@ class GlobalStore {
 	public otherLands: Collection<Entity>;
 	public permanentCropsLands: Collection<Entity>;
 	public permanentPastureLands: Collection<Entity>;
+	public persons: Collection<Entity>;
 	public regionMaps: Collection<Entity>;
 	public terrains: Collection<Entity>;
 
@@ -67,6 +68,7 @@ class GlobalStore {
 		this.forestLands = this.db.addCollection('forestLands');
 		this.images = this.db.addCollection('images');
 		this.geographicNotes = this.db.addCollection('geographicNotes');
+		this.govOffices = this.db.addCollection('govOffices');
 		this.landUses = this.db.addCollection('landUses');
 		this.locations = this.db.addCollection('locations');
 		this.maritimeClaims = this.db.addCollection('maritimeClaims');
@@ -76,6 +78,7 @@ class GlobalStore {
 		this.otherLands = this.db.addCollection('otherLands');
 		this.permanentCropsLands = this.db.addCollection('permanentCropsLands');
 		this.permanentPastureLands = this.db.addCollection('permanentPastureLands');
+		this.persons = this.db.addCollection('persons');
 		this.regionMaps = this.db.addCollection('regionMaps');
 		this.terrains = this.db.addCollection('terrains');
 	}

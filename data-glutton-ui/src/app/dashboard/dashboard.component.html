@@ -1,17 +1,24 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-12 col-sm-5">
+    <div class="col-12 col-sm-4">
       <div class="row">
         <div class="col-12">
           <div class="rounded bg-secondary dashboard-box px-2 py-1">
-            <div *ngFor="let item of dashboard | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
-              <div>{{ item.key }}: {{ item.value }}</div>
+            <div class="row no-gutters border-bottom pb-2 mb-2">
+              <div class="col">
+                <div class="h4 text-light text-outline stroke-shadow">Entities Collected</div>
+              </div>
+            </div>
+            <div class="row no-gutters rounded mb-1">
+              <div *ngFor="let item of dashboard | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
+                <div>{{ item.key }}: {{ item.value }}</div>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-12 col-sm-7">
+    <div class="col-12 col-sm-4">
       <div class="row">
         <div class="col-12">
           <div class="rounded bg-secondary control-box px-2 py-1">
@@ -23,33 +30,66 @@
                 <button class="btn btn-sm btn-danger rounded pull-right mt-1" (click)="flushStore()" type="button">Reset</button>
               </div>
             </div>
-            <div class="row no-gutters rounded bg-info control mb-1">
-              <div class="col-9 my-auto">
-                <div class="h5 text-dark pl-2">CIA World Factbook</div>
+            <div
+              *ngIf="isComplete('factbook')"
+              class="row no-gutters rounded bg-info display-item mb-1"
+              [class.green-border]="selected === 'factbook'"
+              [ngClass]="getAlertStatus('factbook')"
+              (click)="switchSelected('factbook')">
+              <div class="col my-auto">
+                <div class="text-dark pl-2">CIA World Factbook</div>
               </div>
-              <div class="col-3 no-outline p-1">
-                <button class="btn btn-outline-primary rounded pull-right" (click)="scrapeFactbook()" [disabled]="isScrapingBusy()">
-                  <span class="fa fa-2x fa-circle-o-notch" [class.fa-spin]="isScraping"></span>
+              <div class="col no-outline pr-1 pt-1">
+                <button *ngIf="getButtonStatus('factbook').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeFactbook()">
+                  <span class="fa fa-play-circle-o"></span>
+                </button>
+                <button *ngIf="isScrapingBusy('factbook')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                  <span class="fa fa-spinner fa-spin"></span>
+                </button>
+                <button *ngIf="getButtonStatus('factbook').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeFactbook()">
+                  <span class="fa fa-refresh"></span>
                 </button>
               </div>
             </div>
-            <div class="row no-gutters rounded bg-info control mb-1">
-              <div class="col-9 my-auto">
-                <div class="h5 text-dark pl-2">CIA World Leaders</div>
+            <div
+              *ngIf="isComplete('leaders')"
+              class="row no-gutters rounded bg-info display-item mb-1"
+              [class.green-border]="selected === 'leaders'"
+              [ngClass]="getAlertStatus('leaders')"
+              (click)="switchSelected('leaders')">
+              <div class="col my-auto">
+                <div class="text-dark pl-2" [class.]>CIA World Leaders</div>
               </div>
-              <div class="col-3 no-outline p-1">
-                <button class="btn btn-outline-primary rounded pull-right" (click)="scrapeLeaders()">
-                  <span class="fa fa-2x fa-circle-o-notch" [class.fa-spin]="isScraping"></span>
+              <div class="col no-outline pr-1 pt-1">
+                <button *ngIf="getButtonStatus('leaders').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeLeaders()">
+                  <span class="fa fa-play-circle-o"></span>
+                </button>
+                <button *ngIf="isScrapingBusy('leaders')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                  <span class="fa fa-spinner fa-spin"></span>
+                </button>
+                <button *ngIf="getButtonStatus('leaders').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeLeaders()">
+                  <span class="fa fa-refresh"></span>
                 </button>
               </div>
             </div>
-            <div class="row no-gutters rounded bg-info control mb-1">
-              <div class="col-9 my-auto">
-                <div class="h5 text-dark pl-2">World Airports</div>
+            <div
+              *ngIf="isComplete('airports')"
+              class="row no-gutters rounded bg-info display-item mb-1"
+              [class.green-border]="selected === 'airports'"
+              [ngClass]="getAlertStatus('airports')"
+              (click)="switchSelected('airports')">
+              <div class="col my-auto">
+                <div class="text-dark pl-2">World Airports</div>
               </div>
-              <div class="col-3 no-outline p-1">
-                <button class="btn btn-outline-primary rounded pull-right" (click)="scrapeAirports()">
-                  <span class="fa fa-2x fa-circle-o-notch" [class.fa-spin]="isScraping"></span>
+              <div class="col no-outline pr-1 pt-1">
+                <button *ngIf="getButtonStatus('airports').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeAirports()">
+                  <span class="fa fa-play-circle-o"></span>
+                </button>
+                <button *ngIf="isScrapingBusy('airports')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                  <span class="fa fa-spinner fa-spin"></span>
+                </button>
+                <button *ngIf="getButtonStatus('airports').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeAirports()">
+                  <span class="fa fa-refresh"></span>
                 </button>
               </div>
             </div>
@@ -66,26 +106,96 @@
                 </div>
               </div>
             </div>
-            <div class="row" *ngFor="let country of countries">
-              <div *ngIf="country.status.factbook !== 2" class="col-12">
-                <div
-                  class="row no-gutters rounded bg-info display-item mb-1"
-                  [ngClass]="{'alert-info': country.status.factbook === 0, 'alert-warning': country.status.factbook === 1, 'alert-danger': country.status.factbook === -1}">
-                  <div class="col my-auto">
-                    <div class="text-dark pl-2">{{ country.name }}</div>
-                  </div>
-                  <div class="col no-outline pr-1 pt-1">
-                    <button *ngIf="country.status.factbook === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(country.name)">
-                      <span class="fa fa-play-circle-o"></span>
-                    </button>
-                    <button *ngIf="country.status.factbook === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
-                      <span class="fa fa-spinner fa-spin"></span>
-                    </button>
-                    <button *ngIf="country.status.factbook === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeCountryByName(country.name)">
-                      <span class="fa fa-refresh"></span>
-                    </button>
+            <ng-container *ngIf="selected === 'factbook'; else leadersTemplate">
+              <div class="row" *ngFor="let country of countries">
+                <div *ngIf="country.status.factbook !== 2" class="col-12">
+                  <div
+                    class="row no-gutters rounded bg-info display-item mb-1"
+                    [ngClass]="{'alert-info': country.status.factbook === 0, 'alert-warning': country.status.factbook === 1, 'alert-danger': country.status.factbook === -1}">
+                    <div class="col my-auto">
+                      <div class="text-dark pl-2">{{ country.name }}</div>
+                    </div>
+                    <div class="col no-outline pr-1 pt-1">
+                      <button *ngIf="country.status.factbook === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(country.name)">
+                        <span class="fa fa-play-circle-o"></span>
+                      </button>
+                      <button *ngIf="country.status.factbook === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                        <span class="fa fa-spinner fa-spin"></span>
+                      </button>
+                      <button *ngIf="country.status.factbook === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeCountryByName(country.name)">
+                        <span class="fa fa-refresh"></span>
+                      </button>
+                    </div>
                   </div>
                 </div>
+              </div>
+            </ng-container>
+            <ng-template #leadersTemplate>
+              <ng-container *ngIf="selected === 'leaders'; else airportTemplate">
+                <div class="row" *ngFor="let country of countries">
+                  <div *ngIf="country.status.leaders !== 2" class="col-12">
+                    <div
+                      class="row no-gutters rounded bg-info display-item mb-1"
+                      [ngClass]="{'alert-info': country.status.leaders === 0, 'alert-warning': country.status.leaders === 1, 'alert-danger': country.status.leaders === -1}">
+                      <div class="col my-auto">
+                        <div class="text-dark pl-2">{{ country.name }}</div>
+                      </div>
+                      <div class="col no-outline pr-1 pt-1">
+                        <button *ngIf="country.status.leaders === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeLeadersOfCountryByName(country.name)">
+                          <span class="fa fa-play-circle-o"></span>
+                        </button>
+                        <button *ngIf="country.status.leaders === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                          <span class="fa fa-spinner fa-spin"></span>
+                        </button>
+                        <button *ngIf="country.status.leaders === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeLeadersOfCountryByName(country.name)">
+                          <span class="fa fa-refresh"></span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-template>
+            <ng-template #airportTemplate>
+              <div class="row" *ngFor="let airportSource of airportSources">
+                <div *ngIf="airportSource.status !== 2" class="col-12">
+                  <div
+                    class="row no-gutters rounded bg-info display-item mb-1"
+                    [ngClass]="{'alert-info': airportSource.status === 0, 'alert-warning': airportSource.status === 1, 'alert-danger': airportSource.status === -1}">
+                    <div class="col my-auto">
+                      <div class="text-dark pl-2">{{ airportSource.name }}</div>
+                    </div>
+                    <div class="col no-outline pr-1 pt-1">
+                      <button *ngIf="airportSource.status === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(airportSource.name)">
+                        <span class="fa fa-play-circle-o"></span>
+                      </button>
+                      <button *ngIf="airportSource.status === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                        <span class="fa fa-spinner fa-spin"></span>
+                      </button>
+                      <button *ngIf="airportSource.status === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeCountryByName(airportSource.name)">
+                        <span class="fa fa-refresh"></span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 col-sm-4">
+      <div class="row">
+        <div class="col-12">
+          <div class="rounded bg-secondary dashboard-box px-2 py-1">
+            <div class="row no-gutters border-bottom pb-2 mb-2">
+              <div class="col">
+                <div class="h4 text-light text-outline stroke-shadow">Export Options</div>
+              </div>
+            </div>
+            <div class="row no-gutters rounded mb-1">
+              <div *ngFor="let item of dashboard | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
+                <div>{{ item.key }}: {{ item.value }}</div>
               </div>
             </div>
           </div>

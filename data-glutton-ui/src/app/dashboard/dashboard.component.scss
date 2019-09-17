@@ -1,5 +1,6 @@
 .control {
     box-shadow: 0 0 0 0.1rem rgba(23, 20, 31, 0.5);
+    box-sizing: border-box;
     height: 4rem;
     max-height: 4rem;
     min-height: 4rem;
@@ -8,19 +9,20 @@
 .control-box {
     box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
     box-sizing: border-box;
-    height: calc(45vh - 64px);
+    height: calc(45vh - 72px);
     margin-bottom: 2vh;
-    max-height: calc(45vh - 64px);
-    min-height: calc(45vh - 64px);
+    max-height: calc(45vh - 72px);
+    min-height: calc(45vh - 72px);
     overflow-y: auto;
 }
 
 .dashboard-box {
     box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
     box-sizing: border-box;
-    height: calc(92vh - 64px);
-    max-height: calc(92vh - 64px);
-    min-height: calc(92vh - 64px);
+    height: calc(92vh - 72px);
+    margin-bottom: 2vh;
+    max-height: calc(92vh - 72px);
+    min-height: calc(92vh - 72px);
     overflow-y: auto;
 }
 
@@ -28,6 +30,7 @@
     box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
     box-sizing: border-box;
     height: 45vh;
+    margin-bottom: 2vh;
     max-height: 45vh;
     min-height: 45vh;
     overflow-x: hidden;
@@ -36,7 +39,14 @@
 
 .display-item {
     box-shadow: 0 0 0 0.1rem rgba(23, 20, 31, 0.5);
+    box-sizing: border-box;
     height: 2.4rem;
     max-height: 2.4rem;
     min-height: 2.4rem;
+}
+
+.green-border {
+    border: 2px solid #009900;
+    font-weight: bold;
+    padding-bottom: 2.41rem;
 }

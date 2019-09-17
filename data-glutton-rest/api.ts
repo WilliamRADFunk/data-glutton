@@ -39,6 +39,30 @@ app.get('/country/:countryName', async (req, res) => {
     }
 });
 
+app.get('/leaders/:countryName', async (req, res) => {
+    const countryName = req && req.params && req.params.countryName;
+    if (!countryName) {
+        return res.status(404).send({ message: 'Invalid country name' });
+    }
+    if (!store.countriesInList.length) {
+        await getCountries();
+    }
+    const countryRef: CountryReference = store.countriesInList.find((c: CountryReference) => {
+        return c.name === countryName;
+    });
+    if (countryRef) {
+        getCountryPromise(countryRef)
+            .then(done => {
+                return res.status(200).send({ success: true });
+            })
+            .catch(err => {
+                return res.status(500).send({ message: 'Unable to scrape country' });
+            });
+    } else {
+        return res.status(404).send({ message: 'Invalid country name' });
+    }
+});
+
 app.get('/country-list', async (req, res) => {
     if (!store.countriesInList.length) {
         await getCountries();
