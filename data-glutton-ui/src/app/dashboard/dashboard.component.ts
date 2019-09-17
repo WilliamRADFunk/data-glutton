@@ -23,7 +23,7 @@ export interface CountryReference {
 export class DashboardComponent implements OnInit {
   airportSources: AirportSpurceReference[] [];
   countries: CountryReference[] = [];
-  dashboard: { [key: string]: number };
+  dashboard: { [key: string]: { [key: string]: number } };
   /**
    * Flag to track if scaping is underway.
    */
@@ -58,7 +58,7 @@ export class DashboardComponent implements OnInit {
 
   private scrapeLeadersOfCountry(country: CountryReference): void {
     country.status.leaders = 1;
-    this.fetchService.fetchCountry(country.name).toPromise()
+    this.fetchService.fetchLeaders(country.name).toPromise()
       .then(done => {
         country.status.leaders = 2;
       })
@@ -81,6 +81,7 @@ export class DashboardComponent implements OnInit {
       'alert-danger': hasErrors
     };
   }
+
   public getButtonStatus(dataSource: string): { info: boolean; warning: boolean; danger: boolean; } {
     const isBusy = this.isScrapingBusy(dataSource);
     const hasErrors = !isBusy && this.hasFailedStatus(dataSource);
@@ -91,6 +92,11 @@ export class DashboardComponent implements OnInit {
       danger: hasErrors
     };
   }
+
+  public getDashboard(dataSource: string): { [key: string]: number } {
+    return (this.dashboard && this.dashboard[dataSource]) || {};
+  }
+
   public hasFailedStatus(datasource: string): boolean {
     return this.countries.some(c => c.status[datasource] === -1);
   }

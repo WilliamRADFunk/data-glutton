@@ -3,7 +3,7 @@ import rp from 'request-promise-native';
 
 import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
-import { dataScrapers } from '../../fetch-modules/factbook/data-getters';
+import { dataScrapers } from './data-getters';
 import { CountryReference } from '../../models/country-reference';
 import { getCountryURL } from '../../utils/get-country-url';
 import { countryToId } from '../../utils/country-to-id';
