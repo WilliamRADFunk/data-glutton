@@ -8,28 +8,28 @@
 .control-box {
     box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
     box-sizing: border-box;
-    height: calc(50vh - 64px);
-    max-height: calc(50vh - 64px);
-    min-height: calc(50vh - 64px);
+    height: calc(45vh - 64px);
+    margin-bottom: 2vh;
+    max-height: calc(45vh - 64px);
+    min-height: calc(45vh - 64px);
     overflow-y: auto;
 }
 
 .dashboard-box {
     box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
     box-sizing: border-box;
-    height: calc(50vh - 64px);
-    margin-bottom: 16px;
-    max-height: calc(50vh - 64px);
-    min-height: calc(50vh - 64px);
+    height: calc(92vh - 64px);
+    max-height: calc(92vh - 64px);
+    min-height: calc(92vh - 64px);
     overflow-y: auto;
 }
 
 .display-box {
     box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
     box-sizing: border-box;
-    height: calc(50vh - 64px);
-    max-height: calc(50vh - 64px);
-    min-height: calc(50vh - 64px);
+    height: 45vh;
+    max-height: 45vh;
+    min-height: 45vh;
     overflow-x: hidden;
     overflow-y: auto;
 }
