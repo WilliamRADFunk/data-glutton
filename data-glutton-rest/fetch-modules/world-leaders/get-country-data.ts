@@ -11,7 +11,7 @@ import { getCountryURL } from '../../utils/get-country-url';
 const numberOfScrapers: number = Object.keys(dataScrapers).length;
 
 export function getLeadersByCountryPromise(country: CountryReference): Promise<any> {
-	const url = getCountryURL(country.dataCode, consts.BASE.URL_LEADER_BASE);
+	const url = getCountryURL(country.dataCode.toUpperCase(), consts.BASE.URL_LEADER_BASE);
 	return getLeadersByCountryData(country, url);
 };
 

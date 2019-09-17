@@ -9,7 +9,7 @@ const createLeadersByCountriesPromises = () => {
 	const countryDataPromises: Array<Promise<any>> = [];
 	const countries = store.countriesInList.slice();
 	countries.forEach((country) => {
-		const url = getCountryURL(country.dataCode, consts.BASE.URL_LEADER_BASE);
+		const url = getCountryURL(country.dataCode.toUpperCase(), consts.BASE.URL_LEADER_BASE);
 		countryDataPromises.push(getLeadersByCountryData(country, url));
 	});
 	return countryDataPromises;
