@@ -5,18 +5,19 @@ import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { dataScrapers } from './data-getters';
 import { CountryReference } from '../../models/country-reference';
-import { getCountryURL } from '../../utils/get-country-url';
 import { countryToId } from '../../utils/country-to-id';
+import { getCountryURL } from '../../utils/get-country-url';
 
 const numberOfScrapers: number = Object.keys(dataScrapers).length;
 
 export function getLeadersByCountryPromise(country: CountryReference): Promise<any> {
-	const url = getCountryURL(country.dataCode);
+	const url = getCountryURL(country.dataCode, consts.BASE.URL_LEADER_BASE);
 	return getLeadersByCountryData(country, url);
 };
 
 export function getLeadersByCountryData(country: CountryReference, url: string): Promise<void> {
 	if (country && url) {
+		console.log(country, url);
 		return new Promise((resolve, reject) => {
 			rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
 				.then((html: CheerioElement) => {
@@ -26,6 +27,8 @@ export function getLeadersByCountryData(country: CountryReference, url: string):
 					store.progressLogger(country.name, 1 / numberOfScrapers);
 					store.debugLogger(`Data scrape for ${country.name} is complete`);
 					store.countriesInList.find(c => c.name === country.name).status.leaders = 2;
+					const doug = store.countries.find({ '@id': { $eq: countryId } })[0];
+					console.log('country', country.name, doug);
 					resolve();
 				})
 				.catch((err: Error) => {

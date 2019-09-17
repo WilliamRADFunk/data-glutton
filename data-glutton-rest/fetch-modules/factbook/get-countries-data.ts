@@ -1,3 +1,4 @@
+import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { getCountryURL } from '../../utils/get-country-url';
 import { getCountryData } from './get-country-data';
@@ -8,7 +9,7 @@ const createCountriesPromises = () => {
 	const countryDataPromises: Array<Promise<any>> = [];
 	const countries = store.countriesInList.slice();
 	countries.forEach((country) => {
-		const url = getCountryURL(country.dataCode);
+		const url = getCountryURL(country.dataCode, consts.BASE.URL_COUNTRY_BASE_FACTBOOK);
 		countryDataPromises.push(getCountryData(country, url));
 	});
 	return countryDataPromises;
