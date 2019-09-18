@@ -4,9 +4,12 @@ import { EntityContainer } from '../models/entity-container';
 export function entityRefMaker(
 	predicateURI: string,
 	entityContainer: EntityContainer|Collection<Entity>,
-	unWrapPredicate?: string): EntityContainer {
+	unWrapPredicate?: string,
+	fromPOGO?: boolean): EntityContainer {
 	let entity;
-	if (unWrapPredicate) {
+	if (fromPOGO) {
+		entity = (entityContainer as EntityContainer)[unWrapPredicate];
+	} else if (unWrapPredicate) {
 		entity = (entityContainer as Collection<Entity>).find({ '@id': { $eq: unWrapPredicate } })[0];
 	} else {
 		entity = (entityContainer as EntityContainer)[predicateURI];

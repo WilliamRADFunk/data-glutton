@@ -135,9 +135,10 @@ export function getLeaders(cheerioElem: CheerioSelector, country: string, countr
 				entityRefMaker(
 					consts.ONTOLOGY.HAS_APPOINTED_GOVERNMENT_OFFICE,
 					govObjectProp,
-					consts.ONTOLOGY.HAS_GOVERNMENT_OFFICE)
+					consts.ONTOLOGY.HAS_GOVERNMENT_OFFICE,
+					true)
 			);
 			store.govOffices.find({ '@id': { $eq: officeId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_GOVERNMENT_OFFICIAL, perObjectProp));
-		}		
+		}
     });
 };
