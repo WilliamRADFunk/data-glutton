@@ -118,10 +118,10 @@
                   <div
                     class="row no-gutters rounded bg-info display-item mb-1"
                     [ngClass]="{'alert-info': country.status.factbook === 0, 'alert-warning': country.status.factbook === 1, 'alert-danger': country.status.factbook === -1}">
-                    <div class="col my-auto">
-                      <div class="text-dark pl-2">{{ country.name }}</div>
+                    <div class="col-10 my-auto">
+                      <div class="display-item-label text-dark pl-2">{{ country.name }}</div>
                     </div>
-                    <div class="col no-outline pr-1 pt-1">
+                    <div class="col-2 no-outline pr-1 pt-1">
                       <button *ngIf="country.status.factbook === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(country.name)">
                         <span class="fa fa-play-circle-o"></span>
                       </button>
@@ -143,10 +143,10 @@
                     <div
                       class="row no-gutters rounded bg-info display-item mb-1"
                       [ngClass]="{'alert-info': country.status.leaders === 0, 'alert-warning': country.status.leaders === 1, 'alert-danger': country.status.leaders === -1}">
-                      <div class="col my-auto">
-                        <div class="text-dark pl-2">{{ country.name }}</div>
+                      <div class="col-10 my-auto">
+                        <div class="display-item-label text-dark pl-2">{{ country.name }}</div>
                       </div>
-                      <div class="col no-outline pr-1 pt-1">
+                      <div class="col-2 no-outline pr-1 pt-1">
                         <button *ngIf="country.status.leaders === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeLeadersOfCountryByName(country.name)">
                           <span class="fa fa-play-circle-o"></span>
                         </button>
@@ -168,10 +168,10 @@
                   <div
                     class="row no-gutters rounded bg-info display-item mb-1"
                     [ngClass]="{'alert-info': airportSource.status === 0, 'alert-warning': airportSource.status === 1, 'alert-danger': airportSource.status === -1}">
-                    <div class="col my-auto">
-                      <div class="text-dark pl-2">{{ airportSource.name }}</div>
+                    <div class="col-10 my-auto">
+                      <div class="display-item-label text-dark pl-2">{{ airportSource.name }}</div>
                     </div>
-                    <div class="col no-outline pr-1 pt-1">
+                    <div class="col-2 no-outline pr-1 pt-1">
                       <button *ngIf="airportSource.status === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(airportSource.name)">
                         <span class="fa fa-play-circle-o"></span>
                       </button>

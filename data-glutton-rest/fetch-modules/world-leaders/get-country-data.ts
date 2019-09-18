@@ -31,15 +31,21 @@ export function getLeadersByCountryData(country: CountryReference, url: string):
 					console.log('country', country.name, doug);
 					resolve();
 				})
-				.catch((err: Error) => {
+				.catch((err: any) => {
 					store.failedCountries.push(country);
 					const errMsg = `${
 						new Date().toISOString()
 					}\n\nIndividual country query failed:  ${
-					country.name}\n${url}\n${err.toString().trim()}\n\n`;
+					country.name}\n${url}\n${err.statusCode.toString()}\n\n`;
 					store.errorLogger(errMsg);
-					store.countriesInList.find(c => c.name === country.name).status.leaders = -1;
-					reject();
+					if (err.statusCode.toString() !== '404') {
+						store.countriesInList.find(c => c.name === country.name).status.leaders = -1;
+						reject();
+					} else {
+						store.debugLogger(`${country.name} is not a country in the world leader list.`);
+						store.countriesInList.find(c => c.name === country.name).status.leaders = 2;
+						resolve();
+					}
 				});
 			});
 	} else {
