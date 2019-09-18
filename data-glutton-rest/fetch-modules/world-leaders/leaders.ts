@@ -123,7 +123,7 @@ export function getLeaders(cheerioElem: CheerioSelector, country: string, countr
 					consts.ONTOLOGY.ONT_PERSON,
 					personId,
 					`${personName}`);
-				store.persons.insert(perObjectProp[consts.ONTOLOGY.HAS_BORDER]);
+				store.persons.insert(perObjectProp[consts.ONTOLOGY.HAS_GOVERNMENT_OFFICIAL]);
 			}
 			perObjectProp[consts.ONTOLOGY.HAS_GOVERNMENT_OFFICIAL].datatypeProperties[consts.ONTOLOGY.DT_NAME] = personName;
 			// For cases like Queen ELIZABETH II, dispense with first and last name. Use only name.
