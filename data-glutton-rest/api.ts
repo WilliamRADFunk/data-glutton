@@ -100,7 +100,12 @@ app.get('/scrape-leaders', async (req, res) => {
 app.get('/dashboard', async (req, res) => {
     const dashboard: { [key: string]: { [key: string]: number } } = {
         'airports': {
-
+            'Airlines': store.airlines.count(),
+            'Airports': store.airports.count(),
+            'Helicopter Landing Zones': store.helicopterLandingZones.count(),
+            'Municipalities': store.municipalities.count(),
+            'Runways': store.runways.count(),
+            'Surface Materials': store.surfaceMaterials.count(),
         },
         'factbook': {
             'Agricultural Lands': store.agriculturalLands.count(),

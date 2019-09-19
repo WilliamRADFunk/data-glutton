@@ -10,13 +10,26 @@
               </div>
             </div>
             <div class="row no-gutters rounded mb-1">
-              <div *ngFor="let item of getDashboard('factbook') | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
-                <div>{{ item.key }}: {{ item.value }}</div>
+              <div class="card">
+                <div class="card-body">
+                  <div class="card-title">Factbook Entities</div>
+                  <div class="card-text">
+                    <div *ngFor="let item of getDashboard('factbook') | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
+                      <div>{{ item.key }}: {{ item.value }}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <hr/>
             <div class="row no-gutters rounded mb-1">
               <div *ngFor="let item of getDashboard('leaders') | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
+                <div>{{ item.key }}: {{ item.value }}</div>
+              </div>
+            </div>
+            <hr/>
+            <div class="row no-gutters rounded mb-1">
+              <div *ngFor="let item of getDashboard('airports') | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
                 <div>{{ item.key }}: {{ item.value }}</div>
               </div>
             </div>
