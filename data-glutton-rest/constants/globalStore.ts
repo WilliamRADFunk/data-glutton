@@ -1,5 +1,6 @@
 import * as loki from 'lokijs';
 
+import { AirportNpmSourceObject } from '../models/airport-npm-source-object';
 import { CountryReference } from '../models/country-reference';
 import { Entity } from '../models/entity';
 import { ImageScrapableObject } from '../models/image-scrapable-object';
@@ -16,10 +17,18 @@ class GlobalStore {
 	public debugLogger: any = consoleLog;
 	public errorLogger: any = consoleError;
 	public progressLogger: any = noop;
+
+	public airlinesNotFound: string[] = [];
+	public airportsNotFound: string[] = [];
+	public airportTable: { [key: string]: AirportNpmSourceObject } = {};
+	public failedAirlines: string[] = [];
+	public failedAirports: string[] = [];
 	public failedCountries: CountryReference[] = [];
 	public failedImages: ImageScrapableObject[] = [];
 
 	public agriculturalLands: Collection<Entity>;
+	public airlines: Collection<Entity>;
+	public airports: Collection<Entity>;
 	public arableLands: Collection<Entity>;
 	public artificiallyIrrigatedLands: Collection<Entity>;
 	public borderCountries: Collection<Entity>;
@@ -32,12 +41,14 @@ class GlobalStore {
 	public domainAreas: Collection<Entity>;
 	public elevations: Collection<Entity>;
 	public forestLands: Collection<Entity>;
+	public helicopterLandingZones: Collection<Entity>;
 	public images: Collection<Entity>;
 	public geographicNotes: Collection<Entity>;
 	public govOffices: Collection<Entity>;
 	public landUses: Collection<Entity>;
 	public locations: Collection<Entity>;
 	public maritimeClaims: Collection<Entity>;
+	public municipalities: Collection<Entity>;
 	public nationalFlags: Collection<Entity>;
 	public naturalHazards: Collection<Entity>;
 	public naturalResources: Collection<Entity>;
@@ -46,6 +57,8 @@ class GlobalStore {
 	public permanentPastureLands: Collection<Entity>;
 	public persons: Collection<Entity>;
 	public regionMaps: Collection<Entity>;
+	public runways: Collection<Entity>;
+	public surfaceMaterials: Collection<Entity>;
 	public terrains: Collection<Entity>;
 
 	private db: Loki;
@@ -54,6 +67,8 @@ class GlobalStore {
 		this.db = new loki.default('loki.json');
 
 		this.agriculturalLands = this.db.addCollection('agriculturalLands');
+		this.airlines = this.db.addCollection('airlines');
+		this.airports = this.db.addCollection('airports');
 		this.arableLands = this.db.addCollection('arableLands');
 		this.artificiallyIrrigatedLands = this.db.addCollection('artificiallyIrrigatedLands');
 		this.borderCountries = this.db.addCollection('borderCountries');
@@ -69,9 +84,11 @@ class GlobalStore {
 		this.images = this.db.addCollection('images');
 		this.geographicNotes = this.db.addCollection('geographicNotes');
 		this.govOffices = this.db.addCollection('govOffices');
+		this.helicopterLandingZones = this.db.addCollection('helicopterLandingZones');
 		this.landUses = this.db.addCollection('landUses');
 		this.locations = this.db.addCollection('locations');
 		this.maritimeClaims = this.db.addCollection('maritimeClaims');
+		this.municipalities = this.db.addCollection('municipalities');
 		this.nationalFlags = this.db.addCollection('nationalFlags');
 		this.naturalHazards = this.db.addCollection('naturalHazards');
 		this.naturalResources = this.db.addCollection('naturalResources');
@@ -80,6 +97,8 @@ class GlobalStore {
 		this.permanentPastureLands = this.db.addCollection('permanentPastureLands');
 		this.persons = this.db.addCollection('persons');
 		this.regionMaps = this.db.addCollection('regionMaps');
+		this.runways = this.db.addCollection('runways');
+		this.surfaceMaterials = this.db.addCollection('surfaceMaterials');
 		this.terrains = this.db.addCollection('terrains');
 	}
 }

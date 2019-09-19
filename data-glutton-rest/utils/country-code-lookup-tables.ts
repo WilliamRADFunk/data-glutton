@@ -1,3 +1,21 @@
+import { store } from '../constants/globalStore';
+import { AirportDatahubSourceObject } from '../models/airport-datahub-source-object';
+import { AirportNpmSourceObject } from '../models/airport-npm-source-object';
+
+import * as airportDatahub from '../assets/airports-datahub.json';
+import * as airportDataNpm from '../assets/airports-npm.json';
+
+export function createLookupTable(): void {
+    airportDataNpm.forEach((ap: AirportNpmSourceObject) => {
+        if (ap && ap.iata && ap.iso) {
+            store.airportTable[ap.iata] = ap;
+        }
+    });
+};
+
+export const airportDataList = airportDataNpm;
+export const airportDatahubList: AirportDatahubSourceObject[] = airportDatahub as AirportDatahubSourceObject[];
+
 const isoCodeToDataCodeTable: { [key: string]: string } = {
 	AD: 'an',
 	AG: 'ac',

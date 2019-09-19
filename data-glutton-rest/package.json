@@ -22,6 +22,7 @@
     "cheerio": "^1.0.0-rc.2",
     "copyfiles": "^2.1.0",
     "cors": "^2.8.5",
+    "csvtojson": "^2.0.10",
     "express": "^4.17.1",
     "formatter-json": "^0.1.1",
     "funktologies": "^0.1.5",
@@ -39,6 +40,7 @@
     "uuid-by-string": "^2.1.0"
   },
   "devDependencies": {
+    "@types/csvtojson": "^1.1.5",
     "@types/html-to-text": "^1.4.31",
     "cryptiles": "^4.1.2",
     "hawk": "^3.1.3",
