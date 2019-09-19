@@ -1,9 +1,11 @@
 import { store } from '../constants/globalStore';
 import { AirportDatahubSourceObject } from '../models/airport-datahub-source-object';
 import { AirportNpmSourceObject } from '../models/airport-npm-source-object';
+import { GeoFeature } from '../models/geofeature';
 
 import * as airportDatahub from '../assets/airports-datahub.json';
 import * as airportDataNpm from '../assets/airports-npm.json';
+import * as airportDataLocal from '../assets/airports-source';
 
 export function createLookupTable(): void {
     airportDataNpm.forEach((ap: AirportNpmSourceObject) => {
@@ -13,6 +15,7 @@ export function createLookupTable(): void {
     });
 };
 
+export const airportDataLocal: GeoFeature[] = airportDataLocal;
 export const airportDataList = airportDataNpm;
 export const airportDatahubList: AirportDatahubSourceObject[] = airportDatahub as AirportDatahubSourceObject[];
 

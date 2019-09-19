@@ -215,7 +215,7 @@ const conditionLookupTable: {[key: string]: string} = {
 export async function getRunwaysFromOurAirports(): Promise<void> {
     const runwayData: RunwayOurairportsSourceObject[] = [];
 
-    const jsonifiedData = await csv({
+    const jsonifiedData = await csv.default({
         headers: ['id','refId', 'ident', 'length', 'width', 'surfMat', 'lighted', 'closed'],
         noheader: false
     }).fromFile('src/assets/runways-ourairports.csv');
@@ -230,7 +230,7 @@ export async function getRunwaysFromOurAirports(): Promise<void> {
         datum.lighted,
         datum.closed
     )));
-    
+
 	Object.values(runwayData).forEach(runway => {
         if (!runway.length || !runway.width || !runway.ident) {
             return;
@@ -261,7 +261,7 @@ export async function getRunwaysFromOurAirports(): Promise<void> {
             runMap.datatypeProperties[consts.ONTOLOGY.DT_LENGTH] = Number(runway.length);
             runMap.datatypeProperties[consts.ONTOLOGY.DT_WIDTH] =  Number(runway.width);
             runMap.datatypeProperties[consts.ONTOLOGY.DT_UNIT] = 'ft';
-            
+
             if (runway.surfMat) {
                 runway.surfMat = runway.surfMat.replace(',', ' - ');
                 // Catches edge case where single letters specifiy condition of the runway material.
@@ -278,8 +278,8 @@ export async function getRunwaysFromOurAirports(): Promise<void> {
                     condition = conditionLookupTable[lastDescriptor];
                 }
                 // Ensure synonyms of same material aren't counted as extra
-                let surfaceMaterials: string[] = hyphenList;
-                let convertedSurList: string[] = []; 
+                const surfaceMaterials: string[] = hyphenList;
+                let convertedSurList: string[] = [];
                 if (!hasCondition) {
                     surfaceMaterials.forEach(mat => {
                         convertedSurList.push(materialLookup(mat));
@@ -296,7 +296,7 @@ export async function getRunwaysFromOurAirports(): Promise<void> {
                 if (!convertedSurList.length) {
                     return;
                 }
-                
+
                 if (convertedSurList[0] === 'ROOF' || convertedSurList.length === 1) {
                     makeSurfaceMaterial(airport, runMap, runway.ident, materialLookup(runway.surfMat), false, condition);
                 } else {
@@ -372,4 +372,4 @@ function CSV(
         surfMat,
         width
     };
-}; 
+};

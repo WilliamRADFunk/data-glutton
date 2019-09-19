@@ -34,4 +34,3 @@ export async function getLeadersByCountriesData(): Promise<void> {
 			store.errorLogger(new Date().toISOString() + '\n\ngetCountriesData\n\n' + err.toString() + '\n\n');
 		});
 }
-

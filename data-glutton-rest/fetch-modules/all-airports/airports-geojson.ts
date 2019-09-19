@@ -4,15 +4,14 @@ import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { AirportProperties } from '../../models/airport-properties';
 import { EntityContainer } from '../../models/entity-container';
-import { isoCodeToDataCode } from '../../utils/country-code-lookup-tables';
+import { GeoFeature } from '../../models/geofeature';
+import { airportDataLocal, isoCodeToDataCode } from '../../utils/country-code-lookup-tables';
 import { countryToId } from '../../utils/country-to-id';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
-import * as airportDataLocal from '../../assets/airports-source';
-
 export function getAirportsFromGeoJson() {
-	Object.values(airportDataLocal.features).forEach((ap: { geometry: { coordinates: string }; properties: AirportProperties }) => {
+	Object.values(airportDataLocal.features).forEach((ap: GeoFeature) => {
 		const airportProps: AirportProperties = ap.properties as AirportProperties;
 		const airportName = airportProps.name && airportProps.name.replace('Int\'l', 'International');
 		const airportLocation = ap.geometry.coordinates;
@@ -86,7 +85,7 @@ export function getAirportsFromGeoJson() {
 					countryId
 			));
 			store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_AIRPORT, airportObjectProp));
-		
+
 			// Get relative size of airport (small, medium, large)
 			if (airportSourceObject.size) {
 				store.airports.find({ '@id': { $eq: airportId } })[0].datatypeProperties[consts.ONTOLOGY.DT_RELATIVE_SIZE] = airportSourceObject.size;

@@ -2,11 +2,11 @@ import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
-import { EntityContainer } from '../../models/entity-container';
 import { AirportDatahubSourceObject } from '../../models/airport-datahub-source-object';
+import { Entity } from '../../models/entity';
+import { EntityContainer } from '../../models/entity-container';
 import { airportDatahubList, isoCodeToDataCode } from '../../utils/country-code-lookup-tables';
 import { countryToId } from '../../utils/country-to-id';
-import { Entity } from '../../models/entity';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
@@ -123,7 +123,7 @@ export function getAirportsFromDatahub() {
 					countryId
 			));
 			store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_AIRPORT, airportObjectProp));
-		
+
 			// Get relative size of airport (small, medium, large)
 			if (ap.type && ap.type.indexOf('_airport') > 0) {
 				store.airports.find({ '@id': { $eq: airportId } })[0].datatypeProperties[consts.ONTOLOGY.DT_RELATIVE_SIZE] = ap.type.split('_')[0];
@@ -138,7 +138,7 @@ export function getAirportsFromDatahub() {
 				store.airports.find({ '@id': { $eq: airportId } })[0].datatypeProperties[consts.ONTOLOGY.DT_STATUS] = 'Closed';
 			}
 		}
-		
+
 		// Extract Municipality
 		if (ap.municipality) {
 			makeMunicipality(store.airports.find({ '@id': { $eq: airportId } })[0], ap, store.countries.find({ '@id': { $eq: countryId } })[0]);

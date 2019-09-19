@@ -1,13 +1,13 @@
-import express from 'express';
 import cors from 'cors';
+import express from 'express';
 // import { path } from 'path';
-import { getCountries } from './utils/get-countries';
 import { store } from './constants/globalStore';
 import { getCountriesData } from './fetch-modules/factbook/get-countries-data';
 import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
 import { getLeadersByCountriesData } from './fetch-modules/world-leaders/get-countries-data';
 import { getLeadersByCountryPromise } from './fetch-modules/world-leaders/get-country-data';
 import { CountryReference } from './models/country-reference';
+import { getCountries } from './utils/get-countries';
 
 const app = express();
 app.use(cors());
@@ -99,6 +99,9 @@ app.get('/scrape-leaders', async (req, res) => {
 
 app.get('/dashboard', async (req, res) => {
     const dashboard: { [key: string]: { [key: string]: number } } = {
+        'airports': {
+
+        },
         'factbook': {
             'Agricultural Lands': store.agriculturalLands.count(),
             'Arable Lands': store.arableLands.count(),
@@ -106,15 +109,15 @@ app.get('/dashboard', async (req, res) => {
             'Border Countries': store.borderCountries.count(),
             'Border Maps': store.borderMaps.count(),
             'Borders': store.borders.count(),
-            'Climates': store.climates.count(),
             'Climate Zones': store.climateZones.count(),
+            'Climates': store.climates.count(),
             'Coasts': store.coasts.count(),
             'Countries': store.countries.count(),
             'Domain Areas': store.domainAreas.count(),
             'Elevations': store.elevations.count(),
             'Forest Lands': store.forestLands.count(),
-            'Images': store.images.count(),
             'Geographic Notes': store.geographicNotes.count(),
+            'Images': store.images.count(),
             'Land Uses': store.landUses.count(),
             'Locations': store.locations.count(),
             'Maritime Claims': store.maritimeClaims.count(),
@@ -128,11 +131,8 @@ app.get('/dashboard', async (req, res) => {
             'Terrains': store.terrains.count()
         },
         'leaders': {
-            'Persons': store.persons.count(),
-            'Government Offices': store.govOffices.count()
-        },
-        'airports': {
-
+            'Government Offices': store.govOffices.count(),
+            'Persons': store.persons.count()
         }
     };
 
