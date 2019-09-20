@@ -15,6 +15,8 @@ export interface CountryReference {
   status: { airports: number; factbook: number; leaders: number; };
 }
 
+const LIST_SIZE = 5;
+
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -32,9 +34,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(private readonly fetchService: FetchCoordinator) { }
 
-  ngOnInit() {
+  async ngOnInit(): Promise<void> {
     console.log('Fetching countries...');
-    this.fetchService.fetchCountries().pipe(take(1)).subscribe(countries => {
+    await this.fetchService.fetchCountries().toPromise().then(countries => {
       console.log('Countries', countries);
       this.countries = countries.slice();
       this.isScraping = false;
@@ -95,6 +97,33 @@ export class DashboardComponent implements OnInit {
 
   public getDashboard(dataSource: string): { [key: string]: number } {
     return (this.dashboard && this.dashboard[dataSource]) || {};
+  }
+
+  public getDashboardFragment(dataSource: string, iteration: number): { [key: string]: number } {
+    const keyCount = this.getDashboardKeyCount(dataSource);
+    const dashboard = this.getDashboard(dataSource);
+    const indexStart = iteration * LIST_SIZE;
+    const indexEnd = (indexStart + LIST_SIZE) > keyCount ? keyCount : iteration + LIST_SIZE;
+    const relevantKeys = Object.keys(dashboard).slice(indexStart, indexEnd);
+    const dashboardFragment = {};
+    relevantKeys.forEach(key => {
+      dashboardFragment[key] = dashboard[key];
+    });
+    console.log('dashboardFragment', dashboardFragment);
+    return dashboardFragment;
+  }
+
+  public getDashboardKeyCount(dataSource: string): number {
+    return Object.keys(this.getDashboard(dataSource)).length;
+  }
+
+  public getListNumber(dataSource: string): number[] {
+    const keyCount = this.getDashboardKeyCount(dataSource);
+    const numOfListsBase = Math.floor(keyCount / LIST_SIZE);
+    const carryOver = (keyCount % LIST_SIZE) ? 1 : 0;
+    const total =  numOfListsBase + carryOver;
+    console.log('total', total);
+    return new Array(total);
   }
 
   public hasFailedStatus(datasource: string): boolean {
