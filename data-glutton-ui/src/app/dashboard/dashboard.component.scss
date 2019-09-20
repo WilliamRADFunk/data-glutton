@@ -26,6 +26,24 @@
     overflow-y: auto;
 }
 
+.dashboard-item {
+    white-space: nowrap;
+}
+
+.dashboard-item-label {
+    max-width: 90%;
+    min-width: 90%;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    width: 90%;
+}
+
+.dashboard-item-value {
+    max-width: 10%;
+    min-width: 10%;
+    width: 10%;
+}
+
 .display-box {
     box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
     box-sizing: border-box;

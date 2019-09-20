@@ -47,7 +47,6 @@ export class DashboardComponent implements OnInit {
     });
     this.fetchService.fetchDashboard().subscribe(data => {
       this.dashboard = data.dashboard;
-      console.log('~~~', JSON.stringify(this.dashboard));
     });
   }
 
@@ -101,18 +100,13 @@ export class DashboardComponent implements OnInit {
 
   public getDashboardFragment(dataSource: string, iteration: number): { [key: string]: number } {
     const keyCount = this.getDashboardKeyCount(dataSource);
-    console.log('keyCount', keyCount, iteration);
     const indexStart = Number(iteration) * LIST_SIZE;
-    console.log('indexStart', indexStart);
     const indexEnd = (indexStart + LIST_SIZE) > keyCount ? keyCount : indexStart + LIST_SIZE;
-    console.log('indexEnd', indexEnd);
     const relevantKeys = Object.keys(this.dashboard[dataSource]).slice(indexStart, indexEnd);
-    console.log('relevantKeys', relevantKeys);
     const dashboardFragment = {};
     relevantKeys.forEach(key => {
       dashboardFragment[key] = this.dashboard[dataSource][key];
     });
-    console.log('dashboardFragment', dashboardFragment);
     return dashboardFragment;
   }
 
@@ -125,7 +119,6 @@ export class DashboardComponent implements OnInit {
     const numOfListsBase = Math.floor(keyCount / LIST_SIZE);
     const carryOver = (keyCount % LIST_SIZE) ? 1 : 0;
     const total =  numOfListsBase + carryOver;
-    console.log('total', total);
     return new Array(total);
   }
 
