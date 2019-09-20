@@ -17,9 +17,9 @@
                 <div class="card-body">
                   <div class="card-text">
                     <div class="row">
-                      <div *ngFor="let listNumber of getListNumber('factbook')" class="col-lg-6">
+                      <div *ngFor="let listNumber of getListNumber('factbook'); let index=index;" class="col-lg-6">
                         <ul>
-                          <li *ngFor="let item of getDashboardFragment('factbook', listNumber) | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
+                          <li *ngFor="let item of getDashboardFragment('factbook', index) | keyvalue">
                             <div>{{ item.key }}: {{ item.value }}</div>
                           </li>
                         </ul>
@@ -31,14 +31,44 @@
             </div>
             <hr/>
             <div class="row no-gutters rounded mb-1">
-              <div *ngFor="let item of getDashboard('leaders') | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
-                <div>{{ item.key }}: {{ item.value }}</div>
+              <div *ngIf="getDashboardKeyCount('leaders')" class="card">
+                <div class="card-header alert-info font-weight-bold">
+                  World Leader Entities
+                </div>
+                <div class="card-body">
+                  <div class="card-text">
+                    <div class="row">
+                      <div *ngFor="let listNumber of getListNumber('leaders'); let index=index;" class="col-lg-6">
+                        <ul>
+                          <li *ngFor="let item of getDashboardFragment('leaders', index) | keyvalue">
+                            <div>{{ item.key }}: {{ item.value }}</div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <hr/>
             <div class="row no-gutters rounded mb-1">
-              <div *ngFor="let item of getDashboard('airports') | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
-                <div>{{ item.key }}: {{ item.value }}</div>
+              <div *ngIf="getDashboardKeyCount('airports')" class="card">
+                <div class="card-header alert-info font-weight-bold">
+                  Airport/Helo Entities
+                </div>
+                <div class="card-body">
+                  <div class="card-text">
+                    <div class="row">
+                      <div *ngFor="let listNumber of getListNumber('airports'); let index=index;" class="col-lg-6">
+                        <ul>
+                          <li *ngFor="let item of getDashboardFragment('airports', index) | keyvalue">
+                            <div>{{ item.key }}: {{ item.value }}</div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -220,7 +250,7 @@
                 <div class="h4 text-light text-outline stroke-shadow">Export Options</div>
               </div>
             </div>
-            <div class="row no-gutters rounded mb-1">
+            <!-- <div class="row no-gutters rounded mb-1">
               <div *ngFor="let item of getDashboard('factbook') | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
                 <div>{{ item.key }}: {{ item.value }}</div>
               </div>
@@ -230,7 +260,7 @@
               <div *ngFor="let item of getDashboard('leaders') | keyvalue" class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
                 <div>{{ item.key }}: {{ item.value }}</div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
