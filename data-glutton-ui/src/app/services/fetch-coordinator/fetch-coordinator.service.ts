@@ -14,12 +14,20 @@ export class FetchCoordinator {
     private readonly factbookFetch: FactbookFetchService,
     private readonly http: HttpClient) { }
 
+  fetchAirportHelos(): Observable<any> {
+    return this.http.get('http://localhost:3000/airport-helo-list');
+  }
+
   fetchCountries(): Observable<any> {
     return this.http.get('http://localhost:3000/country-list');
   }
 
   fetchDashboard(): Observable<any> {
     return timer(0, 2000).pipe(switchMap(() => this.http.get<any>('http://localhost:3000/dashboard')));
+  }
+
+  fetchAirportHeloSource(source: string): Observable<any> {
+    return this.http.get(`http://localhost:3000/airports-helos/${source}`);
   }
 
   fetchCountry(countryName: string): Observable<any> {

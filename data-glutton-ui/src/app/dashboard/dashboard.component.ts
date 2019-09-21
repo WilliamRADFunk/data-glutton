@@ -3,18 +3,8 @@ import { take } from 'rxjs/operators';
 
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
 import { Subscription } from 'rxjs';
-
-export interface AirportSpurceReference {
-  name: string;
-  status: number;
-}
-
-export interface CountryReference {
-  dataCode: string;
-  isoCode: string;
-  name: string;
-  status: { 'Airports/Helos': number; 'CIA World Factbook': number; 'CIA World Leaders': number; };
-}
+import { AirportSourceReference } from '../models/airport-source-reference';
+import { CountryReference } from '../models/country-reference';
 
 const LIST_SIZE = 5;
 
@@ -25,10 +15,10 @@ const LIST_SIZE = 5;
 })
 export class DashboardComponent implements OnDestroy, OnInit {
   private _subs: Subscription[] = [];
-  airportSources: AirportSpurceReference[] [];
+  airportSources: AirportSourceReference[] = [];
   countries: CountryReference[] = [];
   dashboard: { [key: string]: { [key: string]: number } } = {
-    'Airports/Helo': {},
+    'Airport/Helo': {},
     'Factbook': {},
     'World Leader': {}
   };
@@ -52,11 +42,27 @@ export class DashboardComponent implements OnDestroy, OnInit {
         this.countries = countries.slice();
         this.isScraping = false;
     });
+    this.fetchService.fetchAirportHelos()
+      .pipe(take(1))
+      .subscribe(airportsHelos => {
+        this.airportSources = airportsHelos.slice();
+    });
     this._subs.push(
       this.fetchService.fetchDashboard()
         .subscribe(data => {
           this.dashboard = data.dashboard;
       }));
+  }
+
+  private scrapeAirportHeloSource(source: AirportSourceReference): void {
+    source.status = 1;
+    this.fetchService.fetchAirportHeloSource(source.name).toPromise()
+      .then(done => {
+        source.status = 2;
+      })
+      .catch(err => {
+        source.status = -1;
+      });
   }
 
   private scrapeCountry(country: CountryReference): void {
@@ -81,11 +87,16 @@ export class DashboardComponent implements OnDestroy, OnInit {
       });
   }
 
-  public flushStore(): void {
+  public async flushStore(): Promise<void> {
     this.fetchService.flushEntities().pipe(take(1)).subscribe();
-    this.fetchService.fetchCountries()
-      .pipe(take(1))
-      .subscribe(countries => {
+    await this.fetchService.fetchAirportHelos()
+    .toPromise()
+      .then(airportsHelos => {
+        this.airportSources = airportsHelos.slice();
+    });
+    await this.fetchService.fetchCountries()
+      .toPromise()
+      .then(countries => {
         this.countries = countries.slice();
         this.selected = 'CIA World Factbook';
         this.isScraping = false;
@@ -154,9 +165,9 @@ export class DashboardComponent implements OnDestroy, OnInit {
     return this.isScraping || this.countries.some(c => c.status[datasource] === 1);
   }
 
-  public scrapeAirports(): void {
-    this.isScraping = true;
-    this.isScraping = false;
+  public scrapeAirportHeloSourceByName(source: string): void {
+    const airportHeloSource = this.airportSources.find(s => s.name === source);
+    this.scrapeAirportHeloSource(airportHeloSource);
   }
 
   public scrapeCountryByName(countryName: string): void {
@@ -176,6 +187,12 @@ export class DashboardComponent implements OnDestroy, OnInit {
       case 'CIA World Leaders': {
         this.countries.filter(c => c.status['CIA World Leaders'] === 0 || c.status['CIA World Leaders'] === -1).forEach(country => {
           this.scrapeLeadersOfCountry(country);
+        });
+        break;
+      }
+      case 'Airports/Helos': {
+        this.airportSources.filter(c => c.status === 0 || c.status === -1).forEach(source => {
+          this.scrapeAirportHeloSource(source);
         });
         break;
       }

@@ -12,7 +12,7 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 // Populate remaining airports from datahub list
-export function getAirportsFromDatahub() {
+export function getAirportsFromDatahub(): void {
     airportDatahubList.forEach(ap => {
 		const countryISO = ap.iso_country;
 		const countryId = countryToId(isoCodeToDataCode(countryISO));

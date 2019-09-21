@@ -8,7 +8,7 @@ import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
-export function getHelicopterLandingZones() {
+export function getHelicopterLandingZones(): void {
     Object.values(store.airports).forEach(airport => {
         let location: Entity = getRelation(airport.objectProperties, consts.ONTOLOGY.HAS_LOCATION);
         location = store.locations.find({ '@id': { $eq: [location && location['@id']] } })[0];

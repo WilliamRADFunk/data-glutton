@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 // import { path } from 'path';
 import { store } from './constants/globalStore';
+import { getAirportsHelosData } from './fetch-modules/all-airports/get-airport-helo-data';
 import { getCountriesData } from './fetch-modules/factbook/get-countries-data';
 import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
 import { getLeadersByCountriesData } from './fetch-modules/world-leaders/get-countries-data';
@@ -16,6 +17,16 @@ const port = 3000;
 
 app.get('/', (req, res) => {
     return res.send('Hello World!');
+});
+
+app.get('/airports-helos/:source', async (req, res) => {
+    const source = req && req.params && req.params.source;
+    getAirportsHelosData(source).then(done => {
+        return res.status(200).send({ success: true });
+    }).catch(err => {
+        console.error(`Unable to scrape ${source}: ${err}`);
+        return res.status(500).send({ success: false });
+    });
 });
 
 app.get('/country/:countryName', async (req, res) => {
@@ -71,12 +82,25 @@ app.get('/leaders/:countryName', async (req, res) => {
     }
 });
 
+app.get('/airport-helo-list', async (req, res) => {
+    return res.send(store.airportHeloList);
+});
+
 app.get('/country-list', async (req, res) => {
     if (!store.countriesInList.length) {
         await getCountries();
     }
 
     return res.send(store.countriesInList);
+});
+
+app.get('/scrape-airports-helos', async (req, res) => {
+    getAirportsHelosData(null).then(done => {
+        return res.status(200).send({ success: true });
+    }).catch(err => {
+        console.error('scrape-airports-helos error: ', err);
+        return res.status(500).send({ success: false });
+    });
 });
 
 app.get('/scrape-factbook', async (req, res) => {

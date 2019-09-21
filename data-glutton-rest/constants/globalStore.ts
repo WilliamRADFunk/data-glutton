@@ -1,5 +1,6 @@
 import * as loki from 'lokijs';
 
+import { AirportHeloReference } from '../models/airport-helo-reference';
 import { AirportNpmSourceObject } from '../models/airport-npm-source-object';
 import { CountryReference } from '../models/country-reference';
 import { Entity } from '../models/entity';
@@ -13,6 +14,16 @@ class GlobalStore {
 	public LOG_FILE_NAME: string = '';
 	public LOG_STREAM: any = null;
 	public IMAGES_TO_SCRAPE: ImageScrapableObject[] = [];
+	public airportHeloList: AirportHeloReference[] = [
+		{ 
+			name: 'Airports',
+			status: 0
+		},
+		{
+			name: 'Helicopter Landing Zones',
+			status: 0
+		}
+	];
 	public countriesInList: CountryReference[] = [];
 	public debugLogger: any = consoleLog;
 	public errorLogger: any = consoleError;

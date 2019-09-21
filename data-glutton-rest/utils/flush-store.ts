@@ -6,7 +6,17 @@ export function flushStore() {
 
 	store.airlinesNotFound = [];
 	store.airportsNotFound = [];
-    store.airportTable = {};
+	store.airportTable = {};
+	store.airportHeloList = [
+		{ 
+			name: 'Airports',
+			status: 0
+		},
+		{
+			name: 'Helicopter Landing Zones',
+			status: 0
+		}
+	];
 	store.countriesInList = [];
 	store.failedAirlines = [];
 	store.failedAirports = [];

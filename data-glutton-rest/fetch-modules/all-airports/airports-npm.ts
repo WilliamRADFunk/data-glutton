@@ -10,7 +10,7 @@ import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
 // Populate remaining airports from npm list
-export function getAirportsFromNpm() {
+export function getAirportsFromNpm(): void {
     Object.values(airportDataList).forEach((ap: AirportNpmSourceObject) => {
 		// Fetch or create airport entity
 		const airportId = consts.ONTOLOGY.INST_AIRPORT + getUuid.default(ap.iata);

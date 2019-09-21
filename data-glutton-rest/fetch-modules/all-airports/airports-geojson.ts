@@ -10,7 +10,7 @@ import { countryToId } from '../../utils/country-to-id';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
-export function getAirportsFromGeoJson() {
+export function getAirportsFromGeoJson(): void {
 	Object.values(airportDataLocal.features).forEach((ap: GeoFeature) => {
 		const airportProps: AirportProperties = ap.properties as AirportProperties;
 		const airportName = airportProps.name && airportProps.name.replace('Int\'l', 'International');
