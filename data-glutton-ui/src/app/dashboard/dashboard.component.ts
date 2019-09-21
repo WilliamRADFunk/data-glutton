@@ -13,7 +13,7 @@ export interface CountryReference {
   dataCode: string;
   isoCode: string;
   name: string;
-  status: { airports: number; factbook: number; leaders: number; };
+  status: { 'Airports/Helos': number; 'CIA World Factbook': number; 'CIA World Leaders': number; };
 }
 
 const LIST_SIZE = 5;
@@ -36,7 +36,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
    * Flag to track if scaping is underway.
    */
   isScraping: boolean = true;
-  selected: string = 'factbook';
+  selected: string = 'CIA World Factbook';
 
   constructor(private readonly fetchService: FetchCoordinator) { }
 
@@ -60,24 +60,24 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   private scrapeCountry(country: CountryReference): void {
-    country.status.factbook = 1;
+    country.status['CIA World Factbook'] = 1;
     this.fetchService.fetchCountry(country.name).toPromise()
       .then(done => {
-        country.status.factbook = 2;
+        country.status['CIA World Factbook'] = 2;
       })
       .catch(err => {
-        country.status.factbook = -1;
+        country.status['CIA World Factbook'] = -1;
       });
   }
 
   private scrapeLeadersOfCountry(country: CountryReference): void {
-    country.status.leaders = 1;
+    country.status['CIA World Leaders'] = 1;
     this.fetchService.fetchLeaders(country.name).toPromise()
       .then(done => {
-        country.status.leaders = 2;
+        country.status['CIA World Leaders'] = 2;
       })
       .catch(err => {
-        country.status.leaders = -1;
+        country.status['CIA World Leaders'] = -1;
       });
   }
 
@@ -87,6 +87,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       .pipe(take(1))
       .subscribe(countries => {
         this.countries = countries.slice();
+        this.selected = 'CIA World Factbook';
         this.isScraping = false;
     });
   }
@@ -163,25 +164,29 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.scrapeCountry(country);
   }
 
-  public scrapeFactbook(): void {
+  public scrape(dataSource: string): void {
     this.isScraping = true;
-    this.countries.filter(c => c.status.factbook === 0 || c.status.factbook === -1).forEach(country => {
-      this.scrapeCountry(country);
-    });
+    switch(dataSource) {
+      case 'CIA World Factbook': {
+        this.countries.filter(c => c.status['CIA World Factbook'] === 0 || c.status['CIA World Factbook'] === -1).forEach(country => {
+          this.scrapeCountry(country);
+        });
+        break;
+      }
+      case 'CIA World Leaders': {
+        this.countries.filter(c => c.status['CIA World Leaders'] === 0 || c.status['CIA World Leaders'] === -1).forEach(country => {
+          this.scrapeLeadersOfCountry(country);
+        });
+        break;
+      }
+    }
+    
     this.isScraping = false;
   }
 
   public scrapeLeadersOfCountryByName(countryName: string): void {
     const country = this.countries.find(c => c.name === countryName);
     this.scrapeLeadersOfCountry(country);
-  }
-
-  public scrapeLeaders(): void {
-    this.isScraping = true;
-    this.countries.filter(c => c.status.leaders === 0 || c.status.leaders === -1).forEach(country => {
-      this.scrapeLeadersOfCountry(country);
-    });
-    this.isScraping = false;
   }
 
   public switchSelected(dataSource: string): void {

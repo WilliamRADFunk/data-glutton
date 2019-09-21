@@ -25,7 +25,7 @@ export function getLeadersByCountryData(country: CountryReference, url: string):
 					dataScrapers.getLeaders($, country.name, countryId);
 					store.progressLogger(country.name, 1 / numberOfScrapers);
 					store.debugLogger(`Data scrape for ${country.name} is complete`);
-					store.countriesInList.find(c => c.name === country.name).status.leaders = 2;
+					store.countriesInList.find(c => c.name === country.name).status['CIA World Leaders'] = 2;
 					resolve();
 				})
 				.catch((err: any) => {
@@ -36,11 +36,11 @@ export function getLeadersByCountryData(country: CountryReference, url: string):
 					country.name}\n${url}\n${err.statusCode.toString()}\n\n`;
 					store.errorLogger(errMsg);
 					if (err.statusCode.toString() !== '404') {
-						store.countriesInList.find(c => c.name === country.name).status.leaders = -1;
+						store.countriesInList.find(c => c.name === country.name).status['CIA World Leaders'] = -1;
 						reject();
 					} else {
 						store.debugLogger(`${country.name} is not a country in the world leader list.`);
-						store.countriesInList.find(c => c.name === country.name).status.leaders = 2;
+						store.countriesInList.find(c => c.name === country.name).status['CIA World Leaders'] = 2;
 						resolve();
 					}
 				});

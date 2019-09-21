@@ -18,7 +18,7 @@ export async function getCountries(): Promise<any> {
 						dataCode: dCode,
 						isoCode: dataCodeToIsoCode(dCode),
 						name: $(c).prev().text().replace(/\\n/g, ' ').trim(),
-						status: { factbook: 0, leaders: 0 }
+						status: { 'CIA World Factbook': 0, 'CIA World Leaders': 0 }
 					};
 				})
 				.filter((country) => !!country.name && !consts.BASE.COUNTRY_BLACKLIST.includes(country.name.toLowerCase()));

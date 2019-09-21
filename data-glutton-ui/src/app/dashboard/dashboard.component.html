@@ -21,7 +21,10 @@
                         <div *ngFor="let listNumber of getListNumber(key); let index=index;" class="col-lg-6 dashboard-list-fragment">
                           <ul class="list-unstyled px-0">
                             <li *ngFor="let item of getDashboardFragment(key, index) | keyvalue">
-                                <div class="dashboard-item"><span class="dashboard-item-label d-inline-block">{{ item.key }}:</span> <span class="dashboard-item-value d-inline-block pull-right text-right">{{ item.value }}</span></div>
+                              <div class="dashboard-item">
+                                <span class="dashboard-item-label d-inline-block" ngbTooltip="{{item.key}}" container="body">{{ item.key }}:</span>
+                                <span class="dashboard-item-value d-inline-block pull-right text-right">{{ item.value }}</span>
+                              </div>
                             </li>
                           </ul>
                         </div>
@@ -48,65 +51,46 @@
                 <button class="btn btn-sm btn-danger rounded pull-right mt-1" (click)="flushStore()" type="button">Reset</button>
               </div>
             </div>
+            <ng-container *ngFor="let key of ['CIA World Factbook', 'CIA World Leaders'];">
+              <div
+                *ngIf="isComplete(key)"
+                class="row no-gutters rounded bg-info display-item mb-1"
+                [class.green-border]="selected === key"
+                [ngClass]="getAlertStatus(key)"
+                (click)="switchSelected(key)">
+                <div class="col my-auto">
+                  <div class="text-dark pl-2">{{ key }}</div>
+                </div>
+                <div class="col no-outline pr-1 pt-1">
+                  <button *ngIf="getButtonStatus(key).info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrape(key)">
+                    <span class="fa fa-play-circle-o"></span>
+                  </button>
+                  <button *ngIf="isScrapingBusy(key)"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                    <span class="fa fa-spinner fa-spin"></span>
+                  </button>
+                  <button *ngIf="getButtonStatus(key).danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrape(key)">
+                    <span class="fa fa-refresh"></span>
+                  </button>
+                </div>
+              </div>
+            </ng-container>
             <div
-              *ngIf="isComplete('factbook')"
+              *ngIf="isComplete('Airports/Helos')"
               class="row no-gutters rounded bg-info display-item mb-1"
-              [class.green-border]="selected === 'factbook'"
-              [ngClass]="getAlertStatus('factbook')"
-              (click)="switchSelected('factbook')">
+              [class.green-border]="selected === 'Airports/Helos'"
+              [ngClass]="getAlertStatus('Airports/Helos')"
+              (click)="switchSelected('Airports/Helos')">
               <div class="col my-auto">
-                <div class="text-dark pl-2">CIA World Factbook</div>
+                <div class="text-dark pl-2">World Airports/Helos</div>
               </div>
               <div class="col no-outline pr-1 pt-1">
-                <button *ngIf="getButtonStatus('factbook').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeFactbook()">
+                <button *ngIf="getButtonStatus('Airports/Helos').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeAirports()">
                   <span class="fa fa-play-circle-o"></span>
                 </button>
-                <button *ngIf="isScrapingBusy('factbook')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                <button *ngIf="isScrapingBusy('Airports/Helos')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                   <span class="fa fa-spinner fa-spin"></span>
                 </button>
-                <button *ngIf="getButtonStatus('factbook').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeFactbook()">
-                  <span class="fa fa-refresh"></span>
-                </button>
-              </div>
-            </div>
-            <div
-              *ngIf="isComplete('leaders')"
-              class="row no-gutters rounded bg-info display-item mb-1"
-              [class.green-border]="selected === 'leaders'"
-              [ngClass]="getAlertStatus('leaders')"
-              (click)="switchSelected('leaders')">
-              <div class="col my-auto">
-                <div class="text-dark pl-2" [class.]>CIA World Leaders</div>
-              </div>
-              <div class="col no-outline pr-1 pt-1">
-                <button *ngIf="getButtonStatus('leaders').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeLeaders()">
-                  <span class="fa fa-play-circle-o"></span>
-                </button>
-                <button *ngIf="isScrapingBusy('leaders')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
-                  <span class="fa fa-spinner fa-spin"></span>
-                </button>
-                <button *ngIf="getButtonStatus('leaders').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeLeaders()">
-                  <span class="fa fa-refresh"></span>
-                </button>
-              </div>
-            </div>
-            <div
-              *ngIf="isComplete('airports')"
-              class="row no-gutters rounded bg-info display-item mb-1"
-              [class.green-border]="selected === 'airports'"
-              [ngClass]="getAlertStatus('airports')"
-              (click)="switchSelected('airports')">
-              <div class="col my-auto">
-                <div class="text-dark pl-2">World Airports</div>
-              </div>
-              <div class="col no-outline pr-1 pt-1">
-                <button *ngIf="getButtonStatus('airports').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeAirports()">
-                  <span class="fa fa-play-circle-o"></span>
-                </button>
-                <button *ngIf="isScrapingBusy('airports')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
-                  <span class="fa fa-spinner fa-spin"></span>
-                </button>
-                <button *ngIf="getButtonStatus('airports').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeAirports()">
+                <button *ngIf="getButtonStatus('Airports/Helos').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeAirports()">
                   <span class="fa fa-refresh"></span>
                 </button>
               </div>
@@ -124,23 +108,23 @@
                 </div>
               </div>
             </div>
-            <ng-container *ngIf="selected === 'factbook'; else leadersTemplate">
+            <ng-container *ngIf="selected === 'CIA World Factbook'; else leadersTemplate">
               <div class="row" *ngFor="let country of countries">
-                <div *ngIf="country.status.factbook !== 2" class="col-12">
+                <div *ngIf="country.status['CIA World Factbook'] !== 2" class="col-12">
                   <div
                     class="row no-gutters rounded bg-info display-item mb-1"
-                    [ngClass]="{'alert-info': country.status.factbook === 0, 'alert-warning': country.status.factbook === 1, 'alert-danger': country.status.factbook === -1}">
+                    [ngClass]="{'alert-info': country.status['CIA World Factbook'] === 0, 'alert-warning': country.status['CIA World Factbook'] === 1, 'alert-danger': country.status['CIA World Factbook'] === -1}">
                     <div class="col-10 my-auto">
                       <div class="display-item-label text-dark pl-2">{{ country.name }}</div>
                     </div>
                     <div class="col-2 no-outline pr-1 pt-1">
-                      <button *ngIf="country.status.factbook === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(country.name)">
+                      <button *ngIf="country.status['CIA World Factbook'] === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeCountryByName(country.name)">
                         <span class="fa fa-play-circle-o"></span>
                       </button>
-                      <button *ngIf="country.status.factbook === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                      <button *ngIf="country.status['CIA World Factbook'] === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                         <span class="fa fa-spinner fa-spin"></span>
                       </button>
-                      <button *ngIf="country.status.factbook === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeCountryByName(country.name)">
+                      <button *ngIf="country.status['CIA World Factbook'] === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeCountryByName(country.name)">
                         <span class="fa fa-refresh"></span>
                       </button>
                     </div>
@@ -149,23 +133,23 @@
               </div>
             </ng-container>
             <ng-template #leadersTemplate>
-              <ng-container *ngIf="selected === 'leaders'; else airportTemplate">
+              <ng-container *ngIf="selected === 'CIA World Leaders'; else airportTemplate">
                 <div class="row" *ngFor="let country of countries">
-                  <div *ngIf="country.status.leaders !== 2" class="col-12">
+                  <div *ngIf="country.status['CIA World Leaders'] !== 2" class="col-12">
                     <div
                       class="row no-gutters rounded bg-info display-item mb-1"
-                      [ngClass]="{'alert-info': country.status.leaders === 0, 'alert-warning': country.status.leaders === 1, 'alert-danger': country.status.leaders === -1}">
+                      [ngClass]="{'alert-info': country.status['CIA World Leaders'] === 0, 'alert-warning': country.status['CIA World Leaders'] === 1, 'alert-danger': country.status['CIA World Leaders'] === -1}">
                       <div class="col-10 my-auto">
                         <div class="display-item-label text-dark pl-2">{{ country.name }}</div>
                       </div>
                       <div class="col-2 no-outline pr-1 pt-1">
-                        <button *ngIf="country.status.leaders === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeLeadersOfCountryByName(country.name)">
+                        <button *ngIf="country.status['CIA World Leaders'] === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeLeadersOfCountryByName(country.name)">
                           <span class="fa fa-play-circle-o"></span>
                         </button>
-                        <button *ngIf="country.status.leaders === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                        <button *ngIf="country.status['CIA World Leaders'] === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                           <span class="fa fa-spinner fa-spin"></span>
                         </button>
-                        <button *ngIf="country.status.leaders === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeLeadersOfCountryByName(country.name)">
+                        <button *ngIf="country.status['CIA World Leaders'] === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeLeadersOfCountryByName(country.name)">
                           <span class="fa fa-refresh"></span>
                         </button>
                       </div>
