@@ -7,6 +7,7 @@ import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
 import { getLeadersByCountriesData } from './fetch-modules/world-leaders/get-countries-data';
 import { getLeadersByCountryPromise } from './fetch-modules/world-leaders/get-country-data';
 import { CountryReference } from './models/country-reference';
+import { flushStore } from './utils/flush-store';
 import { getCountries } from './utils/get-countries';
 
 const app = express();
@@ -39,6 +40,11 @@ app.get('/country/:countryName', async (req, res) => {
     } else {
         return res.status(404).send({ message: 'Invalid country name' });
     }
+});
+
+app.get('/entities/flush/', (req, res) => {
+    flushStore();
+    return res.status(200).send();
 });
 
 app.get('/leaders/:countryName', async (req, res) => {
@@ -99,7 +105,7 @@ app.get('/scrape-leaders', async (req, res) => {
 
 app.get('/dashboard', async (req, res) => {
     const dashboard: { [key: string]: { [key: string]: number } } = {
-        'airports': {
+        'Airports/Helo': {
             'Airlines': store.airlines.count(),
             'Airports': store.airports.count(),
             'Helicopter Landing Zones': store.helicopterLandingZones.count(),
@@ -107,7 +113,7 @@ app.get('/dashboard', async (req, res) => {
             'Runways': store.runways.count(),
             'Surface Materials': store.surfaceMaterials.count(),
         },
-        'factbook': {
+        'Factbook': {
             'Agricultural Lands': store.agriculturalLands.count(),
             'Arable Lands': store.arableLands.count(),
             'Artificially Irrigated Lands': store.artificiallyIrrigatedLands.count(),
@@ -135,7 +141,7 @@ app.get('/dashboard', async (req, res) => {
             'Region Maps': store.regionMaps.count(),
             'Terrains': store.terrains.count()
         },
-        'leaders': {
+        'World Leader': {
             'Government Offices': store.govOffices.count(),
             'Persons': store.persons.count()
         }

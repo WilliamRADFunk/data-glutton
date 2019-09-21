@@ -30,6 +30,10 @@ export class FetchCoordinator {
     return this.http.get(`http://localhost:3000/leaders/${countryName}`);
   }
 
+  flushEntities(): Observable<any> {
+    return this.http.get(`http://localhost:3000/entities/flush`);
+  }
+
   scrapeFactbook(): Observable<any> {
     return this.http.get('http://localhost:3000/scrape-factbook');
   }

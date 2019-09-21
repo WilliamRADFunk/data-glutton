@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
 
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
+import { Subscription } from 'rxjs';
 
 export interface AirportSpurceReference {
   name: string;
@@ -22,13 +23,14 @@ const LIST_SIZE = 5;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnDestroy, OnInit {
+  private _subs: Subscription[] = [];
   airportSources: AirportSpurceReference[] [];
   countries: CountryReference[] = [];
   dashboard: { [key: string]: { [key: string]: number } } = {
-    airports: {},
-    factbook: {},
-    leaders: {}
+    'Airports/Helo': {},
+    'Factbook': {},
+    'World Leader': {}
   };
   /**
    * Flag to track if scaping is underway.
@@ -38,16 +40,23 @@ export class DashboardComponent implements OnInit {
 
   constructor(private readonly fetchService: FetchCoordinator) { }
 
+  ngOnDestroy(): void {
+    this._subs.forEach(s => s && s.unsubscribe());
+    this._subs.length = 0;
+  }
+
   ngOnInit(): void {
-    console.log('Fetching countries...');
-    this.fetchService.fetchCountries().pipe(take(1)).subscribe(countries => {
-      console.log('Countries', countries);
-      this.countries = countries.slice();
-      this.isScraping = false;
+    this.fetchService.fetchCountries()
+      .pipe(take(1))
+      .subscribe(countries => {
+        this.countries = countries.slice();
+        this.isScraping = false;
     });
-    this.fetchService.fetchDashboard().subscribe(data => {
-      this.dashboard = data.dashboard;
-    });
+    this._subs.push(
+      this.fetchService.fetchDashboard()
+        .subscribe(data => {
+          this.dashboard = data.dashboard;
+      }));
   }
 
   private scrapeCountry(country: CountryReference): void {
@@ -72,8 +81,14 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  public flushStore() {
-    // Dump the store and reset controls
+  public flushStore(): void {
+    this.fetchService.flushEntities().pipe(take(1)).subscribe();
+    this.fetchService.fetchCountries()
+      .pipe(take(1))
+      .subscribe(countries => {
+        this.countries = countries.slice();
+        this.isScraping = false;
+    });
   }
 
   public getAlertStatus(dataSource: string): {'alert-info': boolean; 'alert-warning': boolean; 'alert-danger': boolean; } {
@@ -112,6 +127,10 @@ export class DashboardComponent implements OnInit {
 
   public getDashboardKeyCount(dataSource: string): number {
     return Object.keys(this.dashboard[dataSource]).length;
+  }
+
+  public getDashboardKeys(): string[] {
+    return Object.keys(this.dashboard);
   }
 
   public getListNumber(dataSource: string): number[] {

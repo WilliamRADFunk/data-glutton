@@ -9,68 +9,29 @@
                 <div class="h4 text-light text-outline stroke-shadow">Entities Collected</div>
               </div>
             </div>
-            <div class="row no-gutters rounded mb-1">
-              <div *ngIf="getDashboardKeyCount('factbook')" class="card w-100">
-                <div class="card-header alert-info font-weight-bold">
-                  Factbook Entities
-                </div>
-                <div class="card-body">
-                  <div class="card-text">
-                    <div class="row">
-                      <div *ngFor="let listNumber of getListNumber('factbook'); let index=index;" class="col-lg-6">
-                        <ul class="list-unstyled px-0">
-                          <li *ngFor="let item of getDashboardFragment('factbook', index) | keyvalue">
-                            <div class="dashboard-item"><span class="dashboard-item-label d-inline-block">{{ item.key }}:</span> <span class="dashboard-item-value d-inline-block pull-right">{{ item.value }}</span></div>
-                          </li>
-                        </ul>
+            <ng-container *ngFor="let key of getDashboardKeys()">
+              <div class="row no-gutters rounded mb-1">
+                <div *ngIf="getDashboardKeyCount(key)" class="card w-100">
+                  <div class="card-header alert-info font-weight-bold">
+                    {{ key }} Entities
+                  </div>
+                  <div class="card-body">
+                    <div class="card-text">
+                      <div class="row">
+                        <div *ngFor="let listNumber of getListNumber(key); let index=index;" class="col-lg-6 dashboard-list-fragment">
+                          <ul class="list-unstyled px-0">
+                            <li *ngFor="let item of getDashboardFragment(key, index) | keyvalue">
+                                <div class="dashboard-item"><span class="dashboard-item-label d-inline-block">{{ item.key }}:</span> <span class="dashboard-item-value d-inline-block pull-right text-right">{{ item.value }}</span></div>
+                            </li>
+                          </ul>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-            <hr/>
-            <div class="row no-gutters rounded mb-1">
-              <div *ngIf="getDashboardKeyCount('leaders')" class="card w-100">
-                <div class="card-header alert-info font-weight-bold">
-                  World Leader Entities
-                </div>
-                <div class="card-body">
-                  <div class="card-text">
-                    <div class="row">
-                      <div *ngFor="let listNumber of getListNumber('leaders'); let index=index;" class="col-lg-6">
-                        <ul class="list-unstyled px-0">
-                          <li *ngFor="let item of getDashboardFragment('leaders', index) | keyvalue">
-                              <div class="dashboard-item"><span class="dashboard-item-label d-inline-block">{{ item.key }}:</span> <span class="dashboard-item-value d-inline-block pull-right">{{ item.value }}</span></div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <hr/>
-            <div class="row no-gutters rounded mb-1">
-              <div *ngIf="getDashboardKeyCount('airports')" class="card w-100">
-                <div class="card-header alert-info font-weight-bold">
-                  Airport/Helo Entities
-                </div>
-                <div class="card-body">
-                  <div class="card-text">
-                    <div class="row">
-                      <div *ngFor="let listNumber of getListNumber('airports'); let index=index;" class="col-lg-6">
-                        <ul class="list-unstyled px-0">
-                          <li *ngFor="let item of getDashboardFragment('airports', index) | keyvalue">
-                              <div class="dashboard-item"><span class="dashboard-item-label d-inline-block">{{ item.key }}:</span> <span class="dashboard-item-value d-inline-block pull-right">{{ item.value }}</span></div>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+              <hr/>
+            </ng-container>
           </div>
         </div>
       </div>
