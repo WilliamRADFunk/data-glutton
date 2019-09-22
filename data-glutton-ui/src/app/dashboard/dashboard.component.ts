@@ -207,6 +207,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   public switchSelected(dataSource: string): void {
+    console.log('dataSource', dataSource);
     this.selected = dataSource;
   }
 }

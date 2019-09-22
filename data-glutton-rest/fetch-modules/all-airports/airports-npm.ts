@@ -11,12 +11,18 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 
 // Populate remaining airports from npm list
 export function getAirportsFromNpm(): void {
-    Object.values(airportDataList).forEach((ap: AirportNpmSourceObject) => {
-		// Fetch or create airport entity
-		const airportId = consts.ONTOLOGY.INST_AIRPORT + getUuid.default(ap.iata);
-		if (!airportId) {
+	const totalItems = Object.keys(airportDataList).length;
+	let lastPercentageEmitted = 0;
+    Object.values(airportDataList).forEach((ap: AirportNpmSourceObject, index: number) => {
+		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
+			store.progressLogger('AirportsFromNpm', index / totalItems);
+			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
+		}
+		if (!ap.iata) {
 			return; // No IATA code, no id. No id, no airport.
 		}
+		// Fetch or create airport entity
+		const airportId = consts.ONTOLOGY.INST_AIRPORT + getUuid.default(ap.iata);
 		let airportObjectProp: EntityContainer = {};
 		if (!store.airports.find({ '@id': { $eq: airportId } })[0]) {
 			airportObjectProp = entityMaker(

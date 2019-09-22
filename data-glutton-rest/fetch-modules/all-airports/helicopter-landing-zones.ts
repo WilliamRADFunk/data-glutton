@@ -9,7 +9,13 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 export function getHelicopterLandingZones(): void {
-    Object.values(store.airports).forEach(airport => {
+	const totalItems = store.airports.count();
+	let lastPercentageEmitted = 0;
+    Object.values(store.airports).forEach((airport: Entity, index: number) => {
+		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
+			store.progressLogger('HelicopterLandingZones', index / totalItems);
+			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
+		}
         let location: Entity = getRelation(airport.objectProperties, consts.ONTOLOGY.HAS_LOCATION);
         location = store.locations.find({ '@id': { $eq: [location && location['@id']] } })[0];
         let runway: Entity = getRelation(airport.objectProperties, consts.ONTOLOGY.HAS_RUNWAY);

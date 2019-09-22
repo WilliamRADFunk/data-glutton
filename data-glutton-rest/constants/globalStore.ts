@@ -8,7 +8,7 @@ import { ImageScrapableObject } from '../models/image-scrapable-object';
 import { consoleError, consoleLog } from '../utils/logger';
 
 // const noop = () => { /* Noop */ };
-const noop = (a: string, b: number) => { consoleLog(`${a} is ${Math.floor(b * 100)} done`); };
+const noop = (a: string, b: number) => { consoleLog(`${a} is ${Math.floor(b * 100)}% done`); };
 
 class GlobalStore {
 	public LOG_FILE_NAME: string = '';

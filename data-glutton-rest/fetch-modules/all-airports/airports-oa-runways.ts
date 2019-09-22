@@ -218,7 +218,7 @@ export async function getRunwaysFromOurAirports(): Promise<void> {
     const jsonifiedData = await csv.default({
         headers: ['id','refId', 'ident', 'length', 'width', 'surfMat', 'lighted', 'closed'],
         noheader: false
-    }).fromFile('src/assets/runways-ourairports.csv');
+    }).fromFile('assets/runways-ourairports.csv');
 
     jsonifiedData.forEach((datum: RunwayOurairportsParamObject) => runwayData.push(CSV(
         datum.id,
@@ -231,7 +231,13 @@ export async function getRunwaysFromOurAirports(): Promise<void> {
         datum.closed
     )));
 
-	Object.values(runwayData).forEach(runway => {
+	const totalItems = Object.keys(runwayData).length;
+	let lastPercentageEmitted = 0;
+	Object.values(runwayData).forEach((runway: RunwayOurairportsSourceObject, index: number) => {
+		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
+			store.progressLogger('RunwaysFromOurAirports', index / totalItems);
+			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
+		}
         if (!runway.length || !runway.width || !runway.ident) {
             return;
         }

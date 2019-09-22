@@ -11,7 +11,13 @@ import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
 export function getAirportsFromGeoJson(): void {
-	Object.values(airportDataLocal.features).forEach((ap: GeoFeature) => {
+	const totalItems = Object.keys(airportDataLocal.features).length;
+	let lastPercentageEmitted = 0;
+	Object.values(airportDataLocal.features).forEach((ap: GeoFeature, index: number) => {
+		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
+			store.progressLogger('AirportsFromGeoJson', index / totalItems);
+			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
+		}
 		const airportProps: AirportProperties = ap.properties as AirportProperties;
 		const airportName = airportProps.name && airportProps.name.replace('Int\'l', 'International');
 		const airportLocation = ap.geometry.coordinates;
