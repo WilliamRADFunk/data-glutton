@@ -17,11 +17,29 @@ class GlobalStore {
 	public airportHeloList: AirportHeloReference[] = [
 		{ 
 			name: 'Airports',
-			status: 0
-		},
-		{
-			name: 'Helicopter Landing Zones',
-			status: 0
+			status: 0,
+			subRefs: [
+				{
+					name: 'GeoJson Airports',
+					status: 0
+				},
+				{
+					name: 'Npm Airports',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports',
+					status: 0
+				},
+				{
+					name: 'Airport Runways',
+					status: 0
+				},
+				{
+					name: 'Helicopter Landing Zones',
+					status: 0
+				}
+			]
 		}
 	];
 	public countriesInList: CountryReference[] = [];

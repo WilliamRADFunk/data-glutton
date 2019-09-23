@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
 
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
-import { Subscription } from 'rxjs';
+import { Subscription, of } from 'rxjs';
 import { AirportSourceReference } from '../models/airport-source-reference';
 import { CountryReference } from '../models/country-reference';
 
@@ -56,13 +56,26 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   private scrapeAirportHeloSource(source: AirportSourceReference): void {
     source.status = 1;
-    this.fetchService.fetchAirportHeloSource(source.name).toPromise()
-      .then(done => {
-        source.status = 2;
-      })
-      .catch(err => {
-        source.status = -1;
+    if (source.name !== 'Airports') {
+      this.fetchService.fetchAirportHeloSource(source.name).toPromise()
+        .then(done => {
+          source.status = 2;
+        })
+        .catch(err => {
+          source.status = -1;
+        });
+    } else {
+      source.subRefs.forEach(async sub => {
+        sub.status = 1;
+        await this.fetchService.fetchAirportHeloSource(source.name, sub.name).toPromise()
+          .then(done => {
+            sub.status = 2;
+          })
+          .catch(err => {
+            sub.status = -1;
+          });
       });
+    }
   }
 
   private scrapeCountry(country: CountryReference): void {
@@ -151,6 +164,11 @@ export class DashboardComponent implements OnDestroy, OnInit {
     const carryOver = (keyCount % LIST_SIZE) ? 1 : 0;
     const total =  numOfListsBase + carryOver;
     return new Array(total);
+  }
+
+  public getSubSource(dataSource: AirportSourceReference): AirportSourceReference[] {
+    const ref = this.airportSources.find(s => s.name === dataSource.name);
+    return ref.subRefs.slice();
   }
 
   public hasFailedStatus(datasource: string): boolean {

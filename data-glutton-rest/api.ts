@@ -19,9 +19,10 @@ app.get('/', (req, res) => {
     return res.send('Hello World!');
 });
 
-app.get('/airports-helos/:source', async (req, res) => {
+app.get('/airports-helos/:source/:subSource', async (req, res) => {
     const source = req && req.params && req.params.source;
-    getAirportsHelosData(source).then(done => {
+    const subSource = req && req.params && req.params.subSource;
+    getAirportsHelosData(source, subSource).then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
         console.error(`Unable to scrape ${source}: ${err}`);

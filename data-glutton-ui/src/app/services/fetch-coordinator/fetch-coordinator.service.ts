@@ -26,8 +26,8 @@ export class FetchCoordinator {
     return timer(0, 2000).pipe(switchMap(() => this.http.get<any>('http://localhost:3000/dashboard')));
   }
 
-  fetchAirportHeloSource(source: string): Observable<any> {
-    return this.http.get(`http://localhost:3000/airports-helos/${source}`);
+  fetchAirportHeloSource(source: string, subSource?: string): Observable<any> {
+    return this.http.get(`http://localhost:3000/airports-helos/${source}/${subSource || ''}`);
   }
 
   fetchCountry(countryName: string): Observable<any> {
