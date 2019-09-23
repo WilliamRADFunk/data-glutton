@@ -15,7 +15,7 @@ class GlobalStore {
 	public LOG_STREAM: any = null;
 	public IMAGES_TO_SCRAPE: ImageScrapableObject[] = [];
 	public airportHeloList: AirportHeloReference[] = [
-		{ 
+		{
 			name: 'Airports',
 			status: 0,
 			subRefs: [
@@ -28,7 +28,43 @@ class GlobalStore {
 					status: 0
 				},
 				{
-					name: 'DataHub Airports',
+					name: 'DataHub Airports Source #1',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports Source #2',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports Source #3',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports Source #4',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports Source #5',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports Source #6',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports Source #7',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports Source #8',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports Source #9',
+					status: 0
+				},
+				{
+					name: 'DataHub Airports Source #10',
 					status: 0
 				},
 				{

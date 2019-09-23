@@ -12,12 +12,12 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 // Populate remaining airports from datahub list
-export function getAirportsFromDatahub(): void {
-	const totalItems = Object.keys(airportDatahubList).length;
+export function getAirportsFromDatahub(partNum: number): void {
+	const totalItems = airportDatahubList[partNum - 1].length;
 	let lastPercentageEmitted = 0;
-    Object.values(airportDatahubList).forEach((ap: AirportDatahubSourceObject, index: number) => {
+    airportDatahubList[partNum].forEach((ap: AirportDatahubSourceObject, index: number) => {
 		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
-			store.progressLogger('AirportsFromDatahub', index / totalItems);
+			store.progressLogger(`AirportsFromDatahub Source #${partNum}`, index / totalItems);
 			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
 		}
 		const countryISO = ap.iso_country;
@@ -46,7 +46,7 @@ export function getAirportsFromDatahub(): void {
 			}
 			return;
 		}
-		
+
 		if (!ap.ident) {
 			return; // No ident, no id. No id, no airport.
 		}

@@ -13,7 +13,6 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
                               airportHeloSubSource.status = 2;
                               resolve();
 		            });
-                        break;
                   }
                   case 'Npm Airports': {
                         return new Promise((resolve, reject) => {
@@ -22,16 +21,6 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
                               airportHeloSubSource.status = 2;
                               resolve();
 		            });
-                        break;
-                  }
-                  case 'DataHub Airports': {
-                        return new Promise((resolve, reject) => {
-                              dataScrapers.getAirportsFromDatahub();
-                              store.debugLogger(`Data scrape for ${subSource} is complete`);
-                              airportHeloSubSource.status = 2;
-                              resolve();
-		            });
-                        break;
                   }
                   case 'Airport Runways': {
                         return new Promise(async (resolve, reject) => {
@@ -40,7 +29,6 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
                               airportHeloSubSource.status = 2;
                               resolve();
 		            });
-                        break;
                   }
                   case 'Helicopter Landing Zones': {
                         return new Promise((resolve, reject) => {
@@ -50,7 +38,15 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
                               airportHeloSource.status = 2;
                               resolve();
 		            });
-                        break;
+                  }
+                  default: {
+                        return new Promise((resolve, reject) => {
+                              const partNum = Number(subSource.split('#')[1].trim());
+                              dataScrapers.getAirportsFromDatahub(partNum);
+                              store.debugLogger(`Data scrape for ${subSource} is complete`);
+                              airportHeloSubSource.status = 2;
+                              resolve();
+		            });
                   }
             }
 	}

@@ -1,9 +1,9 @@
 import { store } from '../constants/globalStore';
 import { AirportNpmSourceObject } from '../models/airport-npm-source-object';
 
+import * as airportDatahub from '../assets/airports-datahub.json';
 import * as airportDataNpm from '../assets/airports-npm.json';
 import * as airportDataSource from '../assets/airports-source.json';
-import * as airportDatahub from '../assets/airports-datahub.json';
 
 export function createLookupTable(): void {
     airportDataNpm.forEach((ap: AirportNpmSourceObject) => {
@@ -15,7 +15,17 @@ export function createLookupTable(): void {
 
 export const airportDataLocal = airportDataSource;
 export const airportDataList = airportDataNpm;
-export const airportDatahubList = airportDatahub;
+const segmentedList = [];
+const megaList = Object.values(airportDatahub);
+const divisor = Math.floor(megaList.length / 10);
+do {
+	if (divisor > megaList.length) {
+		segmentedList.push(megaList.splice(0));
+	} else {
+		segmentedList.push(megaList.splice(0, divisor));
+	}
+} while (megaList.length);
+export const airportDatahubList = segmentedList;
 
 const isoCodeToDataCodeTable: { [key: string]: string } = {
 	AD: 'an',
