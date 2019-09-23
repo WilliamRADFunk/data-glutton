@@ -41,7 +41,7 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
                   }
                   default: {
                         return new Promise((resolve, reject) => {
-                              const partNum = Number(subSource.split('#')[1].trim());
+                              const partNum = Number(subSource.split('~')[1].trim());
                               dataScrapers.getAirportsFromDatahub(partNum);
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               airportHeloSubSource.status = 2;

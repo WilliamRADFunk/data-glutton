@@ -54,6 +54,12 @@ export class DashboardComponent implements OnDestroy, OnInit {
       }));
   }
 
+  private async asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+
   private scrapeAirportHeloSource(source: AirportSourceReference): void {
     source.status = 1;
     if (source.name !== 'Airports') {
@@ -65,16 +71,20 @@ export class DashboardComponent implements OnDestroy, OnInit {
           source.status = -1;
         });
     } else {
-      source.subRefs.forEach(async sub => {
-        sub.status = 1;
-        await this.fetchService.fetchAirportHeloSource(source.name, sub.name).toPromise()
+      const start = async () => {
+        await this.asyncForEach(source.subRefs, async (sub) => {
+          sub.status = 1;
+          await this.fetchService.fetchAirportHeloSource(source.name, sub.name).toPromise()
           .then(done => {
             sub.status = 2;
           })
           .catch(err => {
             sub.status = -1;
           });
-      });
+        });
+      }
+      // Creates an asyncronous version of the forEach loop.
+      start();
     }
   }
 
@@ -116,10 +126,10 @@ export class DashboardComponent implements OnDestroy, OnInit {
     });
   }
 
-  public getAlertStatus(dataSource: string): {'alert-info': boolean; 'alert-warning': boolean; 'alert-danger': boolean; } {
-    const isBusy = this.isScrapingBusy(dataSource);
-    const hasErrors = !isBusy && this.hasFailedStatus(dataSource);
-    const infoMode = !isBusy && !this.hasFailedStatus(dataSource);
+  public getAlertStatus(dataSource: string, isAirportHelos?: boolean): {'alert-info': boolean; 'alert-warning': boolean; 'alert-danger': boolean; } {
+    const isBusy = this.isScrapingBusy(dataSource, isAirportHelos);
+    const hasErrors = !isBusy && this.hasFailedStatus(dataSource, isAirportHelos);
+    const infoMode = !isBusy && !this.hasFailedStatus(dataSource, isAirportHelos);
     return {
       'alert-info': infoMode,
       'alert-warning': isBusy,
@@ -127,10 +137,10 @@ export class DashboardComponent implements OnDestroy, OnInit {
     };
   }
 
-  public getButtonStatus(dataSource: string): { info: boolean; warning: boolean; danger: boolean; } {
-    const isBusy = this.isScrapingBusy(dataSource);
-    const hasErrors = !isBusy && this.hasFailedStatus(dataSource);
-    const infoMode = !isBusy && !this.hasFailedStatus(dataSource);
+  public getButtonStatus(dataSource: string, isAirportHelos?: boolean): { info: boolean; warning: boolean; danger: boolean; } {
+    const isBusy = this.isScrapingBusy(dataSource, isAirportHelos);
+    const hasErrors = !isBusy && this.hasFailedStatus(dataSource, isAirportHelos);
+    const infoMode = !isBusy && !this.hasFailedStatus(dataSource, isAirportHelos);
     return {
       info: infoMode,
       warning: isBusy,
@@ -171,16 +181,28 @@ export class DashboardComponent implements OnDestroy, OnInit {
     return ref.subRefs.slice();
   }
 
-  public hasFailedStatus(datasource: string): boolean {
-    return this.countries.some(c => c.status[datasource] === -1);
+  public hasFailedStatus(datasource: string, isAirportHelos?: boolean): boolean {
+    if (isAirportHelos) {
+      return this.airportSources.some(a => a.status[datasource] === -1);
+    } else {
+      return this.countries.some(c => c.status[datasource] === -1);
+    }
   }
 
-  public isComplete(datasource: string): boolean {
-    return !this.countries.every(c => c.status[datasource] === 2);
+  public isComplete(datasource: string, isAirportHelos?: boolean): boolean {
+    if (isAirportHelos) {
+      return !this.airportSources.every(a => a.status[datasource] === 2);
+    } else {
+      return !this.countries.every(c => c.status[datasource] === 2);
+    }
   }
 
-  public isScrapingBusy(datasource: string): boolean {
-    return this.isScraping || this.countries.some(c => c.status[datasource] === 1);
+  public isScrapingBusy(datasource: string, isAirportHelos?: boolean): boolean {
+    if (isAirportHelos) {
+      return this.isScraping || this.airportSources.some(a => a.status[datasource] === 1);
+    } else {
+      return this.isScraping || this.countries.some(c => c.status[datasource] === 1);
+    }
   }
 
   public scrapeAirportHeloSourceByName(source: string): void {
