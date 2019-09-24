@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { take } from 'rxjs/operators';
+import { take, catchError } from 'rxjs/operators';
 
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
 import { Subscription, of } from 'rxjs';
@@ -46,9 +46,16 @@ export class DashboardComponent implements OnDestroy, OnInit {
       .pipe(take(1))
       .subscribe(airportsHelos => {
         this.airportSources = airportsHelos.slice();
+        this.airportSources.forEach(source => {
+        this.reassignStatus(source);
+      });
     });
     this._subs.push(
-      this.fetchService.fetchDashboard()
+      this.fetchService.fetchDashboardStream()
+        .pipe(catchError(err => {
+          console.error('fetchDashboardStream error: ', err.message);
+          return of(this.dashboard);
+        }))
         .subscribe(data => {
           this.dashboard = data.dashboard;
       }));
@@ -60,27 +67,60 @@ export class DashboardComponent implements OnDestroy, OnInit {
     }
   }
 
+  private reassignStatus(source: any): void {
+    if (source.subRefs.some(sub => sub.status === 1)) {
+      source.status = 1;
+    } else if (source.subRefs.some(sub => sub.status === -1)) {
+      source.status = -1;
+    } else if (source.subRefs.every(sub => sub.status === 2)) {
+      source.status = 2;
+    } else {
+      source.status = 0;
+    }
+  }
+
   private scrapeAirportHeloSource(source: AirportSourceReference): void {
+    console.log('source.status', source, source.status);
+    this.reassignStatus(source);
+    if (source.status !== -1 && source.status !== 0) {
+      return;
+    }
     source.status = 1;
     if (source.name !== 'Airports') {
-      this.fetchService.fetchAirportHeloSource(source.name).toPromise()
-        .then(done => {
-          source.status = 2;
-        })
-        .catch(err => {
-          source.status = -1;
-        });
+      if (source.status === -1 || source.status === 0) {
+        this.fetchService.fetchAirportHeloSource(source.name).toPromise()
+          .then(done => {
+            source.status = 2;
+            this.reassignStatus(source);
+          })
+          .catch(err => {
+            source.status = -1;
+            this.reassignStatus(source);
+          });
+      }
     } else {
       const start = async () => {
         await this.asyncForEach(source.subRefs, async (sub) => {
-          sub.status = 1;
-          await this.fetchService.fetchAirportHeloSource(source.name, sub.name).toPromise()
-          .then(done => {
-            sub.status = 2;
-          })
-          .catch(err => {
-            sub.status = -1;
-          });
+          await this.fetchService.fetchDashboard().toPromise()
+            .then(data => {
+              this.dashboard = data.dashboard;
+            })
+            .catch(err => {
+              console.log('fetchDashboard error: ', err.message);
+            });
+          if (sub.status === -1 || sub.status === 0) {
+            sub.status = 1;
+            this.reassignStatus(source);
+            await this.fetchService.fetchAirportHeloSource(source.name, sub.name).toPromise()
+              .then(done => {
+                sub.status = 2;
+                this.reassignStatus(source);
+              })
+              .catch(err => {
+                sub.status = -1;
+                this.reassignStatus(source);
+              });
+          }
         });
       }
       // Creates an asyncronous version of the forEach loop.
@@ -113,17 +153,17 @@ export class DashboardComponent implements OnDestroy, OnInit {
   public async flushStore(): Promise<void> {
     this.fetchService.flushEntities().pipe(take(1)).subscribe();
     await this.fetchService.fetchAirportHelos()
-    .toPromise()
-      .then(airportsHelos => {
-        this.airportSources = airportsHelos.slice();
-    });
+      .toPromise()
+        .then(airportsHelos => {
+          this.airportSources = airportsHelos.slice();
+        });
     await this.fetchService.fetchCountries()
       .toPromise()
       .then(countries => {
         this.countries = countries.slice();
         this.selected = 'CIA World Factbook';
         this.isScraping = false;
-    });
+      });
   }
 
   public getAlertStatus(dataSource: string, isAirportHelos?: boolean): {'alert-info': boolean; 'alert-warning': boolean; 'alert-danger': boolean; } {
@@ -141,6 +181,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     const isBusy = this.isScrapingBusy(dataSource, isAirportHelos);
     const hasErrors = !isBusy && this.hasFailedStatus(dataSource, isAirportHelos);
     const infoMode = !isBusy && !this.hasFailedStatus(dataSource, isAirportHelos);
+    console.log('getButtonStatus', dataSource, isAirportHelos, isBusy, hasErrors, infoMode);
     return {
       info: infoMode,
       warning: isBusy,
@@ -178,12 +219,12 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public getSubSource(dataSource: AirportSourceReference): AirportSourceReference[] {
     const ref = this.airportSources.find(s => s.name === dataSource.name);
-    return ref.subRefs.slice();
+    return ref.subRefs;
   }
 
   public hasFailedStatus(datasource: string, isAirportHelos?: boolean): boolean {
     if (isAirportHelos) {
-      return this.airportSources.some(a => a.status[datasource] === -1);
+      return this.airportSources.some(a => a.status === -1 || a.subRefs.some(sub => sub.status === -1));
     } else {
       return this.countries.some(c => c.status[datasource] === -1);
     }
@@ -191,7 +232,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public isComplete(datasource: string, isAirportHelos?: boolean): boolean {
     if (isAirportHelos) {
-      return !this.airportSources.every(a => a.status[datasource] === 2);
+      return !this.airportSources.every(a => a.status === 2 || a.subRefs.every(sub => sub.status === 2));
     } else {
       return !this.countries.every(c => c.status[datasource] === 2);
     }
@@ -199,7 +240,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public isScrapingBusy(datasource: string, isAirportHelos?: boolean): boolean {
     if (isAirportHelos) {
-      return this.isScraping || this.airportSources.some(a => a.status[datasource] === 1);
+      return this.isScraping || this.airportSources.some(a => a.subRefs.some(sub => sub.status === 1));
     } else {
       return this.isScraping || this.countries.some(c => c.status[datasource] === 1);
     }
@@ -247,7 +288,10 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   public switchSelected(dataSource: string): void {
-    console.log('dataSource', dataSource);
     this.selected = dataSource;
+    if (dataSource === 'Airports/Helos') {
+      console.log('Switched!', dataSource);
+      this.reassignStatus(this.airportSources[0]);
+    }
   }
 }

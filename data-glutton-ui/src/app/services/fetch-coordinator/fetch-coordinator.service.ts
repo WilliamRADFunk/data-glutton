@@ -23,6 +23,10 @@ export class FetchCoordinator {
   }
 
   fetchDashboard(): Observable<any> {
+    return this.http.get<any>('http://localhost:3000/dashboard');
+  }
+
+  fetchDashboardStream(): Observable<any> {
     return timer(0, 2000).pipe(switchMap(() => this.http.get<any>('http://localhost:3000/dashboard')));
   }
 

@@ -22,10 +22,16 @@ app.get('/', (req, res) => {
 app.get('/airports-helos/:source/:subSource', async (req, res) => {
     const source = req && req.params && req.params.source;
     const subSource = req && req.params && req.params.subSource;
+    const sourceObj = store.airportHeloList.filter(a => a.name === source);
+    const subSourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === subSource) : [];
+    subSourceObj.length ? subSourceObj[0].status = 1 : '';
     getAirportsHelosData(source, subSource).then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
         console.error(`Unable to scrape ${source}: ${err}`);
+        const sourceObj = store.airportHeloList.filter(a => a.name === source);
+        const subSourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === subSource) : [];
+        subSourceObj.length ? subSourceObj[0].status = -1 : '';
         return res.status(500).send({ success: false });
     });
 });
