@@ -163,6 +163,7 @@
                     </div>
                   </div>
                 </div>
+                <!-- If no all have status 0, then show list -->
                 <ng-container *ngIf="isScrapingBusy(subResource, true) || hasFailedStatus(subResource, true)">
                   <div class="row"  *ngFor="let subSource of getSubSource(subResource)">
                     <div class="col-12">
