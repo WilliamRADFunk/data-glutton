@@ -3,7 +3,7 @@ import { take, catchError } from 'rxjs/operators';
 
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
 import { Subscription, of } from 'rxjs';
-import { AirportSourceReference } from '../models/airport-source-reference';
+import { SubResourceReference } from '../models/sub-resource-reference';
 import { CountryReference } from '../models/country-reference';
 
 const LIST_SIZE = 5;
@@ -15,7 +15,7 @@ const LIST_SIZE = 5;
 })
 export class DashboardComponent implements OnDestroy, OnInit {
   private _subs: Subscription[] = [];
-  airportSources: AirportSourceReference[] = [];
+  subResources: SubResourceReference[] = [];
   countries: CountryReference[] = [];
   dashboard: { [key: string]: { [key: string]: number } } = {
     'Airport/Helo': {},
@@ -56,11 +56,11 @@ export class DashboardComponent implements OnDestroy, OnInit {
         this.countries = countries.slice();
         this.isScraping = false;
     });
-    this.fetchService.fetchAirportHelos()
+    this.fetchService.fetchSubResources()
       .pipe(take(1))
-      .subscribe(airportsHelos => {
-        this.airportSources = airportsHelos.slice();
-        this.airportSources.forEach(source => {
+      .subscribe(subResources => {
+        this.subResources = subResources.slice();
+        this.subResources.forEach(source => {
         this.reassignStatus(source);
       });
     });
@@ -81,19 +81,19 @@ export class DashboardComponent implements OnDestroy, OnInit {
     }
   }
 
-  private reassignStatus(source: any): void {
+  private reassignStatus(source: SubResourceReference): void {
     if (source.subRefs.some(sub => sub.status === 1)) {
       source.status = 1;
     } else if (source.subRefs.some(sub => sub.status === -1)) {
       source.status = -1;
     } else if (source.subRefs.every(sub => sub.status === 2)) {
       source.status = 2;
-    } else {
+    } else if (source.subRefs.some(sub => sub.status === 0)) {
       source.status = 0;
     }
   }
 
-  private scrapeAirportHeloSource(source: AirportSourceReference): void {
+  private scrapeAirportHeloSource(source: SubResourceReference): void {
     console.log('source.status', source, source.status);
     this.reassignStatus(source);
     if (source.status !== -1 && source.status !== 0) {
@@ -102,7 +102,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     source.status = 1;
     if (source.name !== 'Airports') {
       if (source.status === -1 || source.status === 0) {
-        this.fetchService.fetchAirportHeloSource(source.name).toPromise()
+        this.fetchService.fetchSubResource(source.name).toPromise()
           .then(done => {
             source.status = 2;
             this.reassignStatus(source);
@@ -125,7 +125,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
           if (sub.status === -1 || sub.status === 0) {
             sub.status = 1;
             this.reassignStatus(source);
-            await this.fetchService.fetchAirportHeloSource(source.name, sub.name).toPromise()
+            await this.fetchService.fetchSubResource(source.name, sub.name).toPromise()
               .then(done => {
                 sub.status = 2;
                 this.reassignStatus(source);
@@ -166,10 +166,10 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public async flushStore(): Promise<void> {
     this.fetchService.flushEntities().pipe(take(1)).subscribe();
-    await this.fetchService.fetchAirportHelos()
+    await this.fetchService.fetchSubResources()
       .toPromise()
-        .then(airportsHelos => {
-          this.airportSources = airportsHelos.slice();
+        .then(subResource => {
+          this.subResources = subResource.slice();
         });
     await this.fetchService.fetchCountries()
       .toPromise()
@@ -180,10 +180,10 @@ export class DashboardComponent implements OnDestroy, OnInit {
       });
   }
 
-  public getAlertStatus(dataSource: string, isAirportHelos?: boolean): {'alert-info': boolean; 'alert-warning': boolean; 'alert-danger': boolean; } {
-    const isBusy = this.isScrapingBusy(dataSource, isAirportHelos);
-    const hasErrors = !isBusy && this.hasFailedStatus(dataSource, isAirportHelos);
-    const infoMode = !isBusy && !this.hasFailedStatus(dataSource, isAirportHelos);
+  public getAlertStatus(dataSource: string, hasSubResources?: boolean): {'alert-info': boolean; 'alert-warning': boolean; 'alert-danger': boolean; } {
+    const isBusy = this.isScrapingBusy(dataSource, hasSubResources);
+    const hasErrors = !isBusy && this.hasFailedStatus(dataSource, hasSubResources);
+    const infoMode = !isBusy && !this.hasFailedStatus(dataSource, hasSubResources);
     return {
       'alert-info': infoMode,
       'alert-warning': isBusy,
@@ -191,11 +191,11 @@ export class DashboardComponent implements OnDestroy, OnInit {
     };
   }
 
-  public getButtonStatus(dataSource: string, isAirportHelos?: boolean): { info: boolean; warning: boolean; danger: boolean; } {
-    const isBusy = this.isScrapingBusy(dataSource, isAirportHelos);
-    const hasErrors = !isBusy && this.hasFailedStatus(dataSource, isAirportHelos);
-    const infoMode = !isBusy && !this.hasFailedStatus(dataSource, isAirportHelos);
-    console.log('getButtonStatus', dataSource, isAirportHelos, isBusy, hasErrors, infoMode);
+  public getButtonStatus(dataSource: string, hasSubResources?: boolean): { info: boolean; warning: boolean; danger: boolean; } {
+    const isBusy = this.isScrapingBusy(dataSource, hasSubResources);
+    const hasErrors = !isBusy && this.hasFailedStatus(dataSource, hasSubResources);
+    const infoMode = !isBusy && !this.hasFailedStatus(dataSource, hasSubResources);
+    console.log('getButtonStatus', dataSource, hasSubResources, isBusy, hasErrors, infoMode);
     return {
       info: infoMode,
       warning: isBusy,
@@ -231,38 +231,41 @@ export class DashboardComponent implements OnDestroy, OnInit {
     return new Array(total);
   }
 
-  public getSubSource(dataSource: AirportSourceReference): AirportSourceReference[] {
-    const ref = this.airportSources.find(s => s.name === dataSource.name);
+  public getSubSource(dataSource: SubResourceReference): SubResourceReference[] {
+    const ref = this.subResources.find(s => s.name === dataSource.name);
     return ref.subRefs;
   }
 
-  public hasFailedStatus(datasource: string, isAirportHelos?: boolean): boolean {
-    if (isAirportHelos) {
-      return this.airportSources.some(a => a.status === -1 || a.subRefs.some(sub => sub.status === -1));
+  public hasFailedStatus(dataSource: string, hasSubResources?: boolean): boolean {
+    if (hasSubResources) {
+      this.subResources.forEach(sub => this.reassignStatus(sub));
+      return this.subResources.some(a => a.status === -1 || a.subRefs.some(sub => sub.status === -1));
     } else {
-      return this.countries.some(c => c.status[datasource] === -1);
+      return this.countries.some(c => c.status[dataSource] === -1);
     }
   }
 
-  public isComplete(datasource: string, isAirportHelos?: boolean): boolean {
-    if (isAirportHelos) {
-      return !this.airportSources.every(a => a.status === 2 || a.subRefs.every(sub => sub.status === 2));
+  public isComplete(dataSource: string, hasSubResources?: boolean): boolean {
+    if (hasSubResources) {
+      this.subResources.forEach(sub => this.reassignStatus(sub));
+      return !this.subResources.every(a => a.status === 2 || a.subRefs.every(sub => sub.status === 2));
     } else {
-      return !this.countries.every(c => c.status[datasource] === 2);
+      return !this.countries.every(c => c.status[dataSource] === 2);
     }
   }
 
-  public isScrapingBusy(datasource: string, isAirportHelos?: boolean): boolean {
-    if (isAirportHelos) {
-      return this.isScraping || this.airportSources.some(a => a.subRefs.some(sub => sub.status === 1));
+  public isScrapingBusy(dataSource: string, hasSubResources?: boolean): boolean {
+    if (hasSubResources) {
+      this.subResources.forEach(sub => this.reassignStatus(sub));
+      return this.isScraping || this.subResources.some(a => a.status === 1);
     } else {
-      return this.isScraping || this.countries.some(c => c.status[datasource] === 1);
+      return this.isScraping || this.countries.some(c => c.status[dataSource] === 1);
     }
   }
 
   public scrapeAirportHeloSourceByName(source: string): void {
-    const airportHeloSource = this.airportSources.find(s => s.name === source);
-    this.scrapeAirportHeloSource(airportHeloSource);
+    const subResource = this.subResources.find(s => s.name === source);
+    this.scrapeAirportHeloSource(subResource);
   }
 
   public scrapeCountryByName(countryName: string): void {
@@ -286,7 +289,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
         break;
       }
       case 'Airports/Helos': {
-        this.airportSources.filter(c => c.status === 0 || c.status === -1).forEach(source => {
+        this.subResources.filter(c => c.status === 0 || c.status === -1).forEach(source => {
           this.scrapeAirportHeloSource(source);
         });
         break;
@@ -304,8 +307,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   public switchSelected(dataSource: string): void {
     this.selected = dataSource;
     if (dataSource === 'Airports/Helos') {
-      console.log('Switched!', dataSource);
-      this.reassignStatus(this.airportSources[0]);
+      this.reassignStatus(this.subResources[0]);
     }
   }
 }

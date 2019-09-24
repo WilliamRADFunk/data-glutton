@@ -53,22 +53,22 @@
             </div>
             <ng-container *ngFor="let key of scrapeKeys;">
               <div
-                *ngIf="isComplete(key.label, key.label === 'Airports/Helos')"
+                *ngIf="isComplete(key.label, key.hasSubResources)"
                 class="row no-gutters rounded bg-info display-item mb-1"
                 [class.green-border]="selected === key.label"
-                [ngClass]="getAlertStatus(key.label, key.label === 'Airports/Helos')"
+                [ngClass]="getAlertStatus(key.label, key.hasSubResources)"
                 (click)="switchSelected(key.label)">
                 <div class="col my-auto">
                   <div class="text-dark pl-2">{{ key.label }}</div>
                 </div>
                 <div class="col no-outline pr-1 pt-1">
-                  <button *ngIf="getButtonStatus(key.label, key.label === 'Airports/Helos').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrape(key.label)">
+                  <button *ngIf="getButtonStatus(key.label, key.hasSubResources).info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrape(key.label)">
                     <span class="fa fa-play-circle-o"></span>
                   </button>
-                  <button *ngIf="isScrapingBusy(key.label, key.label === 'Airports/Helos')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                  <button *ngIf="isScrapingBusy(key.label, key.hasSubResources)"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                     <span class="fa fa-spinner fa-spin"></span>
                   </button>
-                  <button *ngIf="getButtonStatus(key.label, key.label === 'Airports/Helos').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrape(key.label)">
+                  <button *ngIf="getButtonStatus(key.label, key.hasSubResources).danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrape(key.label)">
                     <span class="fa fa-refresh"></span>
                   </button>
                 </div>
@@ -138,33 +138,33 @@
               </ng-container>
             </ng-template>
             <ng-template #airportTemplate>
-              <ng-container *ngFor="let airportSource of airportSources">
+              <ng-container *ngFor="let subResource of subResources">
                 <div class="row">
-                  <div *ngIf="isComplete(airportSource, true)" class="col-12">
+                  <div *ngIf="isComplete(subResource, true)" class="col-12">
                     <div
                       class="row no-gutters rounded bg-info display-item mb-1"
-                      [ngClass]="getAlertStatus(airportSource, true)"
+                      [ngClass]="getAlertStatus(subResource, true)"
                       ngbTooltip="This particular scraper curates thousands of entities and as such takes longer than usual to finish."
                       container="body">
                       <div class="col-10 my-auto">
-                        <div class="display-item-label text-dark pl-2">{{ airportSource.name }}</div>
+                        <div class="display-item-label text-dark pl-2">{{ subResource.name }}</div>
                       </div>
                       <div class="col-2 no-outline pr-1 pt-1">
-                        <button *ngIf="getButtonStatus(airportSource, true).info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeAirportHeloSourceByName(airportSource.name)">
+                        <button *ngIf="getButtonStatus(subResource, true).info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeAirportHeloSourceByName(subResource.name)">
                           <span class="fa fa-play-circle-o"></span>
                         </button>
-                        <button *ngIf="isScrapingBusy(airportSource, true)"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                        <button *ngIf="isScrapingBusy(subResource, true)"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                           <span class="fa fa-spinner fa-spin"></span>
                         </button>
-                        <button *ngIf="getButtonStatus(airportSource, true).danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeAirportHeloSourceByName(airportSource.name)">
+                        <button *ngIf="getButtonStatus(subResource, true).danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeAirportHeloSourceByName(subResource.name)">
                           <span class="fa fa-refresh"></span>
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
-                <ng-container *ngIf="isScrapingBusy(airportSource, true) || hasFailedStatus(airportSource, true)">
-                  <div class="row"  *ngFor="let subSource of getSubSource(airportSource)">
+                <ng-container *ngIf="isScrapingBusy(subResource, true) || hasFailedStatus(subResource, true)">
+                  <div class="row"  *ngFor="let subSource of getSubSource(subResource)">
                     <div class="col-12">
                       <div
                         class="row no-gutters rounded bg-info display-item mb-1"
