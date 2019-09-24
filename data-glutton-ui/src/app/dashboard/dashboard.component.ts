@@ -26,6 +26,20 @@ export class DashboardComponent implements OnDestroy, OnInit {
    * Flag to track if scaping is underway.
    */
   isScraping: boolean = true;
+  scrapeKeys: { label: string; hasSubResources: boolean; }[] = [
+    {
+      label: 'CIA World Factbook',
+      hasSubResources: false
+    },
+    {
+        label: 'CIA World Leaders',
+        hasSubResources: false
+    },
+    {
+      label: 'Airports/Helos',
+      hasSubResources: true
+    }
+  ];
   selected: string = 'CIA World Factbook';
 
   constructor(private readonly fetchService: FetchCoordinator) { }
@@ -278,7 +292,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
         break;
       }
     }
-    
+
     this.isScraping = false;
   }
 

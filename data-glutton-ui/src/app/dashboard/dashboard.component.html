@@ -51,24 +51,24 @@
                 <button class="btn btn-sm btn-danger rounded pull-right mt-1" (click)="flushStore()" type="button">Reset</button>
               </div>
             </div>
-            <ng-container *ngFor="let key of ['CIA World Factbook', 'CIA World Leaders', 'Airports/Helos'];">
+            <ng-container *ngFor="let key of scrapeKeys;">
               <div
-                *ngIf="isComplete(key, key === 'Airports/Helos')"
+                *ngIf="isComplete(key.label, key.label === 'Airports/Helos')"
                 class="row no-gutters rounded bg-info display-item mb-1"
-                [class.green-border]="selected === key"
-                [ngClass]="getAlertStatus(key, key === 'Airports/Helos')"
-                (click)="switchSelected(key)">
+                [class.green-border]="selected === key.label"
+                [ngClass]="getAlertStatus(key.label, key.label === 'Airports/Helos')"
+                (click)="switchSelected(key.label)">
                 <div class="col my-auto">
-                  <div class="text-dark pl-2">{{ key }}</div>
+                  <div class="text-dark pl-2">{{ key.label }}</div>
                 </div>
                 <div class="col no-outline pr-1 pt-1">
-                  <button *ngIf="getButtonStatus(key, key === 'Airports/Helos').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrape(key)">
+                  <button *ngIf="getButtonStatus(key.label, key.label === 'Airports/Helos').info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrape(key.label)">
                     <span class="fa fa-play-circle-o"></span>
                   </button>
-                  <button *ngIf="isScrapingBusy(key, key === 'Airports/Helos')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                  <button *ngIf="isScrapingBusy(key.label, key.label === 'Airports/Helos')"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                     <span class="fa fa-spinner fa-spin"></span>
                   </button>
-                  <button *ngIf="getButtonStatus(key, key === 'Airports/Helos').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrape(key)">
+                  <button *ngIf="getButtonStatus(key.label, key.label === 'Airports/Helos').danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrape(key.label)">
                     <span class="fa fa-refresh"></span>
                   </button>
                 </div>

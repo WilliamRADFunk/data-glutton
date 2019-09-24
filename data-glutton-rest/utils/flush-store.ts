@@ -7,7 +7,7 @@ export function flushStore() {
 	store.airlinesNotFound = [];
 	store.airportsNotFound = [];
 	store.airportTable = {};
-	store.airportHeloList = [
+	store.subResourceList = [
 		{
 			name: 'Airports',
 			status: 0,
@@ -110,7 +110,7 @@ export function flushStore() {
 	store.runways.clear();
 	store.surfaceMaterials.clear();
     store.terrains.clear();
-    
+
 	store.countries.mapReduce(country => {
         country.objectProperties.length = 0;
         const datatypeProperties: { [key: string]: string|number } = {};

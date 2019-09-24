@@ -19,17 +19,17 @@ app.get('/', (req, res) => {
     return res.send('Hello World!');
 });
 
-app.get('/airports-helos/:source/:subSource', async (req, res) => {
+app.get('/sub-resource/:source/:subSource', async (req, res) => {
     const source = req && req.params && req.params.source;
     const subSource = req && req.params && req.params.subSource;
-    const sourceObj = store.airportHeloList.filter(a => a.name === source);
+    const sourceObj = store.subResourceList.filter(a => a.name === source);
     const subSourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === subSource) : [];
     subSourceObj.length ? subSourceObj[0].status = 1 : '';
     getAirportsHelosData(source, subSource).then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
         console.error(`Unable to scrape ${source}: ${err}`);
-        const sourceObj = store.airportHeloList.filter(a => a.name === source);
+        const sourceObj = store.subResourceList.filter(a => a.name === source);
         const subSourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === subSource) : [];
         subSourceObj.length ? subSourceObj[0].status = -1 : '';
         return res.status(500).send({ success: false });
@@ -89,8 +89,8 @@ app.get('/leaders/:countryName', async (req, res) => {
     }
 });
 
-app.get('/airport-helo-list', async (req, res) => {
-    return res.send(store.airportHeloList);
+app.get('/sub-resource-list', async (req, res) => {
+    return res.send(store.subResourceList);
 });
 
 app.get('/country-list', async (req, res) => {
@@ -101,11 +101,11 @@ app.get('/country-list', async (req, res) => {
     return res.send(store.countriesInList);
 });
 
-app.get('/scrape-airports-helos', async (req, res) => {
+app.get('/scrape-sub-resources', async (req, res) => {
     getAirportsHelosData(null).then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
-        console.error('scrape-airports-helos error: ', err);
+        console.error('scrape-sub-resources error: ', err);
         return res.status(500).send({ success: false });
     });
 });

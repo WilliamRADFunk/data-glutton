@@ -1,10 +1,10 @@
 import * as loki from 'lokijs';
 
-import { AirportHeloReference } from '../models/airport-helo-reference';
 import { AirportNpmSourceObject } from '../models/airport-npm-source-object';
 import { CountryReference } from '../models/country-reference';
 import { Entity } from '../models/entity';
 import { ImageScrapableObject } from '../models/image-scrapable-object';
+import { SubResourceReference } from '../models/sub-resource-reference';
 import { consoleError, consoleLog } from '../utils/logger';
 
 // const noop = () => { /* Noop */ };
@@ -14,7 +14,7 @@ class GlobalStore {
 	public LOG_FILE_NAME: string = '';
 	public LOG_STREAM: any = null;
 	public IMAGES_TO_SCRAPE: ImageScrapableObject[] = [];
-	public airportHeloList: AirportHeloReference[] = [
+	public subResourceList: SubResourceReference[] = [
 		{
 			name: 'Airports',
 			status: 0,
