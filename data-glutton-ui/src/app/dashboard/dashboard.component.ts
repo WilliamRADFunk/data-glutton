@@ -190,6 +190,10 @@ export class DashboardComponent implements OnDestroy, OnInit {
       'alert-danger': hasErrors
     };
   }
+  
+  public getAllUntouched(dataSource: SubResourceReference): boolean {
+    return dataSource.subRefs.every(sub => sub.status === 0);
+  }
 
   public getButtonStatus(dataSource: string, hasSubResources?: boolean): { info: boolean; warning: boolean; danger: boolean; } {
     const isBusy = this.isScrapingBusy(dataSource, hasSubResources);
