@@ -24,14 +24,16 @@ app.get('/sub-resource/:source/:subSource', async (req, res) => {
     const subSource = req && req.params && req.params.subSource;
     const sourceObj = store.subResourceList.filter(a => a.name === source);
     const subSourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === subSource) : [];
-    subSourceObj.length ? subSourceObj[0].status = 1 : '';
+    if (subSourceObj.length) {
+        subSourceObj[0].status = 1;
+    }
     getAirportsHelosData(source, subSource).then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
-        console.error(`Unable to scrape ${source}: ${err}`);
-        const sourceObj = store.subResourceList.filter(a => a.name === source);
-        const subSourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === subSource) : [];
-        subSourceObj.length ? subSourceObj[0].status = -1 : '';
+        store.errorLogger(`Unable to scrape ${source}: ${err}`);
+        if (subSourceObj.length) {
+            subSourceObj[0].status = -1;
+        }
         return res.status(500).send({ success: false });
     });
 });
@@ -105,7 +107,7 @@ app.get('/scrape-sub-resources', async (req, res) => {
     getAirportsHelosData(null).then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
-        console.error('scrape-sub-resources error: ', err);
+        store.errorLogger(`scrape-sub-resources error: ${err.message}`);
         return res.status(500).send({ success: false });
     });
 });
@@ -117,7 +119,7 @@ app.get('/scrape-factbook', async (req, res) => {
     getCountriesData().then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
-        console.error('scrape-factbook error: ', err);
+        store.errorLogger(`scrape-factbook error: ${err.message}`);
         return res.status(500).send({ success: false });
     });
 });
@@ -129,7 +131,7 @@ app.get('/scrape-leaders', async (req, res) => {
     getLeadersByCountriesData().then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
-        console.error('scrape-leaders error: ', err);
+        store.errorLogger(`scrape-leaders error: ${err.message}`);
         return res.status(500).send({ success: false });
     });
 });

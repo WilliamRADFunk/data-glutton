@@ -6,6 +6,18 @@ import { Subscription, of } from 'rxjs';
 import { SubResourceReference } from '../models/sub-resource-reference';
 import { CountryReference } from '../models/country-reference';
 
+export interface AlertStatus {
+  info: boolean;
+  warning: boolean;
+  danger: boolean;
+}
+
+export interface AlertStatusStyle {
+  'alert-info': boolean;
+  'alert-warning': boolean;
+  'alert-danger': boolean;
+}
+
 const LIST_SIZE = 5;
 
 @Component({
@@ -94,7 +106,6 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   private scrapeAirportHeloSource(source: SubResourceReference): void {
-    console.log('source.status', source, source.status);
     this.reassignStatus(source);
     if (source.status !== -1 && source.status !== 0) {
       return;
@@ -120,7 +131,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
               this.dashboard = data.dashboard;
             })
             .catch(err => {
-              console.log('fetchDashboard error: ', err.message);
+              console.error('fetchDashboard error: ', err.message);
             });
           if (sub.status === -1 || sub.status === 0) {
             sub.status = 1;
@@ -180,7 +191,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       });
   }
 
-  public getAlertStatus(dataSource: string, hasSubResources?: boolean): {'alert-info': boolean; 'alert-warning': boolean; 'alert-danger': boolean; } {
+  public getAlertStatus(dataSource: string, hasSubResources?: boolean): AlertStatusStyle {
     const isBusy = this.isScrapingBusy(dataSource, hasSubResources);
     const hasErrors = !isBusy && this.hasFailedStatus(dataSource, hasSubResources);
     const infoMode = !isBusy && !this.hasFailedStatus(dataSource, hasSubResources);
@@ -190,16 +201,15 @@ export class DashboardComponent implements OnDestroy, OnInit {
       'alert-danger': hasErrors
     };
   }
-  
+
   public getAllUntouched(dataSource: SubResourceReference): boolean {
-    return dataSource.subRefs.every(sub => sub.status === 0);
+    return dataSource.subRefs.every(sub => sub.status === 0) || dataSource.subRefs.every(sub => sub.status === 2);
   }
 
-  public getButtonStatus(dataSource: string, hasSubResources?: boolean): { info: boolean; warning: boolean; danger: boolean; } {
+  public getButtonStatus(dataSource: string, hasSubResources?: boolean): AlertStatus {
     const isBusy = this.isScrapingBusy(dataSource, hasSubResources);
     const hasErrors = !isBusy && this.hasFailedStatus(dataSource, hasSubResources);
     const infoMode = !isBusy && !this.hasFailedStatus(dataSource, hasSubResources);
-    console.log('getButtonStatus', dataSource, hasSubResources, isBusy, hasErrors, infoMode);
     return {
       info: infoMode,
       warning: isBusy,

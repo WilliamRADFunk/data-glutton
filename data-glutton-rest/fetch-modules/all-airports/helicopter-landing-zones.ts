@@ -17,9 +17,9 @@ export function getHelicopterLandingZones(): void {
 			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
 		}
         let location: Entity = getRelation(airport.objectProperties, consts.ONTOLOGY.HAS_LOCATION);
-        location = store.locations.find({ '@id': { $eq: [location && location['@id']] } })[0];
+        location = store.locations.find({ '@id': { $eq: (location && location['@id']) } })[0];
         let runway: Entity = getRelation(airport.objectProperties, consts.ONTOLOGY.HAS_RUNWAY);
-        runway = store.runways.find({ '@id': { $eq: [runway && runway['@id']] } })[0];
+        runway = store.runways.find({ '@id': { $eq: (runway && runway['@id']) } })[0];
         // No location, no way to land on the spot.
         // No runway, no place to get length, width, and surface materials from.
         if (!location || !runway) {
@@ -29,7 +29,7 @@ export function getHelicopterLandingZones(): void {
         const surfaceMats: Entity[] = airport.objectProperties
             .filter((x: EntityContainer) => x[consts.ONTOLOGY.HAS_SURFACE_MATERIAL])
             .map((y: EntityContainer) => y[consts.ONTOLOGY.HAS_SURFACE_MATERIAL])
-            .map((z: EntityContainer) => store.surfaceMaterials.find({ '@id': { $eq: [z && z['@id']] } })[0]);
+            .map((z: EntityContainer) => store.surfaceMaterials.find({ '@id': { $eq: (z && z['@id']) } })[0]);
 
         const latLng = location.datatypeProperties[consts.WGS84_POS.LAT_LONG];
         const length =  runway.datatypeProperties[consts.ONTOLOGY.DT_LENGTH];
@@ -54,7 +54,7 @@ export function getHelicopterLandingZones(): void {
                     airport.datatypeProperties[consts.ONTOLOGY.DT_ICAO_CODE] ||
                     'N/A'
                 }`);
-            
+
             store.helicopterLandingZones.insert(objectProp[consts.ONTOLOGY.HAS_HELO_LAND_ZONE]);
             store.helicopterLandingZones.find({ '@id': { $eq: hlzId } })[0].datatypeProperties[consts.ONTOLOGY.DT_LENGTH] = length;
             store.helicopterLandingZones.find({ '@id': { $eq: hlzId } })[0].datatypeProperties[consts.ONTOLOGY.DT_WIDTH] = width;
@@ -69,7 +69,7 @@ export function getHelicopterLandingZones(): void {
             store.helicopterLandingZones.find({ '@id': { $eq: hlzId } })[0].datatypeProperties[consts.ONTOLOGY.DT_NUM_OF_LAND_SITE_5] = getNumOfLPS(length, width, 5);
             store.helicopterLandingZones.find({ '@id': { $eq: hlzId } })[0].datatypeProperties[consts.ONTOLOGY.DT_NUM_OF_LAND_SITE_6] = getNumOfLPS(length, width, 6);
             store.helicopterLandingZones.find({ '@id': { $eq: hlzId } })[0].datatypeProperties[consts.ONTOLOGY.DT_NUM_OF_LAND_SITE_7] = getNumOfLPS(length, width, 7);
-            
+
             store.helicopterLandingZones.find({ '@id': { $eq: hlzId } })[0].datatypeProperties[consts.ONTOLOGY.DT_UNIT] = unit || 'ft (Guessed Unit)';
         }
     }, airport => airport);
@@ -111,7 +111,7 @@ function getNumOfLPS(length: number, width: number, size: number): number {
             break
         }
     }
-    
+
     numInLength = Math.floor(lengthInMeters / minBase);
     numInWidth = Math.floor(widthInMeters / minBase);
     return numInWidth * numInLength;

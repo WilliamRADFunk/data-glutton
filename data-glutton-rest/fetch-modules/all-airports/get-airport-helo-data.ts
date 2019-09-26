@@ -2,9 +2,7 @@ import { store } from '../../constants/globalStore';
 import { dataScrapers } from './data-getters';
 
 export function getAirportsHelosData(source: string, subSource?: string): Promise<void> {
-      console.log('getAirportsHelosData', 'subResourceSource', store.subResourceList && store.subResourceList.length);
       const subResourceSource = store.subResourceList.find(s => s.name === source);
-      console.log('getAirportsHelosData', 'subResourceSubSource', subResourceSource.subRefs && subResourceSource.subRefs.length);
       const subResourceSubSource = subResourceSource.subRefs.find(s => s.name === subSource);
 	if (source === 'Airports') {
             subResourceSource.status = 1;
