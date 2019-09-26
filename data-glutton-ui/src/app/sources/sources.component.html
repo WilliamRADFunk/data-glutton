@@ -1,3 +1,36 @@
-<p>
-  sources works!
-</p>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="rounded bg-secondary source-box px-2 py-1">
+        <div class="row no-gutters border-bottom pb-2 mb-2">
+          <div class="col">
+            <div class="h4 text-light text-outline stroke-shadow">Data Sources</div>
+          </div>
+        </div>
+        <ng-container *ngFor="let source of getSources()">
+          <div class="row no-gutters rounded mb-3">
+            <div class="card w-100">
+              <div class="card-header alert-info font-weight-bold">
+                {{ source.label }}
+              </div>
+              <div class="card-body">
+                <div class="card-text">
+                  <div class="row">
+                    <div class="col-12 mb-1">
+                      Description: {{ source.description }}
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12">
+                      URL: <a href="{{ source.link }}" target="_blank">CIA World Factbook</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>
