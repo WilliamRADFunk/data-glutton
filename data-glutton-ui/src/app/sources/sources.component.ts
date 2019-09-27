@@ -86,15 +86,21 @@ export class SourcesComponent implements OnInit {
         description: `"Document oriented database written in javascript.
           Its purpose is to store javascript objects as documents in a
           nosql fashion and retrieve them with a similar mechanism."`,
-        label: 'LokiJS',
+        label: 'LokiJS 1.5',
         license: 'MIT. See https://www.npmjs.com/package/lokijs#license',
         link: 'https://www.npmjs.com/package/lokijs'
       },
       {
-        description: `"Angular 8"`,
-        label: 'Angular',
+        description: `"Angular is a platform for building mobile and desktop web applications."`,
+        label: 'Angular 8',
         license: 'MIT',
         link: 'https://angular.io/'
+      },
+      {
+        description: `"Fast, unopinionated, minimalist web framework for Node.js"`,
+        label: 'ExpressJS 4',
+        license: 'Creative Commons Attribution-ShareAlike 3.0 United States License',
+        link: 'https://expressjs.com/'
       }
     ];
   }
