@@ -1,0 +1,236 @@
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY general "http://williamrobertfunk.com/ontologies/general#" >
+    <!ENTITY country "http://williamrobertfunk.com/ontologies/country#" >
+    <!ENTITY airport "http://williamrobertfunk.com/ontologies/airport#" >
+    <!ENTITY municipality "http://williamrobertfunk.com/ontologies/municipality#" >
+    <!ENTITY blade "http://modusoperandi.com/ont/blade#">
+]>
+
+<rdf:RDF xmlns="http://www.w3.org/2002/07/owl#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:general="http://williamrobertfunk.com/ontologies/general#"
+  xmlns:country="http://williamrobertfunk.com/ontologies/country#"
+  xmlns:airport="http://williamrobertfunk.com/ontologies/airport#"
+  xmlns:municipality="http://williamrobertfunk.com/ontologies/municipality#"
+  xmlns:blade="http://modusoperandi.com/ont/blade#">
+
+  <Ontology rdf:about="http://williamrobertfunk.com/ontologies/airport">
+    <versionInfo rdf:datatype="&xsd;decimal">1.3</versionInfo>
+    <dc:rights>Copyright 2019 William R.A.D. Funk. All rights reserved.</dc:rights>
+    <dc:creator>William R.A.D. Funk</dc:creator>
+    <dc:contributor>William R.A.D. Funk</dc:contributor>
+    <rdfs:comment>
+      Identifies application specific classes and annotations that are relevant
+      only to my associated applications.
+    </rdfs:comment>
+    <rdfs:label>Funk Ontology</rdfs:label>
+  </Ontology>
+
+  <!--
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Classes
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#Airline -->
+
+  <Class rdf:about="&airport;Airline">
+    <rdfs:label>Airline</rdfs:label>
+    <rdfs:comment>
+      an organization providing a regular public service of air transportation on one or more routes.
+    </rdfs:comment>
+    <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
+  </Class>
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#Airport -->
+
+  <Class rdf:about="&airport;Airport">
+    <rdfs:label>Airport</rdfs:label>
+    <rdfs:comment>
+      a complex of runways and buildings for the takeoff, landing, and maintenance of civil aircraft, with facilities for passengers.
+    </rdfs:comment>
+    <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
+  </Class>
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#Runway -->
+
+  <Class rdf:about="&airport;Runway">
+    <rdfs:label>Runway</rdfs:label>
+    <rdfs:comment>
+      defined rectangular area on a land aerodrome prepared for the landing and takeoff of aircraft.
+    </rdfs:comment>
+    <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
+  </Class>
+
+  <!--
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Object Properties
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#hasAirport -->
+
+  <ObjectProperty rdf:about="&airport;hasAirport">
+    <rdfs:label>Airport</rdfs:label>
+    <rdfs:range rdf:resource="&airport;Airport"/>
+  </ObjectProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#hasRunway -->
+
+  <ObjectProperty rdf:about="&airport;hasRunway">
+    <rdfs:label>Runway</rdfs:label>
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:range rdf:resource="&airport;Runway"/>
+  </ObjectProperty>
+
+  <!-- General Ontology Extensions -->
+
+  <!-- http://williamrobertfunk.com/ontologies/general#hasElevation -->
+
+  <ObjectProperty rdf:about="&general;hasElevation">
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:range rdf:resource="&general;Elevation"/>
+  </ObjectProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/general#hasLocation -->
+
+  <ObjectProperty rdf:about="&general;hasLocation">
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:range rdf:resource="&general;Location"/>
+  </ObjectProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/general#hasSurfaceMaterial -->
+
+  <ObjectProperty rdf:about="&general;hasSurfaceMaterial">
+    <rdfs:domain rdf:resource="&airport;Runway"/>
+    <rdfs:range rdf:resource="&general;SurfaceMaterial"/>
+  </ObjectProperty>
+
+  <!-- Country Ontology Extensions -->
+
+  <!-- http://williamrobertfunk.com/ontologies/country#hasCountry -->
+
+  <ObjectProperty rdf:about="&country;hasCountry">
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:range rdf:resource="&country;Country"/>
+  </ObjectProperty>
+
+  <!-- Municipality Ontology Extensions -->
+  
+  <!-- http://williamrobertfunk.com/ontologies/municipality#hasMunicipality -->
+
+  <ObjectProperty rdf:about="&municipality;hasMunicipality">
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:range rdf:resource="&municipality;Municipality"/>
+  </ObjectProperty>
+
+  <!--
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Datatype Properties
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#iataCode -->
+
+  <DatatypeProperty rdf:about="&airport;iataCode">
+    <rdfs:label>IATA Code</rdfs:label>
+    <rdfs:comment>
+      The International Air Transportation Association code associated with an airport or airline.
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:domain rdf:resource="&airport;Airline"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#icaoCode -->
+
+  <DatatypeProperty rdf:about="&airport;icaoCode">
+    <rdfs:label>ICAO Code</rdfs:label>
+    <rdfs:comment>
+      The International Civil Aviation Organization code associated with an airport.
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#relativeSize -->
+
+  <DatatypeProperty rdf:about="&airport;relativeSize">
+    <rdfs:label>Relative Size</rdfs:label>
+    <rdfs:comment>
+      The relative size of the airport (small, medium, or major).
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#status -->
+
+  <DatatypeProperty rdf:about="&airport;status">
+    <rdfs:label>Status</rdfs:label>
+    <rdfs:comment>
+      The last known status of the airport (ie. open or closed).
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#type -->
+
+  <DatatypeProperty rdf:about="&airport;type">
+    <rdfs:label>Type</rdfs:label>
+    <rdfs:comment>
+      The general use type of the airport (Military, Airport, Heliport, Spaceport, etc.).
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- General Ontology Extensions -->
+
+  <!-- http://williamrobertfunk.com/ontologies/general#length -->
+
+  <DatatypeProperty rdf:about="&general;length">
+    <rdfs:domain rdf:resource="&airport;Runway"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/general#width -->
+
+  <DatatypeProperty rdf:about="&general;width">
+    <rdfs:domain rdf:resource="&airport;Runway"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/general#unit -->
+
+  <DatatypeProperty rdf:about="&general;unit">
+    <rdfs:domain rdf:resource="&airport;Runway"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/general#wikiURI -->
+
+  <DatatypeProperty rdf:about="&general;wikiURI">
+    <rdfs:domain rdf:resource="&airport;Airline"/>
+    <rdfs:domain rdf:resource="&airport;Airport"/>
+  </DatatypeProperty>
+
+</rdf:RDF>
