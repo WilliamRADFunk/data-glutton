@@ -1,7 +1,8 @@
 import cors from 'cors';
 import express from 'express';
-// import { path } from 'path';
+
 import { store } from './constants/globalStore';
+import { consts } from './constants/constants';
 import { getAirportsHelosData } from './fetch-modules/all-airports/get-airport-helo-data';
 import { getCountriesData } from './fetch-modules/factbook/get-countries-data';
 import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
@@ -16,7 +17,7 @@ app.use(cors());
 const port = 3000;
 
 app.get('/', (req, res) => {
-    return res.send('Hello World!');
+    return res.send('Hello Data!');
 });
 
 app.get('/sub-resource/:source/:subSource', async (req, res) => {
@@ -181,6 +182,19 @@ app.get('/dashboard', async (req, res) => {
     };
 
     return res.send({ dashboard });
+});
+
+app.get('/ontologies', async (req, res) => {
+    return res.status(200).send({ ontologies: consts.ONTOLOGIES });
+});
+
+app.get('/ontology/:ontology', async (req, res) => {
+    const ontology = req && req.params && req.params.ontology;
+    if (!ontology) {
+        return res.status(200).send({ ontologies: consts.ONTOLOGIES });
+    } else {
+        return res.status(200).send({ ontologies: consts.ONTOLOGIES[ontology] });
+    }
 });
 
 app.listen(port, () => {

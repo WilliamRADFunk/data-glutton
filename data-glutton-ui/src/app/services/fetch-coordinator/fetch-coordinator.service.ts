@@ -3,16 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
-import { FactbookFetchService } from '../factbook-fetch/factbook-fetch.service';
-
 @Injectable({
   providedIn: 'root'
 })
 export class FetchCoordinator {
 
-  constructor(
-    private readonly factbookFetch: FactbookFetchService,
-    private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) { }
 
   fetchSubResources(): Observable<any> {
     return this.http.get('http://localhost:3000/sub-resource-list');
@@ -28,6 +24,10 @@ export class FetchCoordinator {
 
   fetchDashboardStream(): Observable<any> {
     return timer(0, 2000).pipe(switchMap(() => this.http.get<any>('http://localhost:3000/dashboard')));
+  }
+
+  fetchOntologies(): Observable<any> {
+    return this.http.get<any>('http://localhost:3000/ontologies/');
   }
 
   fetchSubResource(source: string, subSource?: string): Observable<any> {

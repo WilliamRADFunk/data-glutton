@@ -1,3 +1,7 @@
+import * as fs from 'graceful-fs';
+import path from 'path';
+import {JsonLdProcessor} from 'jsonld';
+
 const AIRCRAFT_ONT_PATH = 'http://williamrobertfunk.com/ontologies/aircraft#';
 const AIRPORT_ONT_PATH = 'http://williamrobertfunk.com/ontologies/airport#';
 const ASSET_ONT_PATH = 'http://www.daedafusion.com/Asset#';
@@ -225,9 +229,35 @@ const ONTOLOGY: { [key: string]: string } = {
 const RDFS = {
 	label: 'http://www.w3.org/2000/01/rdf-schema#label'
 };
+
+const file = fs.readFileSync(path.join('constants', 'ontology', 'daedafusion-asset.schema.jsonld'), 'utf8');
+const json = JSON.parse(file);
+const context = json['@context'];
+const graph = json['@graph'];
+JsonLdProcessor.flatten(graph, context).then(res => {
+	console.log('res', res);
+});
+
+
+const ONTOLOGIES = {
+	'daedafusion-asset': fs.readFileSync(path.join('constants', 'ontology', 'daedafusion-asset.rdf'), 'utf8'),
+	'dbpedia-country': fs.readFileSync(path.join('constants', 'ontology', 'dbpedia-country.rdf'), 'utf8'),
+	'foaf-foaf': fs.readFileSync(path.join('constants', 'ontology', 'foaf-foaf.rdf'), 'utf8'),
+	'funk-aircraft': fs.readFileSync(path.join('constants', 'ontology', 'funk-aircraft.rdf'), 'utf8'),
+	'funk-blade-ref': fs.readFileSync(path.join('constants', 'ontology', 'funk-blade-ref.rdf'), 'utf8'),
+	'funk-country': fs.readFileSync(path.join('constants', 'ontology', 'funk-country.rdf'), 'utf8'),
+	'funk-general': fs.readFileSync(path.join('constants', 'ontology', 'funk-general.rdf'), 'utf8'),
+	'funk-image': fs.readFileSync(path.join('constants', 'ontology', 'funk-image.rdf'), 'utf8'),
+	'funk-municipality': fs.readFileSync(path.join('constants', 'ontology', 'funk-municipality.rdf'), 'utf8'),
+	'funk-world-leaders': fs.readFileSync(path.join('constants', 'ontology', 'funk-world-leaders.rdf'), 'utf8'),
+	'w3-owl': fs.readFileSync(path.join('constants', 'ontology', 'w3-owl.rdf'), 'utf8'),
+	'w3-wgs84_pos': fs.readFileSync(path.join('constants', 'ontology', 'w3-wgs84_pos.rdf'), 'utf8')
+};
+
 class Constants {
 	public BASE = BASE;
 	public ONTOLOGY = ONTOLOGY;
+	public ONTOLOGIES = ONTOLOGIES;
 	public RDFS = RDFS;
 	public WGS84_POS = WGS84_POS;
 }

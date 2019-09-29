@@ -1,3 +1,45 @@
-<p>
-  ontology works!
-</p>
+<!-- <ul class="list-group">
+  <li class="list-group-item" *ngFor="let ont of ontologies | keyvalue" class="text-white">
+    {{ ont.key }}
+    data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample"
+  </li>
+</ul> -->
+<!-- <div *ngFor="let ont of ontologies | keyvalue" class="card">
+  <div class="panel-body">
+    <a data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">{{ ont.key }}</a>
+    
+  </div>
+</div>
+<div class="collapse" id="collapseExample">
+    <div class="card card-body">
+      Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+    </div>
+  </div> -->
+
+<!-- <div *ngFor="let ont of ontologies | keyvalue" class="card">
+  <div class="card-header" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+      {{ ont.key }}
+  </div>
+  <div class="collapse" id="collapseExample">
+    <div class="card-body">
+      <p class="card-text">Some quick example text to build on the panel title and make up the bulk of the panel's content.</p>
+    </div>
+  </div>
+</div> -->
+
+<ngb-accordion #a="ngbAccordion">
+  <ngb-panel *ngFor="let ont of ontologies | keyvalue">
+    <ng-template ngbPanelHeader>
+      <div class="d-flex align-items-center justify-content-between">
+        <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ ont.key }}</button>
+      </div>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="card-body">
+        <div class="card-title">
+          {{ getLabel(ont.value) }} fff
+        </div>
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
