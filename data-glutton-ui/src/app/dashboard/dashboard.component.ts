@@ -37,6 +37,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   exportOptions: { [key: string]: { [key: string]: boolean } } = {
     'Airport/Helo': {},
     'Factbook': {},
+    'Ontologies': { 'Download Ontologies': false },
     'World Leader': {}
   };
   /**
@@ -188,15 +189,37 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   public exportAll(key: string): void {
-    Object.keys(this.exportOptions[key]).forEach(expOptKey => {
-      this.exportOptions[key][expOptKey] = true;
-    });
+    if (key) {
+      Object.keys(this.exportOptions[key]).forEach(expOptKey => {
+        this.exportOptions[key][expOptKey] = true;
+      });
+    } else {
+      Object.keys(this.exportOptions).forEach(majorKey => {
+        Object.keys(this.exportOptions[majorKey]).forEach(minorKey => {
+          this.exportOptions[majorKey][minorKey] = true;
+        });
+      });
+      this.exportOptions.Ontologies['Download Ontologies'] = true;
+    }
   }
 
-  public exportNone(key: string): void {
-    Object.keys(this.exportOptions[key]).forEach(expOptKey => {
-      this.exportOptions[key][expOptKey] = false;
-    });
+  public exportNone(key?: string): void {
+    if (key) {
+      Object.keys(this.exportOptions[key]).forEach(expOptKey => {
+        this.exportOptions[key][expOptKey] = false;
+      });
+    } else {
+      Object.keys(this.exportOptions).forEach(majorKey => {
+        Object.keys(this.exportOptions[majorKey]).forEach(minorKey => {
+          this.exportOptions[majorKey][minorKey] = false;
+        });
+      });
+      this.exportOptions.Ontologies['Download Ontologies'] = false;
+    }
+  }
+
+  public exportSelectChange(majorKey: string, minorKey: string): void {
+    this.exportOptions[majorKey][minorKey] = !this.exportOptions[majorKey][minorKey];
   }
 
   public async flushStore(): Promise<void> {
