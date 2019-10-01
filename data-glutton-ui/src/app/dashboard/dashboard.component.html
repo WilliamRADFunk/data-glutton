@@ -215,11 +215,55 @@
               </div>
             </div>
             <div class="row no-gutters rounded mb-1">
-              <div class="d-inline-block display-item rounded ml-1 mt-1 pt-2 px-2">
-                <div>Ontologies</div>
+              <div class="card w-100">
+                <div class="card-header alert-info font-weight-bold py-1">
+                  Ontologies
+                </div>
+                <div class="card-body pt-1 pb-0">
+                  <div class="card-text">
+                    <div class="row">
+                      <div class="col-12 dashboard-list-fragment">
+                        <ul class="list-unstyled px-0 mb-0">
+                          <li>
+                            <div class="dashboard-item">
+                              <span class="dashboard-item-label d-inline-block" ngbTooltip="Due to linked nature of the data. Ontologies are either all downloaded, or not at all." container="body">Download Ontologies</span>
+                              <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input type="checkbox" value="ontologies"/></div>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <hr/>
+            <hr class="my-1"/>
+            <ng-container *ngFor="let key of getDashboardKeys()">
+              <div class="row no-gutters rounded mb-1">
+                <div *ngIf="getDashboardKeyCount(key)" class="card w-100">
+                  <div class="card-header alert-info font-weight-bold py-1">
+                    {{ key }} Entities
+                  </div>
+                  <div class="card-body">
+                    <div class="card-text">
+                      <div class="row">
+                        <div *ngFor="let listNumber of getListNumber(key); let index=index;" class="col-lg-6 dashboard-list-fragment">
+                          <ul class="list-unstyled px-0">
+                            <li *ngFor="let item of getDashboardFragment(key, index) | keyvalue">
+                              <div class="dashboard-item">
+                                <span class="dashboard-item-label d-inline-block" ngbTooltip="{{item.key}}" container="body">{{ item.key }}:</span>
+                                <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input type="checkbox" value="{{ item.value }}"/></div>
+                              </div>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <hr *ngIf="getDashboardKeyCount(key)" class="my-1"/>
+            </ng-container>
           </div>
         </div>
       </div>
