@@ -188,11 +188,15 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   public exportAll(key: string): void {
-
+    Object.keys(this.exportOptions[key]).forEach(expOptKey => {
+      this.exportOptions[key][expOptKey] = true;
+    });
   }
 
   public exportNone(key: string): void {
-    
+    Object.keys(this.exportOptions[key]).forEach(expOptKey => {
+      this.exportOptions[key][expOptKey] = false;
+    });
   }
 
   public async flushStore(): Promise<void> {

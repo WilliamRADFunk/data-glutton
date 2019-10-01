@@ -211,7 +211,13 @@
           <div class="rounded bg-secondary dashboard-box px-2 py-1">
             <div class="row no-gutters border-bottom pb-2 mb-2">
               <div class="col">
-                <div class="h4 text-light text-outline stroke-shadow">Export Options</div>
+                <div class="d-inline-block h4 text-light text-outline stroke-shadow">Export Options</div>
+                <button class="btn btn-sm btn-danger d-inline-block text-light pull-right mt-1 ml-2">
+                  <span class="fa fa-eraser" ngbTooltip="Unselect all"></span>
+                </button>
+                <button class="btn btn-sm btn-primary d-inline-block text-light pull-right mt-1">
+                  <span class="fa fa-download" ngbTooltip="Download selected files"></span>
+                </button>
               </div>
             </div>
             <div class="row no-gutters rounded mb-1">
@@ -257,10 +263,10 @@
                   <div class="card-header alert-info font-weight-bold py-1">
                     <span class="d-inline-block pt-1">{{ key }} Entities</span>
                     <span class="d-inline-block pull-right text-right" style="font-size: 0.75rem;">
-                      <button class="btn btn-sm btn-link" ngbTooltip="Check all in category" (click)="exportNone(key)">
+                      <button class="btn btn-sm btn-link" ngbTooltip="Check all in category" (click)="exportAll(key)">
                         <span class="fa fa-check-square-o"></span>
                       </button>&nbsp;|&nbsp;
-                      <button class="btn btn-sm btn-link" ngbTooltip="Uncheck all in category" (click)="exportAll(key)">
+                      <button class="btn btn-sm btn-link" ngbTooltip="Uncheck all in category" (click)="exportNone(key)">
                         <span class="fa fa-square-o"></span>
                       </button>
                     </span>
@@ -274,7 +280,7 @@
                               <div class="dashboard-item">
                                 <label class="w-100 my-0">
                                   <div class="dashboard-item-label d-inline-block" ngbTooltip="{{item.key}}" container="body">{{ item.key }}:</div>
-                                  <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input id="{{ key }}~{{ item.key }}" type="checkbox" value="{{ item.value }}"/></div>
+                                  <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input id="{{ key }}~{{ item.key }}" type="checkbox" [checked]="item.value" value="{{ item.value }}"/></div>
                                 </label>
                               </div>
                             </li>
