@@ -34,6 +34,11 @@ export class DashboardComponent implements OnDestroy, OnInit {
     'Factbook': {},
     'World Leader': {}
   };
+  exportOptions: { [key: string]: { [key: string]: boolean } } = {
+    'Airport/Helo': {},
+    'Factbook': {},
+    'World Leader': {}
+  };
   /**
    * Flag to track if scaping is underway.
    */
@@ -84,6 +89,13 @@ export class DashboardComponent implements OnDestroy, OnInit {
         }))
         .subscribe(data => {
           this.dashboard = data.dashboard;
+          Object.keys(this.dashboard).forEach((majorKey: string) => {
+            Object.keys(this.dashboard[majorKey]).forEach((minorKey: string) => {
+              if(this.exportOptions[majorKey.toString()][minorKey] === undefined) {
+                this.exportOptions[majorKey][minorKey] = false;
+              }
+            });
+          });
       }));
   }
 
@@ -175,6 +187,14 @@ export class DashboardComponent implements OnDestroy, OnInit {
       });
   }
 
+  public exportAll(key: string): void {
+
+  }
+
+  public exportNone(key: string): void {
+    
+  }
+
   public async flushStore(): Promise<void> {
     this.fetchService.flushEntities().pipe(take(1)).subscribe();
     await this.fetchService.fetchSubResources()
@@ -227,6 +247,18 @@ export class DashboardComponent implements OnDestroy, OnInit {
       dashboardFragment[key] = this.dashboard[dataSource][key];
     });
     return dashboardFragment;
+  }
+
+  public getExportFragment(dataSource: string, iteration: number): { [key: string]: number } {
+    const keyCount = this.getDashboardKeyCount(dataSource);
+    const indexStart = Number(iteration) * LIST_SIZE;
+    const indexEnd = (indexStart + LIST_SIZE) > keyCount ? keyCount : indexStart + LIST_SIZE;
+    const relevantKeys = Object.keys(this.exportOptions[dataSource]).slice(indexStart, indexEnd);
+    const exportFragment = {};
+    relevantKeys.forEach(key => {
+      exportFragment[key] = this.exportOptions[dataSource][key];
+    });
+    return exportFragment;
   }
 
   public getDashboardKeyCount(dataSource: string): number {

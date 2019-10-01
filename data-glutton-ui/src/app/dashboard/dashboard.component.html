@@ -217,7 +217,18 @@
             <div class="row no-gutters rounded mb-1">
               <div class="card w-100">
                 <div class="card-header alert-info font-weight-bold py-1">
-                  Ontologies
+                    <span class="d-inline-block">Ontologies</span>
+                    <span class="d-inline-block pull-right text-right" style="font-size: 0.75rem;">
+                      <button class="btn btn-sm btn-link" ngbTooltip="Download ontologies in RDF format">
+                        RDF
+                      </button>&nbsp;|&nbsp;
+                      <button class="btn btn-sm btn-link" ngbTooltip="Download ontologies in JSON-LD format">
+                        JSON-LD
+                      </button>&nbsp;|&nbsp;
+                      <button class="btn btn-sm btn-link" ngbTooltip="Download ontologies in both formats">
+                        Both
+                      </button>
+                    </span>
                 </div>
                 <div class="card-body pt-1 pb-0">
                   <div class="card-text">
@@ -226,8 +237,10 @@
                         <ul class="list-unstyled px-0 mb-0">
                           <li>
                             <div class="dashboard-item">
-                              <span class="dashboard-item-label d-inline-block" ngbTooltip="Due to linked nature of the data. Ontologies are either all downloaded, or not at all." container="body">Download Ontologies</span>
-                              <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input type="checkbox" value="ontologies"/></div>
+                              <label class="w-100 my-0">
+                                <div class="dashboard-item-label d-inline-block" ngbTooltip="Due to linked nature of the data. Ontologies are either all downloaded, or not at all." container="body">Download Ontologies</div>
+                                <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input type="checkbox" value="ontologies"/></div>
+                              </label>
                             </div>
                           </li>
                         </ul>
@@ -242,17 +255,27 @@
               <div class="row no-gutters rounded mb-1">
                 <div *ngIf="getDashboardKeyCount(key)" class="card w-100">
                   <div class="card-header alert-info font-weight-bold py-1">
-                    {{ key }} Entities
+                    <span class="d-inline-block pt-1">{{ key }} Entities</span>
+                    <span class="d-inline-block pull-right text-right" style="font-size: 0.75rem;">
+                      <button class="btn btn-sm btn-link" ngbTooltip="Check all in category" (click)="exportNone(key)">
+                        <span class="fa fa-check-square-o"></span>
+                      </button>&nbsp;|&nbsp;
+                      <button class="btn btn-sm btn-link" ngbTooltip="Uncheck all in category" (click)="exportAll(key)">
+                        <span class="fa fa-square-o"></span>
+                      </button>
+                    </span>
                   </div>
                   <div class="card-body">
                     <div class="card-text">
                       <div class="row">
                         <div *ngFor="let listNumber of getListNumber(key); let index=index;" class="col-lg-6 dashboard-list-fragment">
                           <ul class="list-unstyled px-0">
-                            <li *ngFor="let item of getDashboardFragment(key, index) | keyvalue">
+                            <li *ngFor="let item of getExportFragment(key, index) | keyvalue">
                               <div class="dashboard-item">
-                                <span class="dashboard-item-label d-inline-block" ngbTooltip="{{item.key}}" container="body">{{ item.key }}:</span>
-                                <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input type="checkbox" value="{{ item.value }}"/></div>
+                                <label class="w-100 my-0">
+                                  <div class="dashboard-item-label d-inline-block" ngbTooltip="{{item.key}}" container="body">{{ item.key }}:</div>
+                                  <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input id="{{ key }}~{{ item.key }}" type="checkbox" value="{{ item.value }}"/></div>
+                                </label>
                               </div>
                             </li>
                           </ul>

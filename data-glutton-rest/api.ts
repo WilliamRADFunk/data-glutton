@@ -139,7 +139,7 @@ app.get('/scrape-leaders', async (req, res) => {
 
 app.get('/dashboard', async (req, res) => {
     const dashboard: { [key: string]: { [key: string]: number } } = {
-        'Airports/Helo': {
+        'Airport/Helo': {
             'Airlines': store.airlines.count(),
             'Airports': store.airports.count(),
             'Helicopter Landing Zones': store.helicopterLandingZones.count(),
