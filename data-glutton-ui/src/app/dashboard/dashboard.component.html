@@ -212,14 +212,28 @@
             <div class="row no-gutters border-bottom pb-2 mb-2">
               <div class="col">
                 <div class="d-inline-block h4 text-light text-outline stroke-shadow">Export Options</div>
-                <button class="btn btn-sm btn-danger d-inline-block text-light pull-right mt-1 ml-2" (click)="exportNone()" ngbTooltip="Unselect all" container="body">
+                <button
+                  class="btn btn-sm btn-danger d-inline-block text-light pull-right mt-1 ml-2"
+                  (click)="exportNone()"
+                  ngbTooltip="Unselect all"
+                  container="body">
                   <span class="fa fa-square-o"></span>
                 </button>
-                <button class="btn btn-sm btn-info d-inline-block text-light pull-right mt-1 ml-2" (click)="exportAll()" ngbTooltip="Select all" container="body">
+                <button
+                  class="btn btn-sm btn-info d-inline-block text-light pull-right mt-1 ml-2"
+                  (click)="exportAll()"
+                  ngbTooltip="Select all"
+                  container="body">
                   <span class="fa fa-check-square-o"></span>
                 </button>
-                <button class="btn btn-sm btn-primary d-inline-block text-light pull-right mt-1" ngbTooltip="Download selected files" container="body">
+                <button
+                  class="btn btn-sm btn-primary d-inline-block text-light pull-right mt-1"
+                  (click)="download()"
+                  ngbTooltip="Download selected files"
+                  container="body"
+                  [disabled]="!downloadable">
                   <span class="fa fa-download"></span>
+                  <span>&nbsp;&nbsp;{{ selectedFileCount }}</span>
                 </button>
               </div>
             </div>
@@ -228,13 +242,13 @@
                 <div class="card-header alert-info font-weight-bold py-1">
                     <span class="d-inline-block">Ontologies</span>
                     <span class="d-inline-block pull-right text-right" style="font-size: 0.75rem;">
-                      <button class="btn btn-sm btn-link" ngbTooltip="Download ontologies in RDF format" container="body">
+                      <button class="btn btn-sm btn-link" ngbTooltip="Use RDF format for ontologies" container="body">
                         RDF
                       </button>&nbsp;|&nbsp;
-                      <button class="btn btn-sm btn-link" ngbTooltip="Download ontologies in JSON-LD format" container="body">
+                      <button class="btn btn-sm btn-link" ngbTooltip="Use JSON-LD format for ontologies" container="body">
                         JSON-LD
                       </button>&nbsp;|&nbsp;
-                      <button class="btn btn-sm btn-link" ngbTooltip="Download ontologies in both formats" container="body">
+                      <button class="btn btn-sm btn-link" ngbTooltip="Use both formats for ontologies" container="body">
                         Both
                       </button>
                     </span>
@@ -247,8 +261,16 @@
                           <li>
                             <div class="dashboard-item">
                               <label class="w-100 my-0" (click)="exportSelectChange('Ontologies', 'Download Ontologies')">
-                                <div class="dashboard-item-label d-inline-block" ngbTooltip="Due to linked nature of the data. Ontologies are either all downloaded, or not at all." container="body">Download Ontologies</div>
-                                <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input type="checkbox" [checked]="exportOptions.Ontologies['Download Ontologies']" [value]="exportOptions.Ontologies['Download Ontologies']"/></div>
+                                <div
+                                  class="dashboard-item-label d-inline-block"
+                                  ngbTooltip="Due to linked nature of the data. Ontologies are either all downloaded, or not at all."
+                                  container="body">Download Ontologies</div>
+                                <div class="dashboard-item-value d-inline-block pull-right text-right pt-0">
+                                  <input
+                                    type="checkbox"
+                                    [checked]="exportOptions.Ontologies['Download Ontologies']"
+                                    [value]="exportOptions.Ontologies['Download Ontologies']"/>
+                                </div>
                               </label>
                             </div>
                           </li>

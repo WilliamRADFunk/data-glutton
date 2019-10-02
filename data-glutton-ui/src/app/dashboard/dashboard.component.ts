@@ -34,6 +34,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     'Factbook': {},
     'World Leader': {}
   };
+  downloadable: boolean = true;
   exportOptions: { [key: string]: { [key: string]: boolean } } = {
     'Airport/Helo': {},
     'Factbook': {},
@@ -59,6 +60,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     }
   ];
   selected: string = 'CIA World Factbook';
+  selectedFileCount: number = 0;
 
   constructor(private readonly fetchService: FetchCoordinator) { }
 
@@ -104,6 +106,17 @@ export class DashboardComponent implements OnDestroy, OnInit {
     for (let index = 0; index < array.length; index++) {
       await callback(array[index], index, array);
     }
+  }
+
+  private countSelectedFiles(): void {
+    this.selectedFileCount = 0;
+    Object.keys(this.exportOptions).forEach((majorKey: string) => {
+      Object.keys(this.exportOptions[majorKey]).forEach((minorKey: string) => {
+        if(this.exportOptions[majorKey][minorKey] === true) {
+          this.selectedFileCount++;
+        }
+      });
+    });
   }
 
   private reassignStatus(source: SubResourceReference): void {
@@ -188,6 +201,15 @@ export class DashboardComponent implements OnDestroy, OnInit {
       });
   }
 
+  public download(): void {
+    this.downloadable = false;
+    // TODO: Signal backend to create files for selected entities
+    // TODO: Select selected ontology format of all ontology files
+    // TODO: Zip all downloaded files
+    // TODO: Download the files.
+    this.downloadable = true;
+  }
+
   public exportAll(key: string): void {
     if (key) {
       Object.keys(this.exportOptions[key]).forEach(expOptKey => {
@@ -201,6 +223,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       });
       this.exportOptions.Ontologies['Download Ontologies'] = true;
     }
+    this.countSelectedFiles();
   }
 
   public exportNone(key?: string): void {
@@ -216,10 +239,12 @@ export class DashboardComponent implements OnDestroy, OnInit {
       });
       this.exportOptions.Ontologies['Download Ontologies'] = false;
     }
+    this.countSelectedFiles();
   }
 
   public exportSelectChange(majorKey: string, minorKey: string): void {
     this.exportOptions[majorKey][minorKey] = !this.exportOptions[majorKey][minorKey];
+    this.countSelectedFiles();
   }
 
   public async flushStore(): Promise<void> {
