@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { of, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
@@ -39,6 +39,10 @@ export class EntitiesComponent implements OnDestroy, OnInit {
   public getLabel(ont: any): string {
     console.log(Object.keys(ont));
     return ont['http://www.w3.org/2000/01/rdf-schema#label'];
+  }
+
+  public toggleAccordian(e): void {
+    console.log('toggle', e);
   }
 
 }

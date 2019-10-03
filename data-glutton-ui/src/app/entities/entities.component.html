@@ -1,5 +1,5 @@
-<ngb-accordion #a="ngbAccordion">
-  <ngb-panel *ngFor="let majorCat of entityCategories | keyvalue">
+<ngb-accordion #a1="ngbAccordion" (panelChange)="toggleAccordian($event)">
+  <ngb-panel *ngFor="let majorCat of entityCategories | keyvalue; let index = index;" id="panel-outer-{{ index }}">
     <ng-template ngbPanelHeader>
       <div class="d-flex align-items-center justify-content-between">
         <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ majorCat.key }}</button>
@@ -8,8 +8,8 @@
     <ng-template ngbPanelContent>
       <div class="card-body">
         <div class="card-title">
-          <ngb-accordion #a="ngbAccordion">
-            <ngb-panel *ngFor="let minorCat of majorCat.value | keyvalue">
+          <ngb-accordion #a2="ngbAccordion" (panelChange)="toggleAccordian($event)">
+            <ngb-panel *ngFor="let minorCat of majorCat.value | keyvalue; let i = index;" id="panel-inner-{{ i }}">
               <ng-template ngbPanelHeader>
                 <div class="d-flex align-items-center justify-content-between">
                   <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ minorCat.key }}</button>
