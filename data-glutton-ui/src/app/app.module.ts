@@ -9,6 +9,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SourcesComponent } from './sources/sources.component';
 import { ErrorComponent } from './error/error.component';
 import { OntologyComponent } from './ontology/ontology.component';
+import { EntitiesComponent } from './entities/entities.component';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { OntologyComponent } from './ontology/ontology.component';
     DashboardComponent,
     SourcesComponent,
     ErrorComponent,
-    OntologyComponent
+    OntologyComponent,
+    EntitiesComponent
   ],
   imports: [
     BrowserModule,

@@ -4,6 +4,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { SourcesComponent } from './sources/sources.component';
 import { OntologyComponent } from './ontology/ontology.component';
 import { ErrorComponent } from './error/error.component';
+import { EntitiesComponent } from './entities/entities.component';
 
 const routes: Routes = [
   {
@@ -15,6 +16,11 @@ const routes: Routes = [
     path: 'dashboard',
     pathMatch: 'full',
     component: DashboardComponent
+  },
+  {
+    path: 'entities',
+    pathMatch: 'full',
+    component: EntitiesComponent
   },
   {
     path: 'ontology',

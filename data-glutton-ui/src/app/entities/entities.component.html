@@ -1,0 +1,31 @@
+<ngb-accordion #a="ngbAccordion">
+  <ngb-panel *ngFor="let majorCat of entityCategories | keyvalue">
+    <ng-template ngbPanelHeader>
+      <div class="d-flex align-items-center justify-content-between">
+        <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ majorCat.key }}</button>
+      </div>
+    </ng-template>
+    <ng-template ngbPanelContent>
+      <div class="card-body">
+        <div class="card-title">
+          <ngb-accordion #a="ngbAccordion">
+            <ngb-panel *ngFor="let minorCat of majorCat.value | keyvalue">
+              <ng-template ngbPanelHeader>
+                <div class="d-flex align-items-center justify-content-between">
+                  <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ minorCat.key }}</button>
+                </div>
+              </ng-template>
+              <ng-template ngbPanelContent>
+                <div class="card-body">
+                  <div class="card-title">
+                    {{ getLabel(minorCat.value) }} Work in progress...
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-panel>
+          </ngb-accordion>
+        </div>
+      </div>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
