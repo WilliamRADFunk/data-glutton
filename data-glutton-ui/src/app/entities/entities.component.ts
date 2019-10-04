@@ -20,6 +20,7 @@ export class EntitiesComponent implements OnDestroy, OnInit {
     'Factbook': {},
     'World Leader': {}
   };
+  viewChoice: boolean = true;
 
   constructor(private readonly fetchService: FetchCoordinator) { }
 

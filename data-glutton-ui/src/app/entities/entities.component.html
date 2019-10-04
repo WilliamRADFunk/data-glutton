@@ -3,8 +3,18 @@
     <div class="col-12">
       <div class="rounded bg-secondary entity-box px-2 py-1">
         <div class="row no-gutters border-bottom pb-2 mb-2">
-          <div class="col">
+          <div class="col-8">
             <div class="h4 text-light text-outline stroke-shadow">Entities</div>
+          </div>
+          <div class="col-4 text-right">
+            <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="viewChoice">
+              <label ngbButtonLabel [ngClass]="{'btn-success': viewChoice, 'btn-primary': !viewChoice }">
+                <input type="radio" ngbButton [value]="true"><span class="fa fa-list"></span>
+              </label>
+              <label ngbButtonLabel [ngClass]="{'btn-success': !viewChoice, 'btn-primary': viewChoice }">
+                <input type="radio" ngbButton [value]="false"><span class="fa fa-search"></span>
+              </label>
+            </div>
           </div>
         </div>
         <ngb-accordion #a1="ngbAccordion" [activeIds]="activeOuterId" (panelChange)="toggleAccordian($event, 0)">
