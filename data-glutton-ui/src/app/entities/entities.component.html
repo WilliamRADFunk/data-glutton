@@ -1,80 +1,93 @@
-<ngb-accordion #a1="ngbAccordion" [activeIds]="activeOuterId" (panelChange)="toggleAccordian($event, 0)">
-  <ngb-panel *ngFor="let majorCat of entityCategories | keyvalue;" id="{{ majorCat.key }}">
-    <ng-template ngbPanelHeader>
-      <div class="d-flex align-items-center justify-content-between">
-        <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ majorCat.key }}</button>
-      </div>
-    </ng-template>
-    <ng-template ngbPanelContent>
-      <div class="card-body">
-        <div class="card-title">
-          <ngb-accordion #a2="ngbAccordion" [activeIds]="activeInnerId" (panelChange)="toggleAccordian($event, 1)">
-            <ngb-panel *ngFor="let minorCat of majorCat.value | keyvalue;" id="{{ majorCat.key }}-{{ minorCat.key }}">
-              <ng-template ngbPanelHeader>
-                <div class="d-flex align-items-center justify-content-between">
-                  <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ minorCat.key }} ({{ minorCat.value.count }})</button>
-                </div>
-              </ng-template>
-              <ng-template ngbPanelContent>
-                <div class="card-body">
-                  <div class="card-title">
-                    <ngb-accordion #a3="ngbAccordion" [activeIds]="activeEntityId" (panelChange)="toggleAccordian($event, 2)">
-                      <ngb-panel *ngFor="let entity of minorCat.value.values; let index = index;" id="{{ majorCat.key }}-{{ minorCat.key }}-{{ entity['@id'] }}">
-                        <ng-template ngbPanelHeader>
-                          <div class="d-flex align-items-center justify-content-between">
-                            <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</button>
-                          </div>
-                        </ng-template>
-                        <ng-template ngbPanelContent>
-                          <div class="card-body">
-                            <div class="card-title">
-                              <table class="table table-hover">
-                                <tbody>
-                                  <tr>
-                                    <th colspan="2" class="text-center"><span class="entity-section-title">Core Properties</span></th>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">Label</th>
-                                    <td>{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">Id</th>
-                                    <td>{{ entity['@id'] }}</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">Type</th>
-                                    <td>{{ entity['@type'] }}</td>
-                                  </tr>
-                                  <tr>
-                                    <th colspan="2" class="text-center"><span class="entity-section-title">DataType Properties</span></th>
-                                  </tr>
-                                  <tr *ngFor="let dtp of entity.datatypeProperties | keyvalue">
-                                    <th scope="row">{{ shorten(dtp.key) }}</th>
-                                    <td>{{ dtp.value }}</td>
-                                  </tr>
-                                  <ng-container *ngIf="entity.objectProperties.length">
-                                    <tr>
-                                      <th colspan="2" class="text-center"><span class="entity-section-title">Object Properties</span></th>
-                                    </tr>
-                                  </ng-container>
-                                  <tr *ngFor="let op of entity.objectProperties">
-                                    <th scope="row">{{ shorten(getLabel(op[getKey(op)])) }}</th>
-                                    <td class="w-80">{{ op[getKey(op)]['@id'] }}</td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </ng-template>
-                      </ngb-panel>
-                    </ngb-accordion>
-                  </div>
-                </div>
-              </ng-template>
-            </ngb-panel>
-          </ngb-accordion>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="rounded bg-secondary entity-box px-2 py-1">
+        <div class="row no-gutters border-bottom pb-2 mb-2">
+          <div class="col">
+            <div class="h4 text-light text-outline stroke-shadow">Entities</div>
+          </div>
         </div>
+        <ngb-accordion #a1="ngbAccordion" [activeIds]="activeOuterId" (panelChange)="toggleAccordian($event, 0)">
+          <ngb-panel *ngFor="let majorCat of entityCategories | keyvalue;" id="{{ majorCat.key }}">
+            <ng-template ngbPanelHeader>
+              <div class="d-flex align-items-center justify-content-between">
+                <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ majorCat.key }}</button>
+              </div>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="card-body">
+                <div class="card-title">
+                  <ngb-accordion #a2="ngbAccordion" [activeIds]="activeInnerId" (panelChange)="toggleAccordian($event, 1)">
+                    <ngb-panel *ngFor="let minorCat of majorCat.value | keyvalue;" id="{{ majorCat.key }}-{{ minorCat.key }}">
+                      <ng-template ngbPanelHeader>
+                        <div class="d-flex align-items-center justify-content-between">
+                          <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ minorCat.key }} ({{ minorCat.value.count }})</button>
+                        </div>
+                      </ng-template>
+                      <ng-template ngbPanelContent>
+                        <div class="card-body">
+                          <div class="card-title">
+                            <ngb-accordion #a3="ngbAccordion" [activeIds]="activeEntityId" (panelChange)="toggleAccordian($event, 2)">
+                              <ngb-panel *ngFor="let entity of minorCat.value.values; let index = index;" id="{{ majorCat.key }}-{{ minorCat.key }}-{{ entity['@id'] }}">
+                                <ng-template ngbPanelHeader>
+                                  <div class="d-flex align-items-center justify-content-between">
+                                    <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</button>
+                                  </div>
+                                </ng-template>
+                                <ng-template ngbPanelContent>
+                                  <div class="card-body">
+                                    <div class="card-title">
+                                      <table class="table table-hover">
+                                        <tbody>
+                                          <tr>
+                                            <th colspan="2" class="text-center"><span class="entity-section-title">Core Properties</span></th>
+                                          </tr>
+                                          <tr>
+                                            <th scope="row">Label</th>
+                                            <td>{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</td>
+                                          </tr>
+                                          <tr>
+                                            <th scope="row">Id</th>
+                                            <td>{{ entity['@id'] }}</td>
+                                          </tr>
+                                          <tr>
+                                            <th scope="row">Type</th>
+                                            <td>{{ entity['@type'] }}</td>
+                                          </tr>
+                                          <tr>
+                                            <th colspan="2" class="text-center"><span class="entity-section-title">DataType Properties</span></th>
+                                          </tr>
+                                          <tr *ngFor="let dtp of entity.datatypeProperties | keyvalue">
+                                            <th scope="row">{{ shorten(dtp.key) }}</th>
+                                            <td>{{ dtp.value }}</td>
+                                          </tr>
+                                          <ng-container *ngIf="entity.objectProperties.length">
+                                            <tr>
+                                              <th colspan="2" class="text-center"><span class="entity-section-title">Object Properties</span></th>
+                                            </tr>
+                                          </ng-container>
+                                          <tr *ngFor="let op of entity.objectProperties">
+                                            <th scope="row">{{ shorten(getLabel(op[getKey(op)])) }}</th>
+                                            <td class="w-80">{{ op[getKey(op)]['@id'] }}</td>
+                                          </tr>
+                                        </tbody>
+                                      </table>
+                                    </div>
+                                  </div>
+                                </ng-template>
+                              </ngb-panel>
+                            </ngb-accordion>
+                          </div>
+                        </div>
+                      </ng-template>
+                    </ngb-panel>
+                  </ngb-accordion>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
       </div>
-    </ng-template>
-  </ngb-panel>
-</ngb-accordion>
+    </div>
+  </div>
+</div>
