@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, timer } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
+import { Entity } from '../../models/entity';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,6 +22,10 @@ export class FetchCoordinator {
 
   fetchDashboard(): Observable<any> {
     return this.http.get<any>('http://localhost:3000/dashboard');
+  }
+
+  fetchEntities(minorKey: string): Observable<any> {
+    return this.http.get<{ entities: Entity[] }>(`http://localhost:3000/entities/${minorKey}`);
   }
 
   fetchDashboardStream(): Observable<any> {

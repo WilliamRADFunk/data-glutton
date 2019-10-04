@@ -184,6 +184,17 @@ app.get('/dashboard', async (req, res) => {
     return res.send({ dashboard });
 });
 
+app.get('/entities/:key', async (req, res) => {
+    const key = req && req.params && req.params.key;
+    if (!key) {
+        return res.status(404).send({ message: `Invalid key: ${key}` });
+    } else {
+        const noSpacesKey = key.split(' ').join('');
+        const formattedKey = noSpacesKey.substr(0, 1).toLowerCase() + noSpacesKey.substr(1);
+        return res.status(200).send({ entities: store[formattedKey].chain().simplesort(consts.RDFS.label).data() });
+    }
+});
+
 app.get('/ontologies', async (req, res) => {
     return res.status(200).send({ ontologies: consts.ONTOLOGIES });
 });
