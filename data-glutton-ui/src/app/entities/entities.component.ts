@@ -12,9 +12,10 @@ import { Entity } from '../models/entity';
 })
 export class EntitiesComponent implements OnDestroy, OnInit {
   private _subs: Subscription[] = [];
-  activeEntityId: string = "";
-  activeInnerId: string = "";
-  activeOuterId: string = "";
+  activeEntityId: string = '';
+  activeFoundEntityId: string = '';
+  activeInnerId: string = '';
+  activeOuterId: string = '';
   entityCategories: { [key: string]: { [key: string]: { count: number; values: Entity[] } } } = {
     'Airport/Helo': {},
     'Factbook': {},
@@ -22,9 +23,9 @@ export class EntitiesComponent implements OnDestroy, OnInit {
   };
   entityTypes: string[] = [];
   foundEntities: Entity[] = [];
-  searchText: string = "";
-  selectedEntityType: string = "";
-  selectedSearchType: string = "";
+  searchText: string = '';
+  selectedEntityType: string = '';
+  selectedSearchType: string = '';
   viewChoice: boolean = true;
 
   constructor(private readonly fetchService: FetchCoordinator) { }
@@ -45,7 +46,7 @@ export class EntitiesComponent implements OnDestroy, OnInit {
           Object.keys(data.dashboard).forEach(majorKey => {
             Object.keys(data.dashboard[majorKey]).forEach(minorKey => {
               if (!this.entityCategories[majorKey][minorKey]) {
-                this.entityTypes.push(minorKey)
+                this.entityTypes.push(minorKey);
                 this.entityTypes.sort();
                 this.entityCategories[majorKey][minorKey] = {
                   count: data.dashboard[majorKey][minorKey],
@@ -54,7 +55,7 @@ export class EntitiesComponent implements OnDestroy, OnInit {
               } else {
                 this.entityCategories[majorKey][minorKey].count = data.dashboard[majorKey][minorKey];
               }
-            })
+            });
           });
       }));
   }
@@ -66,7 +67,7 @@ export class EntitiesComponent implements OnDestroy, OnInit {
         take(1),
         catchError(err => {
           console.error('fetchEntities error: ', err.message);
-          this.activeEntityId = "";
+          this.activeEntityId = '';
           return of([]);
         }))
       .subscribe(data => {
@@ -75,12 +76,15 @@ export class EntitiesComponent implements OnDestroy, OnInit {
   }
 
   public entitySearch(): void {
+    if (!this.selectedEntityType || !this.selectedSearchType || !this.searchText) {
+      return;
+    }
     this.fetchService.fetchEntity(this.selectedEntityType, this.selectedSearchType.toLowerCase(), this.searchText)
       .pipe(
         take(1),
         catchError(err => {
           console.error('entitySearch error: ', err.message);
-          this.activeEntityId = "";
+          this.activeEntityId = '';
           return of([]);
         }))
       .subscribe(data => {
@@ -101,11 +105,11 @@ export class EntitiesComponent implements OnDestroy, OnInit {
   }
 
   public onSelectEntityType(entityType: string): void {
-    this.selectedEntityType = entityType || "";
+    this.selectedEntityType = entityType || '';
   }
 
   public onSelectSearchType(searchType: string): void {
-    this.selectedSearchType = searchType || "";
+    this.selectedSearchType = searchType || '';
   }
 
   public shorten(value: string): string {
@@ -118,14 +122,14 @@ export class EntitiesComponent implements OnDestroy, OnInit {
 
   public toggleAccordian(e, panelLevel: number): void {
     if (!panelLevel) {
-      this.activeOuterId = this.activeOuterId == e.panelId ? "" : e.panelId;
-    } else if (panelLevel === 1){
-      this.activeInnerId = this.activeInnerId == e.panelId ? "" : e.panelId;
+      this.activeOuterId = this.activeOuterId === e.panelId ? '' : e.panelId;
+    } else if (panelLevel === 1) {
+      this.activeInnerId = this.activeInnerId === e.panelId ? '' : e.panelId;
       if (this.activeInnerId) {
         this.fetchEntities(this.activeInnerId);
       }
     } else {
-      this.activeEntityId = this.activeEntityId == e.panelId ? "" : e.panelId;
+      this.activeEntityId = this.activeEntityId === e.panelId ? '' : e.panelId;
     }
   }
 

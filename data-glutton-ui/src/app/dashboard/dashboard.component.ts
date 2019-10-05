@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { take, catchError } from 'rxjs/operators';
+import { Subscription, of } from 'rxjs';
 
 import { FetchCoordinator } from '../services/fetch-coordinator/fetch-coordinator.service';
-import { Subscription, of } from 'rxjs';
 import { SubResourceReference } from '../models/sub-resource-reference';
 import { CountryReference } from '../models/country-reference';
 
@@ -94,7 +94,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
           this.dashboard = data.dashboard;
           Object.keys(this.dashboard).forEach((majorKey: string) => {
             Object.keys(this.dashboard[majorKey]).forEach((minorKey: string) => {
-              if(this.exportOptions[majorKey.toString()][minorKey] === undefined) {
+              if (this.exportOptions[majorKey.toString()][minorKey] === undefined) {
                 this.exportOptions[majorKey][minorKey] = false;
               }
             });
@@ -112,7 +112,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.selectedFileCount = 0;
     Object.keys(this.exportOptions).forEach((majorKey: string) => {
       Object.keys(this.exportOptions[majorKey]).forEach((minorKey: string) => {
-        if(this.exportOptions[majorKey][minorKey] === true) {
+        if (this.exportOptions[majorKey][minorKey] === true) {
           this.selectedFileCount++;
         }
       });
@@ -173,7 +173,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
               });
           }
         });
-      }
+      };
       // Creates an asyncronous version of the forEach loop.
       start();
     }
@@ -373,7 +373,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public scrape(dataSource: string): void {
     this.isScraping = true;
-    switch(dataSource) {
+    switch (dataSource) {
       case 'CIA World Factbook': {
         this.countries.filter(c => c.status['CIA World Factbook'] === 0 || c.status['CIA World Factbook'] === -1).forEach(country => {
           this.scrapeCountry(country);

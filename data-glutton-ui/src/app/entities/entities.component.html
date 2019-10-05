@@ -34,10 +34,17 @@
                 <div class="card-body">
                   <div class="card-title">
                     <ngb-accordion #a2="ngbAccordion" [activeIds]="activeInnerId" (panelChange)="toggleAccordian($event, 1)">
-                      <ngb-panel *ngFor="let minorCat of majorCat.value | keyvalue;" id="{{ majorCat.key }}-{{ minorCat.key }}">
+                      <ngb-panel
+                        *ngFor="let minorCat of majorCat.value | keyvalue;"
+                        id="{{ majorCat.key }}-{{ minorCat.key }}"
+                        [disabled]="!minorCat.value.count">
                         <ng-template ngbPanelHeader>
                           <div class="d-flex align-items-center justify-content-between">
-                            <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ minorCat.key }} ({{ minorCat.value.count }})</button>
+                            <button
+                              ngbPanelToggle
+                              class="btn btn-link container-fluid text-left pl-0 text-decoration-none">
+                              {{ minorCat.key }} ({{ minorCat.value.count }})
+                            </button>
                           </div>
                         </ng-template>
                         <ng-template ngbPanelContent>
@@ -149,7 +156,12 @@
         </div>
       </div>
       <div class="flex-grow-1 ml-2">
-        <input type="text" class="form-control w-100" [(ngModel)]="searchText" placeholder="Enter text to search within field"/>
+        <input
+          type="text"
+          class="form-control w-100"
+          [(ngModel)]="searchText"
+          placeholder="Enter text to search within field"
+          (keyup.enter)="entitySearch()"/>
       </div>
       <div class="ml-2 float-right">
         <button
@@ -163,7 +175,7 @@
     </div>
   </div>
   <ng-container *ngIf="foundEntities.length">
-    <ngb-accordion #a3="ngbAccordion">
+    <ngb-accordion #a3="ngbAccordion" [activeIds]="activeFoundEntityId" (panelChange)="activeFoundEntityId = activeFoundEntityId === $event.panelId ? '' : $event.panelId">
       <ngb-panel *ngFor="let entity of foundEntities; let index = index;" id="found-entity-{{ index }}">
         <ng-template ngbPanelHeader>
           <div class="d-flex align-items-center justify-content-between">

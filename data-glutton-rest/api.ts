@@ -198,7 +198,7 @@ app.get('/entities/:key', async (req, res) => {
 app.get('/entity/:key/:field/:text', async (req, res) => {
     const key = req && req.params && req.params.key;
     const field = req && req.params && req.params.field && (req.params.field === 'label' ? consts.RDFS.label : '@id');
-    const text = req && req.params && req.params.text;
+    const text = req && req.params && req.params.text && (req.params.text.toLowerCase());
     if (!key || !field || !text) {
         return res.status(404).send({ message: `Invalid entity search criteria: ${key}, ${field}, ${text}` });
     } else {
@@ -207,7 +207,7 @@ app.get('/entity/:key/:field/:text', async (req, res) => {
         return res.status(200).send({
             entities: store[formattedKey]
                 .chain()
-                .where(function(obj) { return obj[field].includes(text); })
+                .where(function(obj) { return obj[field].toLowerCase().includes(text); })
                 .simplesort(consts.RDFS.label)
                 .data()
             });

@@ -26,7 +26,7 @@ import { EntitiesComponent } from './entities/entities.component';
     AppRoutingModule,
     FormsModule,
     HttpClientModule,
-    NgbModule.forRoot()
+    NgbModule
   ],
   providers: [ HttpClient ],
   bootstrap: [ AppComponent ]
