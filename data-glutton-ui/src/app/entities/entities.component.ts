@@ -20,6 +20,11 @@ export class EntitiesComponent implements OnDestroy, OnInit {
     'Factbook': {},
     'World Leader': {}
   };
+  entityTypes: string[] = [];
+  foundEntities: Entity[] = [];
+  searchText: string = "";
+  selectedEntityType: string = "";
+  selectedSearchType: string = "";
   viewChoice: boolean = true;
 
   constructor(private readonly fetchService: FetchCoordinator) { }
@@ -40,6 +45,8 @@ export class EntitiesComponent implements OnDestroy, OnInit {
           Object.keys(data.dashboard).forEach(majorKey => {
             Object.keys(data.dashboard[majorKey]).forEach(minorKey => {
               if (!this.entityCategories[majorKey][minorKey]) {
+                this.entityTypes.push(minorKey)
+                this.entityTypes.sort();
                 this.entityCategories[majorKey][minorKey] = {
                   count: data.dashboard[majorKey][minorKey],
                   values: null
@@ -55,9 +62,29 @@ export class EntitiesComponent implements OnDestroy, OnInit {
   private fetchEntities(lookupKeys: string): void {
     const lookupKeysSplit = lookupKeys.split('-').map(v => v.trim());
     this.fetchService.fetchEntities(lookupKeysSplit[1])
-      .pipe(take(1))
+      .pipe(
+        take(1),
+        catchError(err => {
+          console.error('fetchEntities error: ', err.message);
+          this.activeEntityId = "";
+          return of([]);
+        }))
       .subscribe(data => {
         this.entityCategories[lookupKeysSplit[0]][lookupKeysSplit[1]].values = data.entities;
+      });
+  }
+
+  public entitySearch(): void {
+    this.fetchService.fetchEntity(this.selectedEntityType, this.selectedSearchType.toLowerCase(), this.searchText)
+      .pipe(
+        take(1),
+        catchError(err => {
+          console.error('entitySearch error: ', err.message);
+          this.activeEntityId = "";
+          return of([]);
+        }))
+      .subscribe(data => {
+        this.foundEntities = data.entities;
       });
   }
 
@@ -67,6 +94,18 @@ export class EntitiesComponent implements OnDestroy, OnInit {
 
   public getLabel(obj: any): string {
     return obj['http://www.w3.org/2000/01/rdf-schema#label'];
+  }
+
+  public onViewChoiceChange(e: boolean): void {
+    this.viewChoice = e;
+  }
+
+  public onSelectEntityType(entityType: string): void {
+    this.selectedEntityType = entityType || "";
+  }
+
+  public onSelectSearchType(searchType: string): void {
+    this.selectedSearchType = searchType || "";
   }
 
   public shorten(value: string): string {

@@ -7,7 +7,12 @@
             <div class="h4 text-light text-outline stroke-shadow">Entities</div>
           </div>
           <div class="col-4 text-right">
-            <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" [(ngModel)]="viewChoice">
+            <div
+              class="btn-group btn-group-toggle"
+              ngbRadioGroup
+              name="radioBasic"
+              [ngModel]="viewChoice"
+              (ngModelChange)="onViewChoiceChange($event)">
               <label ngbButtonLabel [ngClass]="{'btn-success': viewChoice, 'btn-primary': !viewChoice }">
                 <input type="radio" ngbButton [value]="true"><span class="fa fa-list"></span>
               </label>
@@ -17,87 +22,196 @@
             </div>
           </div>
         </div>
-        <ngb-accordion #a1="ngbAccordion" [activeIds]="activeOuterId" (panelChange)="toggleAccordian($event, 0)">
-          <ngb-panel *ngFor="let majorCat of entityCategories | keyvalue;" id="{{ majorCat.key }}">
-            <ng-template ngbPanelHeader>
-              <div class="d-flex align-items-center justify-content-between">
-                <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ majorCat.key }}</button>
-              </div>
-            </ng-template>
-            <ng-template ngbPanelContent>
-              <div class="card-body">
-                <div class="card-title">
-                  <ngb-accordion #a2="ngbAccordion" [activeIds]="activeInnerId" (panelChange)="toggleAccordian($event, 1)">
-                    <ngb-panel *ngFor="let minorCat of majorCat.value | keyvalue;" id="{{ majorCat.key }}-{{ minorCat.key }}">
-                      <ng-template ngbPanelHeader>
-                        <div class="d-flex align-items-center justify-content-between">
-                          <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ minorCat.key }} ({{ minorCat.value.count }})</button>
-                        </div>
-                      </ng-template>
-                      <ng-template ngbPanelContent>
-                        <div class="card-body">
-                          <div class="card-title">
-                            <ngb-accordion #a3="ngbAccordion" [activeIds]="activeEntityId" (panelChange)="toggleAccordian($event, 2)">
-                              <ngb-panel *ngFor="let entity of minorCat.value.values; let index = index;" id="{{ majorCat.key }}-{{ minorCat.key }}-{{ entity['@id'] }}">
-                                <ng-template ngbPanelHeader>
-                                  <div class="d-flex align-items-center justify-content-between">
-                                    <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</button>
-                                  </div>
-                                </ng-template>
-                                <ng-template ngbPanelContent>
-                                  <div class="card-body">
-                                    <div class="card-title">
-                                      <table class="table table-hover">
-                                        <tbody>
-                                          <tr>
-                                            <th colspan="2" class="text-center"><span class="entity-section-title">Core Properties</span></th>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">Label</th>
-                                            <td>{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">Id</th>
-                                            <td>{{ entity['@id'] }}</td>
-                                          </tr>
-                                          <tr>
-                                            <th scope="row">Type</th>
-                                            <td>{{ entity['@type'] }}</td>
-                                          </tr>
-                                          <tr>
-                                            <th colspan="2" class="text-center"><span class="entity-section-title">DataType Properties</span></th>
-                                          </tr>
-                                          <tr *ngFor="let dtp of entity.datatypeProperties | keyvalue">
-                                            <th scope="row">{{ shorten(dtp.key) }}</th>
-                                            <td>{{ dtp.value }}</td>
-                                          </tr>
-                                          <ng-container *ngIf="entity.objectProperties.length">
-                                            <tr>
-                                              <th colspan="2" class="text-center"><span class="entity-section-title">Object Properties</span></th>
-                                            </tr>
-                                          </ng-container>
-                                          <tr *ngFor="let op of entity.objectProperties">
-                                            <th scope="row">{{ shorten(getLabel(op[getKey(op)])) }}</th>
-                                            <td class="w-80">{{ op[getKey(op)]['@id'] }}</td>
-                                          </tr>
-                                        </tbody>
-                                      </table>
-                                    </div>
-                                  </div>
-                                </ng-template>
-                              </ngb-panel>
-                            </ngb-accordion>
-                          </div>
-                        </div>
-                      </ng-template>
-                    </ngb-panel>
-                  </ngb-accordion>
+        <ng-container *ngIf="viewChoice; else searchView">
+          <ngb-accordion #a1="ngbAccordion" [activeIds]="activeOuterId" (panelChange)="toggleAccordian($event, 0)">
+            <ngb-panel *ngFor="let majorCat of entityCategories | keyvalue;" id="{{ majorCat.key }}">
+              <ng-template ngbPanelHeader>
+                <div class="d-flex align-items-center justify-content-between">
+                  <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ majorCat.key }}</button>
                 </div>
-              </div>
-            </ng-template>
-          </ngb-panel>
-        </ngb-accordion>
+              </ng-template>
+              <ng-template ngbPanelContent>
+                <div class="card-body">
+                  <div class="card-title">
+                    <ngb-accordion #a2="ngbAccordion" [activeIds]="activeInnerId" (panelChange)="toggleAccordian($event, 1)">
+                      <ngb-panel *ngFor="let minorCat of majorCat.value | keyvalue;" id="{{ majorCat.key }}-{{ minorCat.key }}">
+                        <ng-template ngbPanelHeader>
+                          <div class="d-flex align-items-center justify-content-between">
+                            <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ minorCat.key }} ({{ minorCat.value.count }})</button>
+                          </div>
+                        </ng-template>
+                        <ng-template ngbPanelContent>
+                          <div class="card-body">
+                            <div class="card-title">
+                              <ngb-accordion #a3="ngbAccordion" [activeIds]="activeEntityId" (panelChange)="toggleAccordian($event, 2)">
+                                <ngb-panel *ngFor="let entity of minorCat.value.values; let index = index;" id="{{ majorCat.key }}-{{ minorCat.key }}-{{ entity['@id'] }}">
+                                  <ng-template ngbPanelHeader>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                      <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</button>
+                                    </div>
+                                  </ng-template>
+                                  <ng-template ngbPanelContent>
+                                    <div class="card-body">
+                                      <div class="card-title">
+                                        <table class="table table-hover">
+                                          <tbody>
+                                            <tr>
+                                              <th colspan="2" class="text-center"><span class="entity-section-title">Core Properties</span></th>
+                                            </tr>
+                                            <tr>
+                                              <th scope="row">Label</th>
+                                              <td>{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</td>
+                                            </tr>
+                                            <tr>
+                                              <th scope="row">Id</th>
+                                              <td>{{ entity['@id'] }}</td>
+                                            </tr>
+                                            <tr>
+                                              <th scope="row">Type</th>
+                                              <td>{{ entity['@type'] }}</td>
+                                            </tr>
+                                            <tr>
+                                              <th colspan="2" class="text-center"><span class="entity-section-title">DataType Properties</span></th>
+                                            </tr>
+                                            <tr *ngFor="let dtp of entity.datatypeProperties | keyvalue">
+                                              <th scope="row">{{ shorten(dtp.key) }}</th>
+                                              <td>{{ dtp.value }}</td>
+                                            </tr>
+                                            <ng-container *ngIf="entity.objectProperties.length">
+                                              <tr>
+                                                <th colspan="2" class="text-center"><span class="entity-section-title">Object Properties</span></th>
+                                              </tr>
+                                            </ng-container>
+                                            <tr *ngFor="let op of entity.objectProperties">
+                                              <th scope="row">{{ shorten(getLabel(op[getKey(op)])) }}</th>
+                                              <td class="w-80">{{ op[getKey(op)]['@id'] }}</td>
+                                            </tr>
+                                          </tbody>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </ng-template>
+                                </ngb-panel>
+                              </ngb-accordion>
+                            </div>
+                          </div>
+                        </ng-template>
+                      </ngb-panel>
+                    </ngb-accordion>
+                  </div>
+                </div>
+              </ng-template>
+            </ngb-panel>
+          </ngb-accordion>
+        </ng-container>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #searchView>
+  <div class="row no-gutters bg-dark rounded mb-2 p-2">
+    <div class="col-12 d-flex">
+      <div class="flex-grow-1">
+        <div
+          ngbDropdown
+          class="w-100"
+          attr.aria-label="Entity Type dropdown selection. {{ selectedEntityType.length ? selectedEntityType + ' is currently selected' : 'No type selected' }}">
+          <button
+            class="btn btn-outline-primary w-100"
+            id="dropdownEntityType"
+            ngbDropdownToggle>
+            {{ selectedEntityType || "Entity Type" }}
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdownEntityType" class="w-100">
+            <button
+              *ngFor="let entityType of entityTypes"
+              ngbDropdownItem
+              (click)="onSelectEntityType(entityType)">{{ entityType }}</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex-grow-1 ml-2">
+        <div
+          ngbDropdown
+          class="w-100"
+          attr.aria-label="Search Type dropdown selection. {{ selectedSearchType.length ? selectedSearchType + ' is currently selected' : 'No type selected' }}">
+          <button
+            class="btn btn-outline-primary w-100"
+            id="dropdownSearchType"
+            ngbDropdownToggle>
+            {{ selectedSearchType || "Search Field" }}
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdownSearchType" class="w-100">
+            <button ngbDropdownItem (click)="onSelectSearchType('Id')">Id</button>
+            <button ngbDropdownItem (click)="onSelectSearchType('Label')">Label</button>
+          </div>
+        </div>
+      </div>
+      <div class="flex-grow-1 ml-2">
+        <input type="text" class="form-control w-100" [(ngModel)]="searchText" placeholder="Enter text to search within field"/>
+      </div>
+      <div class="ml-2 float-right">
+        <button
+          class="btn btn-outline-success"
+          id="search"
+          (click)="entitySearch()"
+          [disabled]="!(selectedEntityType && selectedSearchType && searchText)">
+          <span class="fa fa-check"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <ng-container *ngIf="foundEntities.length">
+    <ngb-accordion #a3="ngbAccordion">
+      <ngb-panel *ngFor="let entity of foundEntities; let index = index;" id="found-entity-{{ index }}">
+        <ng-template ngbPanelHeader>
+          <div class="d-flex align-items-center justify-content-between">
+            <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</button>
+          </div>
+        </ng-template>
+        <ng-template ngbPanelContent>
+          <div class="card-body">
+            <div class="card-title">
+              <table class="table table-hover">
+                <tbody>
+                  <tr>
+                    <th colspan="2" class="text-center"><span class="entity-section-title">Core Properties</span></th>
+                  </tr>
+                  <tr>
+                    <th scope="row">Label</th>
+                    <td>{{ entity['http://www.w3.org/2000/01/rdf-schema#label'] }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Id</th>
+                    <td>{{ entity['@id'] }}</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">Type</th>
+                    <td>{{ entity['@type'] }}</td>
+                  </tr>
+                  <tr>
+                    <th colspan="2" class="text-center"><span class="entity-section-title">DataType Properties</span></th>
+                  </tr>
+                  <tr *ngFor="let dtp of entity.datatypeProperties | keyvalue">
+                    <th scope="row">{{ shorten(dtp.key) }}</th>
+                    <td>{{ dtp.value }}</td>
+                  </tr>
+                  <ng-container *ngIf="entity.objectProperties.length">
+                    <tr>
+                      <th colspan="2" class="text-center"><span class="entity-section-title">Object Properties</span></th>
+                    </tr>
+                  </ng-container>
+                  <tr *ngFor="let op of entity.objectProperties">
+                    <th scope="row">{{ shorten(getLabel(op[getKey(op)])) }}</th>
+                    <td class="w-80">{{ op[getKey(op)]['@id'] }}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </ng-container>
+</ng-template>

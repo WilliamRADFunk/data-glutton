@@ -11,3 +11,18 @@
 .entity-section-title {
     color: #593196;
 }
+
+.dropdown-toggle::after {
+  display:none;
+}
+
+.dropdown-menu {
+  max-height: 200px;
+  overflow: auto;
+}
+
+:host .card-header {
+  background: #d1ecf1 linear-gradient(180deg, #d8eff3, #d1ecf1) repeat-x;
+  background-color: #d1ecf1;
+  color: #0c5460;
+}

@@ -24,6 +24,10 @@ export class FetchCoordinator {
     return this.http.get<any>('http://localhost:3000/dashboard');
   }
 
+  fetchEntity(key: string, field: string, text: string): Observable<any> {
+    return this.http.get<{ entities: Entity[] }>(`http://localhost:3000/entity/${key}/${field}/${text}`);
+  }
+
   fetchEntities(minorKey: string): Observable<any> {
     return this.http.get<{ entities: Entity[] }>(`http://localhost:3000/entities/${minorKey}`);
   }

@@ -195,6 +195,25 @@ app.get('/entities/:key', async (req, res) => {
     }
 });
 
+app.get('/entity/:key/:field/:text', async (req, res) => {
+    const key = req && req.params && req.params.key;
+    const field = req && req.params && req.params.field && (req.params.field === 'label' ? consts.RDFS.label : '@id');
+    const text = req && req.params && req.params.text;
+    if (!key || !field || !text) {
+        return res.status(404).send({ message: `Invalid entity search criteria: ${key}, ${field}, ${text}` });
+    } else {
+        const noSpacesKey = key.split(' ').join('');
+        const formattedKey = noSpacesKey.substr(0, 1).toLowerCase() + noSpacesKey.substr(1);
+        return res.status(200).send({
+            entities: store[formattedKey]
+                .chain()
+                .where(function(obj) { return obj[field].includes(text); })
+                .simplesort(consts.RDFS.label)
+                .data()
+            });
+    }
+});
+
 app.get('/ontologies', async (req, res) => {
     return res.status(200).send({ ontologies: consts.ONTOLOGIES });
 });
