@@ -79,7 +79,7 @@ export class EntitiesComponent implements OnDestroy, OnInit {
     if (!this.selectedEntityType || !this.selectedSearchType || !this.searchText) {
       return;
     }
-    this.fetchService.fetchEntity(this.selectedEntityType, this.selectedSearchType.toLowerCase(), this.searchText)
+    this.fetchService.fetchEntity(this.selectedEntityType, this.selectedSearchType.toLowerCase(), this.searchText.split('/').join('%2F'))
       .pipe(
         take(1),
         catchError(err => {

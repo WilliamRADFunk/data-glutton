@@ -235,7 +235,7 @@ const json = JSON.parse(file);
 const context = json['@context'];
 const graph = json['@graph'];
 JsonLdProcessor.flatten(graph, context).then(res => {
-	console.log('res', res);
+	// console.log('res', res);
 });
 
 

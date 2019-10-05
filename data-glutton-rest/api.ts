@@ -207,7 +207,7 @@ app.get('/entity/:key/:field/:text', async (req, res) => {
         return res.status(200).send({
             entities: store[formattedKey]
                 .chain()
-                .where(function(obj) { return obj[field].toLowerCase().includes(text); })
+                .where((obj) => obj[field].toLowerCase().includes(text))
                 .simplesort(consts.RDFS.label)
                 .data()
             });
