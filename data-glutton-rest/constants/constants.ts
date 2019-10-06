@@ -1,6 +1,7 @@
 import * as fs from 'graceful-fs';
 import path from 'path';
 import {JsonLdProcessor} from 'jsonld';
+import { JsonLd } from 'jsonld/jsonld-spec';
 
 const AIRCRAFT_ONT_PATH = 'http://williamrobertfunk.com/ontologies/aircraft#';
 const AIRPORT_ONT_PATH = 'http://williamrobertfunk.com/ontologies/airport#';
@@ -230,32 +231,53 @@ const RDFS = {
 	label: 'http://www.w3.org/2000/01/rdf-schema#label'
 };
 
-const file = fs.readFileSync(path.join('constants', 'ontology', 'daedafusion-asset.schema.jsonld'), 'utf8');
-const json = JSON.parse(file);
-const context = json['@context'];
-const graph = json['@graph'];
-JsonLdProcessor.flatten(graph, context).then(res => {
-	// console.log('res', res);
-});
 
+const ONTOLOGY_FILES = {
+	'daedafusion-asset': fs.readFileSync(path.join('constants', 'ontology', 'daedafusion-asset.schema.jsonld'), 'utf8'),
+	'dbpedia-country': fs.readFileSync(path.join('constants', 'ontology', 'dbpedia-country.schema.jsonld'), 'utf8'),
+	'foaf-foaf': fs.readFileSync(path.join('constants', 'ontology', 'foaf-foaf.schema.jsonld'), 'utf8'),
+	'funk-aircraft': fs.readFileSync(path.join('constants', 'ontology', 'funk-aircraft.schema.jsonld'), 'utf8'),
+	'funk-blade-ref': fs.readFileSync(path.join('constants', 'ontology', 'funk-blade-ref.schema.jsonld'), 'utf8'),
+	'funk-country': fs.readFileSync(path.join('constants', 'ontology', 'funk-country.schema.jsonld'), 'utf8'),
+	'funk-general': fs.readFileSync(path.join('constants', 'ontology', 'funk-general.schema.jsonld'), 'utf8'),
+	'funk-image': fs.readFileSync(path.join('constants', 'ontology', 'funk-image.schema.jsonld'), 'utf8'),
+	'funk-municipality': fs.readFileSync(path.join('constants', 'ontology', 'funk-municipality.schema.jsonld'), 'utf8'),
+	'funk-world-leaders': fs.readFileSync(path.join('constants', 'ontology', 'funk-world-leaders.schema.jsonld'), 'utf8'),
+	'w3-owl': fs.readFileSync(path.join('constants', 'ontology', 'w3-owl.schema.jsonld'), 'utf8'),
+	'w3-wgs84_pos': fs.readFileSync(path.join('constants', 'ontology', 'w3-wgs84_pos.schema.jsonld'), 'utf8')
+};
+
+async function getOntologies(ont: string): Promise<JsonLd> {
+	const file = ONTOLOGY_FILES[ont];
+	const json = JSON.parse(file);
+	const context = json['@context'];
+	const graph = json['@graph'];
+
+	return JsonLdProcessor.compact(graph, context).then(res => {
+		return JsonLdProcessor.expand(res);
+	});
+}
 
 const ONTOLOGIES = {
-	'daedafusion-asset': fs.readFileSync(path.join('constants', 'ontology', 'daedafusion-asset.rdf'), 'utf8'),
-	'dbpedia-country': fs.readFileSync(path.join('constants', 'ontology', 'dbpedia-country.rdf'), 'utf8'),
-	'foaf-foaf': fs.readFileSync(path.join('constants', 'ontology', 'foaf-foaf.rdf'), 'utf8'),
-	'funk-aircraft': fs.readFileSync(path.join('constants', 'ontology', 'funk-aircraft.rdf'), 'utf8'),
-	'funk-blade-ref': fs.readFileSync(path.join('constants', 'ontology', 'funk-blade-ref.rdf'), 'utf8'),
-	'funk-country': fs.readFileSync(path.join('constants', 'ontology', 'funk-country.rdf'), 'utf8'),
-	'funk-general': fs.readFileSync(path.join('constants', 'ontology', 'funk-general.rdf'), 'utf8'),
-	'funk-image': fs.readFileSync(path.join('constants', 'ontology', 'funk-image.rdf'), 'utf8'),
-	'funk-municipality': fs.readFileSync(path.join('constants', 'ontology', 'funk-municipality.rdf'), 'utf8'),
-	'funk-world-leaders': fs.readFileSync(path.join('constants', 'ontology', 'funk-world-leaders.rdf'), 'utf8'),
-	'w3-owl': fs.readFileSync(path.join('constants', 'ontology', 'w3-owl.rdf'), 'utf8'),
-	'w3-wgs84_pos': fs.readFileSync(path.join('constants', 'ontology', 'w3-wgs84_pos.rdf'), 'utf8')
-};
+	'daedafusion-asset': null,
+	'dbpedia-country': null,
+	'foaf-foaf': null,
+	'funk-aircraft': null,
+	'funk-blade-ref': null,
+	'funk-country': null,
+	'funk-general': null,
+	'funk-image': null,
+	'funk-municipality': null,
+	'funk-world-leaders': null,
+	'w3-owl': null,
+	'w3-wgs84_pos': null
+}
+
+// console.log('rdf', ONTOLOGIES['daedafusion-asset']);
 
 class Constants {
 	public BASE = BASE;
+	public GET_ONTOLOGY = getOntologies;
 	public ONTOLOGY = ONTOLOGY;
 	public ONTOLOGIES = ONTOLOGIES;
 	public RDFS = RDFS;

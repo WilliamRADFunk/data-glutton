@@ -1,16 +1,29 @@
-<ngb-accordion #a="ngbAccordion">
-  <ngb-panel *ngFor="let ont of ontologies | keyvalue">
-    <ng-template ngbPanelHeader>
-      <div class="d-flex align-items-center justify-content-between">
-        <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ ont.key }}</button>
-      </div>
-    </ng-template>
-    <ng-template ngbPanelContent>
-      <div class="card-body">
-        <div class="card-title">
-          {{ getLabel(ont.value) }} Work in progress...
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="rounded bg-secondary entity-box px-2 py-1">
+        <div class="row no-gutters border-bottom pb-2 mb-2">
+          <div class="col-12">
+            <div class="h4 text-light text-outline stroke-shadow">Ontology Files <span class="h5 font-weight-light pb-1">(Expanded JsonLD)</span></div>
+          </div>
         </div>
+        <ngb-accordion #a="ngbAccordion" [activeIds]="activeOntologyId" (panelChange)="toggleAccordian($event)">
+          <ngb-panel *ngFor="let ont of ontologies | keyvalue">
+            <ng-template ngbPanelHeader>
+              <div class="d-flex align-items-center justify-content-between">
+                <button ngbPanelToggle class="btn btn-link container-fluid text-left pl-0 text-decoration-none">{{ ont.key }}</button>
+              </div>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div class="card-body">
+                <div class="card-title">
+                  <pre>{{ ont.value | json }}</pre>
+                </div>
+              </div>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
       </div>
-    </ng-template>
-  </ngb-panel>
-</ngb-accordion>
+    </div>
+  </div>
+</div>

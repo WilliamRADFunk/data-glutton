@@ -61,6 +61,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   ];
   selected: string = 'CIA World Factbook';
   selectedFileCount: number = 0;
+  activeOntFormat: string = 'both';
 
   constructor(private readonly fetchService: FetchCoordinator) { }
 
@@ -242,8 +243,11 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.countSelectedFiles();
   }
 
-  public exportSelectChange(majorKey: string, minorKey: string): void {
+  public exportSelectChange(majorKey: string, minorKey: string, e: Event): void {
+    e.stopPropagation();
+    console.log('exportSelectChange', majorKey, minorKey, this.exportOptions[majorKey][minorKey]);
     this.exportOptions[majorKey][minorKey] = !this.exportOptions[majorKey][minorKey];
+    console.log('exportSelectChange', majorKey, minorKey, this.exportOptions[majorKey][minorKey]);
     this.countSelectedFiles();
   }
 
@@ -407,5 +411,9 @@ export class DashboardComponent implements OnDestroy, OnInit {
     if (dataSource === 'Airports/Helos') {
       this.reassignStatus(this.subResources[0]);
     }
+  }
+
+  public switchOntologyFormat(choice: string): void {
+    this.activeOntFormat = choice;
   }
 }

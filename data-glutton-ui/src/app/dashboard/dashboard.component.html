@@ -242,14 +242,26 @@
                 <div class="card-header alert-info font-weight-bold py-1">
                     <span class="d-inline-block">Ontologies</span>
                     <span class="d-inline-block pull-right text-right" style="font-size: 0.75rem;">
-                      <button class="btn btn-sm btn-link" ngbTooltip="Use RDF format for ontologies" container="body">
-                        RDF
+                      <button
+                        class="btn btn-sm btn-link"
+                        ngbTooltip="Use RDF format for ontologies"
+                        container="body"
+                        (click)="switchOntologyFormat('rdf')">
+                        <span [class.underline]="activeOntFormat === 'rdf'">RDF</span>
                       </button>&nbsp;|&nbsp;
-                      <button class="btn btn-sm btn-link" ngbTooltip="Use JSON-LD format for ontologies" container="body">
-                        JSON-LD
+                      <button
+                        class="btn btn-sm btn-link"
+                        ngbTooltip="Use JSON-LD format for ontologies"
+                        container="body"
+                        (click)="switchOntologyFormat('jsonld')">
+                        <span [class.underline]="activeOntFormat === 'jsonld'">JSON-LD</span>
                       </button>&nbsp;|&nbsp;
-                      <button class="btn btn-sm btn-link" ngbTooltip="Use both formats for ontologies" container="body">
-                        Both
+                      <button
+                        class="btn btn-sm btn-link"
+                        ngbTooltip="Use both formats for ontologies"
+                        container="body"
+                        (click)="switchOntologyFormat('both')">
+                        <span [class.underline]="activeOntFormat === 'both'">Both</span>
                       </button>
                     </span>
                 </div>
@@ -260,7 +272,7 @@
                         <ul class="list-unstyled px-0 mb-0">
                           <li>
                             <div class="dashboard-item">
-                              <label class="w-100 my-0" (click)="exportSelectChange('Ontologies', 'Download Ontologies')">
+                              <label class="w-100 my-0" (click)="exportSelectChange('Ontologies', 'Download Ontologies', $event)">
                                 <div
                                   class="dashboard-item-label d-inline-block"
                                   ngbTooltip="Due to linked nature of the data. Ontologies are either all downloaded, or not at all."
@@ -268,8 +280,8 @@
                                 <div class="dashboard-item-value d-inline-block pull-right text-right pt-0">
                                   <input
                                     type="checkbox"
-                                    [checked]="exportOptions['Ontologies']['Download Ontologies']"
-                                    [value]="exportOptions['Ontologies']['Download Ontologies']"/>
+                                    [checked]="exportOptions.Ontologies['Download Ontologies']"
+                                    value="{{ exportOptions.Ontologies['Download Ontologies'] }}"/>
                                 </div>
                               </label>
                             </div>

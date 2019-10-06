@@ -207,7 +207,7 @@ app.get('/entity/:key/:field/:text', async (req, res) => {
         return res.status(200).send({
             entities: store[formattedKey]
                 .chain()
-                .where((obj) => obj[field].toLowerCase().includes(text))
+                .where(obj => obj[field].toLowerCase().includes(text))
                 .simplesort(consts.RDFS.label)
                 .data()
             });
@@ -223,7 +223,14 @@ app.get('/ontology/:ontology', async (req, res) => {
     if (!ontology) {
         return res.status(200).send({ ontologies: consts.ONTOLOGIES });
     } else {
-        return res.status(200).send({ ontologies: consts.ONTOLOGIES[ontology] });
+        if (!consts.ONTOLOGIES[ontology]) {
+            consts.GET_ONTOLOGY(ontology).then(ont => {
+                consts.ONTOLOGIES[ontology] = ont;
+                return res.status(200).send({ ontology: consts.ONTOLOGIES[ontology] });
+            });
+        } else {
+            return res.status(200).send({ ontology: consts.ONTOLOGIES[ontology] });
+        }
     }
 });
 

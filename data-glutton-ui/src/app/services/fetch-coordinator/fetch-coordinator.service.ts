@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, timer } from 'rxjs';
+import { Observable, timer, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { Entity } from '../../models/entity';
@@ -9,6 +9,7 @@ import { Entity } from '../../models/entity';
   providedIn: 'root'
 })
 export class FetchCoordinator {
+  ontologies: { [key: string]: any } = {};
 
   constructor(private readonly http: HttpClient) { }
 
@@ -38,6 +39,18 @@ export class FetchCoordinator {
 
   fetchOntologies(): Observable<any> {
     return this.http.get<any>('http://localhost:3000/ontologies/');
+  }
+
+  fetchOntology(ontology: string): Observable<any> {
+    if (!this.ontologies[ontology]) {
+      const prom = this.http.get<any>(`http://localhost:3000/ontology/${ontology}`);
+      prom.toPromise().then(res => {
+        this.ontologies[ontology] = res;
+      });
+      return prom;
+    } else {
+      return of(this.ontologies[ontology]);
+    }
   }
 
   fetchSubResource(source: string, subSource?: string): Observable<any> {

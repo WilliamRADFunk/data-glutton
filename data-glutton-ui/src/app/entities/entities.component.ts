@@ -120,7 +120,7 @@ export class EntitiesComponent implements OnDestroy, OnInit {
     return value;
   }
 
-  public toggleAccordian(e, panelLevel: number): void {
+  public toggleAccordian(e: { panelId: string }, panelLevel: number): void {
     if (!panelLevel) {
       this.activeOuterId = this.activeOuterId === e.panelId ? '' : e.panelId;
     } else if (panelLevel === 1) {

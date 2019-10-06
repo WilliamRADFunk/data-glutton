@@ -1,0 +1,22 @@
+.ontology-box {
+    box-shadow: 0 0 0.1rem 0.1rem rgba(200, 200, 200, 1);
+    box-sizing: border-box;
+    height: calc(92vh - 72px);
+    margin-bottom: 2vh;
+    max-height: calc(92vh - 72px);
+    min-height: calc(92vh - 72px);
+    overflow-y: auto;
+}
+
+::ng-deep .card-header {
+    background: #d1ecf1 linear-gradient(180deg, #d8eff3, #d1ecf1) repeat-x;
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+::ng-deep ngb-accordion {
+    .btn-link, .btn-link.collapsed {
+        color: #0c5460;
+        font-weight: 700;
+    }
+}
