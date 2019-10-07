@@ -213,7 +213,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       });
     });
     console.log('saveFiles', files);
-    this.fetchService.saveFiles(files);
+    this.fetchService.saveFiles(files).pipe(take(1)).subscribe(x => console.log(x));
     // TODO: Select selected ontology format of all ontology files
     // TODO: Zip all downloaded files
     // TODO: Download the files.
