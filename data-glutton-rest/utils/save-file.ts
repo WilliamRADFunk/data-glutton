@@ -8,7 +8,7 @@ import { store } from '../constants/globalStore';
 export function saveFile(fileName: string, storeName: string, context: string): void {
 	store.debugLogger(`--- Saving ${storeName} in ${fileName}.json`);
 	// Normal JSON file.
-	fs.writeFileSync(`dist/json/${fileName}.json`, JSON.stringify(store[storeName]));
+	fs.writeFileSync(`files/json/${fileName}.json`, JSON.stringify(store[storeName].chain().simplesort(consts.RDFS.label).data()), { flag: 'w' });
 	store.debugLogger(`+++ Saved ${storeName} in ${fileName}.json`);
 	// JSON-LD file construction.
 	store['jsonLD'] = [];
@@ -17,9 +17,9 @@ export function saveFile(fileName: string, storeName: string, context: string): 
 	// 	'@graph': []
 	// };
 	store.debugLogger(`--- Saving ${storeName} in ${fileName}.schema.jsonld`);
-	const asAList: Entity[] = Object.values(store[storeName]);
+	const asAList: Entity[] = store[storeName].chain().simplesort(consts.RDFS.label).data();
 	const length = asAList.length;
-	store[storeName] = {};
+	// store[storeName] = {};
 	store.debugLogger(`--- Making JsonLD List`);
 	for (let i = 0; i < length; i++) {
 		const entity = asAList.pop();
@@ -57,14 +57,14 @@ export function saveFile(fileName: string, storeName: string, context: string): 
 		store['jsonLD'].push(mainObj);
 	};
 
-	fs.writeFileSync(`dist/jsonld/${fileName}.schema.jsonld`, JSON.stringify(store['jsonLD']));
+	fs.writeFileSync(`files/jsonld/${fileName}.schema.jsonld`, JSON.stringify(store['jsonLD']), { flag: 'w' });
 	store.debugLogger(`+++ Saved ${storeName} in ${fileName}.schema.jsonld`);
 	store.debugLogger(`~~~ Converting jsonld to n-triples`);
 
 	convertJsonldToNTriples();
 
 	store.debugLogger(`~~~ Saving ${storeName} to ${fileName}.schema.nt`);
-	fs.writeFileSync(`dist/n-triples/${fileName}.schema.nt`, store['jsonNT']);
+	fs.writeFileSync(`files/n-triples/${fileName}.schema.nt`, store['jsonNT'], { flag: 'w' });
 	store['jsonNT'] = '';
 };
 
