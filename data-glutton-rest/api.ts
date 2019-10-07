@@ -1,8 +1,8 @@
 import cors from 'cors';
 import express from 'express';
 
-import { store } from './constants/globalStore';
 import { consts } from './constants/constants';
+import { store } from './constants/globalStore';
 import { getAirportsHelosData } from './fetch-modules/all-airports/get-airport-helo-data';
 import { getCountriesData } from './fetch-modules/factbook/get-countries-data';
 import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
@@ -11,6 +11,7 @@ import { getLeadersByCountryPromise } from './fetch-modules/world-leaders/get-co
 import { CountryReference } from './models/country-reference';
 import { flushStore } from './utils/flush-store';
 import { getCountries } from './utils/get-countries';
+import { saveFiles } from './utils/save-files';
 
 const app = express();
 app.use(cors());
@@ -234,6 +235,25 @@ app.get('/ontology/:ontology', async (req, res) => {
     }
 });
 
+app.get('/save-files/:files', async (req, res) => {
+    store.debugLogger('Save Files');
+    const files = req && req.params && req.params.files && req.params.files.split(',');
+    if (files) {
+        store.debugLogger(req.params.files, files);
+        saveFiles();
+        return res.status(200).send({ done: true });
+    } else {
+        // if (!consts.ONTOLOGIES[ontology]) {
+        //     consts.GET_ONTOLOGY(ontology).then(ont => {
+        //         consts.ONTOLOGIES[ontology] = ont;
+        //         return res.status(200).send({ ontology: consts.ONTOLOGIES[ontology] });
+        //     });
+        // } else {
+        //     return res.status(200).send({ ontology: consts.ONTOLOGIES[ontology] });
+        // }
+    }
+});
+
 app.listen(port, () => {
-    console.log(`Data Glutton Backend listening on port ${port}!`);
+    store.debugLogger(`Data Glutton Backend listening on port ${port}!`);
 });

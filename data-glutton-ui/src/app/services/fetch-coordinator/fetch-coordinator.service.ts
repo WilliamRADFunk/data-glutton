@@ -69,6 +69,10 @@ export class FetchCoordinator {
     return this.http.get(`http://localhost:3000/entities/flush`);
   }
 
+  saveFiles(files: string): Observable<any> {
+    return this.http.get(`http://localhost:3000/save-files/${files}`);
+  }
+
   scrapeFactbook(): Observable<any> {
     return this.http.get('http://localhost:3000/scrape-factbook');
   }

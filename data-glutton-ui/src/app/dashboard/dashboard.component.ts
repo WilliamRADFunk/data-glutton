@@ -204,7 +204,16 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public download(): void {
     this.downloadable = false;
-    // TODO: Signal backend to create files for selected entities
+    let files = '';
+    Object.keys(this.exportOptions).forEach(majorKey => {
+      Object.keys(this.exportOptions[majorKey]).forEach(minorKey => {
+        if (this.exportOptions[majorKey][minorKey]) {
+          files += `${minorKey},`;
+        }
+      });
+    });
+    console.log('saveFiles', files);
+    this.fetchService.saveFiles(files);
     // TODO: Select selected ontology format of all ontology files
     // TODO: Zip all downloaded files
     // TODO: Download the files.
