@@ -1,40 +1,42 @@
+import JSZip from 'JSZip';
+import { FileSaver } from 'file-saver';
+
 import { consts } from '../constants/constants';
+import { store } from '../constants/globalStore';
 import { saveFile } from './save-file';
 
-export function saveFiles() {
-	saveFile('countries', 'countries', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('agriculturalLands', 'agriculturalLands', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('airlines', 'airlines', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('airports', 'airports', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('arableLands', 'arableLands', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('artificiallyIrrigatedLands', 'artificiallyIrrigatedLands', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('borderCountries', 'borderCountries', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('borderMaps', 'borderMaps', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('borders', 'borders', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('climates', 'climates', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('climateZones', 'climateZones', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('coasts', 'coasts', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('countries', 'countries', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('domainAreas', 'domainAreas', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('elevations', 'elevations', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('forestLands', 'forestLands', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('helicopterLandingZones', 'helicopterLandingZones', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('images', 'images', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('geographicNotes', 'geographicNotes', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('govOffices', 'govOffices', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('landUses', 'landUses', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('locations', 'locations', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('maritimeClaims', 'maritimeClaims', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('municipalities', 'municipalities', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('nationalFlags', 'nationalFlags', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('naturalHazards', 'naturalHazards', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('naturalResources', 'naturalResources', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('otherLands', 'otherLands', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('permanentCropsLands', 'permanentCropsLands', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('permanentPastureLands', 'permanentPastureLands', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('persons', 'persons', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('regionMaps', 'regionMaps', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('runways', 'runways', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('surfaceMaterials', 'surfaceMaterials', consts.ONTOLOGY.ONT_COUNTRY);
-	saveFile('terrains', 'terrains', consts.ONTOLOGY.ONT_COUNTRY);
+export function saveFiles(files: string[]) {
+	const storeNames = files.map(name => {
+		const separatedName = name.split(' ');
+		separatedName[0] = separatedName[0] && separatedName[0].toLowerCase();
+		return separatedName.join('');
+	}).filter(x => !!x);
+	const fileNames = files.map(name => {
+		const separatedName = name.split(' ');
+		return separatedName.map(word => word && word.toLowerCase()).join('-');
+	}).filter(x => !!x);
+
+	const zip = JSZip();
+	const entsFolder = zip.folder('entities');
+	const entsJsonFolder = entsFolder.folder('json');
+	const entsJsonLdFolder = entsFolder.folder('jsonld');
+	const entsNTriplesFolder = entsFolder.folder('ntriples');
+
+	storeNames.forEach((name: string, index: number) => {
+		saveFile(name, fileNames[index], consts.ONTOLOGY.ONT_COUNTRY);
+		entsJsonFolder.file(`${fileNames[index]}.json`);
+		entsJsonLdFolder.file(`${fileNames[index]}.schema.jsonld`);
+		entsNTriplesFolder.file(`${fileNames[index]}.n-triples`);
+	});
+
+	zip.generateAsync({ type: 'nodebuffer' })
+		.then((content: Buffer) => {
+			store.debugLogger(`${content.toString()}`);
+			// Force down of the Zip file
+			console.log('saveAs', FileSaver.saveAs);
+			FileSaver.saveAs(content, 'archive.zip');
+		})
+		.catch(err => {
+			store.errorLogger(`JSZip failed to make zip file: ${err.message}`)
+		});
 };

@@ -240,7 +240,7 @@ app.get('/save-files/:files', async (req, res) => {
     const files = req && req.params && req.params.files && req.params.files.split(',');
     if (files) {
         store.debugLogger(req.params.files, files);
-        saveFiles();
+        saveFiles(files);
         return res.status(200).send({ done: true });
     } else {
         // if (!consts.ONTOLOGIES[ontology]) {

@@ -5,7 +5,7 @@ import { Entity } from 'funktologies';
 import { consts } from '../constants/constants';
 import { store } from '../constants/globalStore';
 
-export function saveFile(fileName: string, storeName: string, context: string): void {
+export function saveFile(storeName: string, fileName: string, context: string): void {
 	store.debugLogger(`--- Saving ${storeName} in ${fileName}.json`);
 	// Normal JSON file.
 	fs.writeFileSync(`files/json/${fileName}.json`, JSON.stringify(store[storeName].chain().simplesort(consts.RDFS.label).data()), { flag: 'w' });
