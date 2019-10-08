@@ -1,5 +1,3 @@
-import * as fs from 'graceful-fs';
-
 import { Entity } from 'funktologies';
 
 import { consts } from '../constants/constants';

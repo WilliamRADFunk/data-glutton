@@ -97,6 +97,10 @@ app.get('/sub-resource-list', async (req, res) => {
     return res.send(store.subResourceList);
 });
 
+app.get('/airline-resource-list', async (req, res) => {
+    return res.send(store.airlineResourceList);
+});
+
 app.get('/country-list', async (req, res) => {
     if (!store.countriesInList.length) {
         await getCountries();
@@ -141,12 +145,14 @@ app.get('/scrape-leaders', async (req, res) => {
 app.get('/dashboard', async (req, res) => {
     const dashboard: { [key: string]: { [key: string]: number } } = {
         'Airport/Helo': {
-            'Airlines': store.airlines.count(),
             'Airports': store.airports.count(),
             'Helicopter Landing Zones': store.helicopterLandingZones.count(),
             'Municipalities': store.municipalities.count(),
             'Runways': store.runways.count(),
             'Surface Materials': store.surfaceMaterials.count(),
+        },
+        'Airlines': {
+            'Airlines': store.airlines.count()
         },
         'Factbook': {
             'Agricultural Lands': store.agriculturalLands.count(),

@@ -28,14 +28,17 @@ const LIST_SIZE = 5;
 export class DashboardComponent implements OnDestroy, OnInit {
   private _subs: Subscription[] = [];
   subResources: SubResourceReference[] = [];
+  airlineResources: SubResourceReference[] = [];
   countries: CountryReference[] = [];
   dashboard: { [key: string]: { [key: string]: number } } = {
+    'Airlines': {},
     'Airport/Helo': {},
     'Factbook': {},
     'World Leader': {}
   };
   downloadable: boolean = true;
   exportOptions: { [key: string]: { [key: string]: boolean } } = {
+    'Airlines': {},
     'Airport/Helo': {},
     'Factbook': {},
     'Ontologies': { 'Download Ontologies': false },
@@ -57,6 +60,10 @@ export class DashboardComponent implements OnDestroy, OnInit {
     {
       label: 'Airports/Helos',
       hasSubResources: true
+    },
+    {
+      label: 'Airlines',
+      hasSubResources: false
     }
   ];
   selected: string = 'CIA World Factbook';
@@ -82,6 +89,14 @@ export class DashboardComponent implements OnDestroy, OnInit {
       .subscribe(subResources => {
         this.subResources = subResources.slice();
         this.subResources.forEach(source => {
+        this.reassignStatus(source);
+      });
+    });
+    this.fetchService.fetchAirlineResources()
+      .pipe(take(1))
+      .subscribe(airlineResources => {
+        this.airlineResources = airlineResources.slice();
+        this.airlineResources.forEach(source => {
         this.reassignStatus(source);
       });
     });
@@ -415,9 +430,20 @@ export class DashboardComponent implements OnDestroy, OnInit {
         });
         break;
       }
+      case 'Airlines': {
+        this.airlineResources.filter(c => c.status === 0 || c.status === -1).forEach(source => {
+          this.fetchService.scrapeAirlineSource(source.name);
+        });
+        break;
+      }
     }
 
     this.isScraping = false;
+  }
+
+  public scrapeAirlineSource(source: string): void {
+    const airlineResource = this.airlineResources.find(c => c.name === source);
+    this.fetchService.scrapeAirlineSource(airlineResource.name);
   }
 
   public scrapeLeadersOfCountryByName(countryName: string): void {

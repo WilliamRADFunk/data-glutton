@@ -273,6 +273,7 @@ const ONTOLOGIES = {
 	'dbpedia-country': null,
 	'foaf-foaf': null,
 	'funk-aircraft': null,
+	'funk-airline': null,
 	'funk-blade-ref': null,
 	'funk-country': null,
 	'funk-general': null,

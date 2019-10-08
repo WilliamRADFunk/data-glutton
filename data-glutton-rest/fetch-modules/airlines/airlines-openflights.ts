@@ -1,3 +1,6 @@
+import * as fs from 'graceful-fs';
+import * as path from 'path';
+import * as readline from 'readline';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
@@ -10,9 +13,20 @@ import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
-// import * as airlineOpenData from '../assets/airline-openflights.dat';
-
 // Populate remaining airports from datahub list
-export function getAirlineOpenFlights(partNum: number): void {
-	// Does stuff
+export function getAirlineOpenFlights(): void {
+	let lineReader;
+	try {
+		lineReader = readline.createInterface({
+			input: fs.createReadStream(path.join('assets', 'airline-openflights.dat'))
+		});
+	} catch(err) {
+		store.errorLogger(`Failed to read airline-openflights.dat: ${err.message}`);
+	}
+	
+	if (lineReader) {
+		lineReader.on('line', (line) => {
+			store.debugLogger(`Line from file: ${line}`);
+		});
+	}
 }
