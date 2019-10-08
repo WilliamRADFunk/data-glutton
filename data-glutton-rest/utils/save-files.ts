@@ -7,8 +7,20 @@ import { consts } from '../constants/constants';
 import { store } from '../constants/globalStore';
 import { saveFile } from './save-file';
 
-export function saveFiles(files: string[]): Promise<any> {
+export function saveFiles(files: string[], excludeOntology?: boolean): Promise<any> {
 	return new Promise((resolve, reject) => {
+		const ontologyRDFFiles = [];
+		const ontologyJsonLdFiles = [];
+		fs.readdirSync(path.join('constants', 'ontology')).forEach(file => {
+			if (file.includes('.rdf')) {
+				ontologyRDFFiles.push(file);
+			} else if (file.includes('.schema.jsonld')) {
+				ontologyJsonLdFiles.push(file);
+			}
+		});
+
+		files = files.filter(name => name && name !== 'Download Ontologies');
+
 		const storeNames = files.map(name => {
 			const separatedName = name.split(' ');
 			separatedName[0] = separatedName[0] && separatedName[0].toLowerCase();
@@ -20,14 +32,43 @@ export function saveFiles(files: string[]): Promise<any> {
 		}).filter(x => !!x);
 
 		const zip = JSZip();
-		const entsFolder = zip.folder('entities');
-		const entsJsonFolder = entsFolder.folder('json');
-		const entsJsonLdFolder = entsFolder.folder('jsonld');
-		const entsNTriplesFolder = entsFolder.folder('n-triples');
 
-		storeNames.forEach((name: string, index: number) => {
-			saveFile(name, fileNames[index], consts.ONTOLOGY.ONT_COUNTRY, [entsJsonFolder, entsJsonLdFolder, entsNTriplesFolder]);
-		});
+		if (!excludeOntology) {
+			const ontsFolder = zip.folder('ontologies');
+			const ontsJsonLdFolder = ontsFolder.folder('jsonld');
+			const ontsRDFFolder = ontsFolder.folder('rdf');
+
+			ontologyJsonLdFiles.forEach(fileName => {
+				let fileData;
+				try {
+					fileData = fs.readFileSync(path.join('constants', 'ontology', fileName));
+					ontsJsonLdFolder.file(`${fileName}.schema.jsonld`, fileData);
+				} catch (err) {
+					store.errorLogger(`Failed to read ${fileName} for downloading purposes.`);
+				}
+			});
+
+			ontologyRDFFiles.forEach(fileName => {
+				let fileData;
+				try {
+					fileData = fs.readFileSync(path.join('constants', 'ontology', fileName));
+					ontsRDFFolder.file(`${fileName}.rdf`, fileData);
+				} catch (err) {
+					store.errorLogger(`Failed to read ${fileName} for downloading purposes.`);
+				}
+			});
+		}
+
+		if (storeNames.length) {
+			const entsFolder = zip.folder('entities');
+			const entsJsonFolder = entsFolder.folder('json');
+			const entsJsonLdFolder = entsFolder.folder('jsonld');
+			const entsNTriplesFolder = entsFolder.folder('n-triples');
+
+			storeNames.forEach((name: string, index: number) => {
+				saveFile(name, fileNames[index], consts.ONTOLOGY.ONT_COUNTRY, [entsJsonFolder, entsJsonLdFolder, entsNTriplesFolder]);
+			});
+		}
 
 		zip.generateAsync({ type: 'nodebuffer' })
 			.then((content: Buffer) => {

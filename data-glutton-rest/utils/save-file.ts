@@ -54,7 +54,7 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 
 	convertJsonldToNTriples();
 
-	folders[2].file(`${fileName}.n-triples`, store['jsonNT']);
+	folders[2].file(`${fileName}.schema.nt`, store['jsonNT']);
 	store['jsonNT'] = '';
 };
 

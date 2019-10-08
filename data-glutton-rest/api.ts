@@ -237,9 +237,17 @@ app.get('/ontology/:ontology', async (req, res) => {
 
 app.get('/save-files/:files', async (req, res) => {
     store.debugLogger('Save Files');
-    const files = req && req.params && req.params.files && req.params.files.split(',');
+    const rawFiles = req && req.params && req.params.files;
+    const ontEntSplit = rawFiles && rawFiles.split(':');
+    let includeOntology = false;
+    if (ontEntSplit.length === 2) {
+        includeOntology = true;
+        ontEntSplit.shift();
+    }
+    const files = ontEntSplit[0].split(',');
+
     if (files) {
-        saveFiles(files)
+        saveFiles(files, !includeOntology)
             .then(() => {
                 return res.status(200).send({ done: true});
             })
