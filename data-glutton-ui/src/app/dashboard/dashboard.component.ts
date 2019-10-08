@@ -204,7 +204,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public download(): void {
     this.downloadable = false;
-    let files = '';
+    let files = this.exportOptions.Ontologies['Download Ontologies'] ? 'ont' : '';
     Object.keys(this.exportOptions).forEach(majorKey => {
       Object.keys(this.exportOptions[majorKey]).forEach(minorKey => {
         if (this.exportOptions[majorKey][minorKey]) {
@@ -212,10 +212,23 @@ export class DashboardComponent implements OnDestroy, OnInit {
         }
       });
     });
-    this.fetchService.saveFiles(files).pipe(take(1)).subscribe(x => console.log(x));
+    this.fetchService.saveFiles(files)
+      .pipe(take(1))
+      .subscribe(data => {
+        const element = document.createElement('a');
+        element.setAttribute('href', 'assets/data-glutton.zip');
+        element.setAttribute('download', 'data-glutton.zip');
+
+        element.style.display = 'none';
+        document.body.appendChild(element);
+
+        element.click();
+
+        document.body.removeChild(element);
+
+        this.downloadable = true;
+      });
     // TODO: Select selected ontology format of all ontology files
-    // TODO: Download the files.
-    this.downloadable = true;
   }
 
   public exportAll(key: string): void {

@@ -241,29 +241,6 @@
               <div class="card w-100">
                 <div class="card-header alert-info font-weight-bold py-1">
                     <span class="d-inline-block">Ontologies</span>
-                    <span class="d-inline-block pull-right text-right" style="font-size: 0.75rem;">
-                      <button
-                        class="btn btn-sm btn-link"
-                        ngbTooltip="Use RDF format for ontologies"
-                        container="body"
-                        (click)="switchOntologyFormat('rdf')">
-                        <span [class.underline]="activeOntFormat === 'rdf'">RDF</span>
-                      </button>&nbsp;|&nbsp;
-                      <button
-                        class="btn btn-sm btn-link"
-                        ngbTooltip="Use JSON-LD format for ontologies"
-                        container="body"
-                        (click)="switchOntologyFormat('jsonld')">
-                        <span [class.underline]="activeOntFormat === 'jsonld'">JSON-LD</span>
-                      </button>&nbsp;|&nbsp;
-                      <button
-                        class="btn btn-sm btn-link"
-                        ngbTooltip="Use both formats for ontologies"
-                        container="body"
-                        (click)="switchOntologyFormat('both')">
-                        <span [class.underline]="activeOntFormat === 'both'">Both</span>
-                      </button>
-                    </span>
                 </div>
                 <div class="card-body pt-1 pb-0">
                   <div class="card-text">

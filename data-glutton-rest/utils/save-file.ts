@@ -5,22 +5,15 @@ import { Entity } from 'funktologies';
 import { consts } from '../constants/constants';
 import { store } from '../constants/globalStore';
 
-export function saveFile(storeName: string, fileName: string, context: string): void {
-	store.debugLogger(`--- Saving ${storeName} in ${fileName}.json`);
+export function saveFile(storeName: string, fileName: string, context: string, folders: any[]): void {
 	// Normal JSON file.
-	fs.writeFileSync(`files/json/${fileName}.json`, JSON.stringify(store[storeName].chain().simplesort(consts.RDFS.label).data()), { flag: 'w' });
-	store.debugLogger(`+++ Saved ${storeName} in ${fileName}.json`);
+	folders[0].file(`${fileName}.json`, JSON.stringify(store[storeName].chain().simplesort(consts.RDFS.label).data()));
 	// JSON-LD file construction.
 	store['jsonLD'] = [];
-	// const jsonLD = {
-	// 	'@context': context,
-	// 	'@graph': []
-	// };
-	store.debugLogger(`--- Saving ${storeName} in ${fileName}.schema.jsonld`);
+
 	const asAList: Entity[] = store[storeName].chain().simplesort(consts.RDFS.label).data();
 	const length = asAList.length;
-	// store[storeName] = {};
-	store.debugLogger(`--- Making JsonLD List`);
+
 	for (let i = 0; i < length; i++) {
 		const entity = asAList.pop();
 		if (!entity) {
@@ -57,14 +50,11 @@ export function saveFile(storeName: string, fileName: string, context: string): 
 		store['jsonLD'].push(mainObj);
 	};
 
-	fs.writeFileSync(`files/jsonld/${fileName}.schema.jsonld`, JSON.stringify(store['jsonLD']), { flag: 'w' });
-	store.debugLogger(`+++ Saved ${storeName} in ${fileName}.schema.jsonld`);
-	store.debugLogger(`~~~ Converting jsonld to n-triples`);
+	folders[1].file(`${fileName}.schema.jsonld`, JSON.stringify(store['jsonLD']));
 
 	convertJsonldToNTriples();
 
-	store.debugLogger(`~~~ Saving ${storeName} to ${fileName}.schema.nt`);
-	fs.writeFileSync(`files/n-triples/${fileName}.schema.nt`, store['jsonNT'], { flag: 'w' });
+	folders[2].file(`${fileName}.n-triples`, store['jsonNT']);
 	store['jsonNT'] = '';
 };
 

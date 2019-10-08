@@ -239,18 +239,16 @@ app.get('/save-files/:files', async (req, res) => {
     store.debugLogger('Save Files');
     const files = req && req.params && req.params.files && req.params.files.split(',');
     if (files) {
-        store.debugLogger(req.params.files, files);
-        saveFiles(files);
-        return res.status(200).send({ done: true });
+        saveFiles(files)
+            .then(() => {
+                return res.status(200).send({ done: true});
+            })
+            .catch(err => {
+                store.errorLogger(`Save Files api failed: ${err.message}`);
+            });
+
     } else {
-        // if (!consts.ONTOLOGIES[ontology]) {
-        //     consts.GET_ONTOLOGY(ontology).then(ont => {
-        //         consts.ONTOLOGIES[ontology] = ont;
-        //         return res.status(200).send({ ontology: consts.ONTOLOGIES[ontology] });
-        //     });
-        // } else {
-        //     return res.status(200).send({ ontology: consts.ONTOLOGIES[ontology] });
-        // }
+        return res.status(404).send({ message: 'No files listed in the export options.' });
     }
 });
 

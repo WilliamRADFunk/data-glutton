@@ -2,9 +2,9 @@
 
 # compiled output
 /dist
-/files
 /tmp
 /out-tsc
+/data-glutton.zip
 # Only exists if Bazel was run
 /bazel-out
 
