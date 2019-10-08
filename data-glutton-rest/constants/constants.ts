@@ -1,9 +1,11 @@
 import * as fs from 'graceful-fs';
 import path from 'path';
-import {JsonLdProcessor} from 'jsonld';
+
+import { JsonLdProcessor } from 'jsonld';
 import { JsonLd } from 'jsonld/jsonld-spec';
 
 const AIRCRAFT_ONT_PATH = 'http://williamrobertfunk.com/ontologies/aircraft#';
+const AIRLINE_ONT_PATH = 'http://williamrobertfunk.com/ontologies/airline#';
 const AIRPORT_ONT_PATH = 'http://williamrobertfunk.com/ontologies/airport#';
 const ASSET_ONT_PATH = 'http://www.daedafusion.com/Asset#';
 const COUNTRY_ONT_PATH = 'http://williamrobertfunk.com/ontologies/country#';
@@ -38,10 +40,12 @@ const BASE = {
 
 const ONTOLOGY: { [key: string]: string } = {
 	// Ontology definition paths for (predicate) datatype properties
+	DT_ALIAS: AIRLINE_ONT_PATH + 'alias',
 	DT_AREA_COMPARATIVE: COUNTRY_ONT_PATH + 'areaComparative',
 	DT_AREA_RANK: COUNTRY_ONT_PATH + 'areaRank',
 	DT_BACKGROUND: COUNTRY_ONT_PATH + 'background',
 	DT_BORDER_LENGTH: COUNTRY_ONT_PATH + 'borderLength',
+	DT_CALLSIGN: AIRLINE_ONT_PATH + 'callsign',
 	DT_CLIMATE_ZONE_DESCRIPTION: COUNTRY_ONT_PATH + 'climateZoneDescription',
 	DT_CLIMATE_ZONE_NAME: COUNTRY_ONT_PATH + 'climateZoneName',
 	DT_COLLECTION_TIMESTAMP: ASSET_ONT_PATH + 'collectionTimestamp',
@@ -60,14 +64,14 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_HIGHEST_POINT: GENERAL_ONT_PATH + 'highestPoint',
 	DT_HIGHEST_POINT_DESCRIPTION: GENERAL_ONT_PATH + 'highestPointDescription',
 	DT_IATA_CODE: AIRPORT_ONT_PATH + 'iataCode',
+	DT_ICAO_CODE: AIRPORT_ONT_PATH + 'icaoCode',
 	DT_IMAGE_DIMENSIONS: IMAGE_ONT_PATH + 'imageDimensions',
 	DT_IMAGE_SIZE: IMAGE_ONT_PATH + 'imageSize',
-	DT_ICAO_CODE: AIRPORT_ONT_PATH + 'icaoCode',
-	DT_IS_COMPOSITE: GENERAL_ONT_PATH + 'isComposite',
 	DT_ISO_CODE: COUNTRY_ONT_PATH + 'countryCodeISO',
+	DT_IS_COMPOSITE: GENERAL_ONT_PATH + 'isComposite',
 	DT_LAND_AREA: COUNTRY_ONT_PATH + 'landArea',
-	DT_LAST_NAME: FOAF_ONT_PATH + 'lastName',
 	DT_LAST_ESTIMATED: COUNTRY_ONT_PATH + 'lastEstimated',
+	DT_LAST_NAME: FOAF_ONT_PATH + 'lastName',
 	DT_LENGTH: GENERAL_ONT_PATH + 'length',
 	DT_LENGTH_MODIFIER: GENERAL_ONT_PATH + 'lengthModifier',
 	DT_LOCATION_DESCRIPTION: GENERAL_ONT_PATH + 'locationDescription',
@@ -80,6 +84,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_MEAN_ELEVATION: GENERAL_ONT_PATH + 'meanElevation',
 	DT_MIME_TYPE: ASSET_ONT_PATH + 'mimeType',
 	DT_NAME: FOAF_ONT_PATH + 'name',
+	DT_NAME_AIRLINE: AIRLINE_ONT_PATH + 'name',
 	DT_NUM_OF_LAND_SITE_1: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize1',
 	DT_NUM_OF_LAND_SITE_2: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize2',
 	DT_NUM_OF_LAND_SITE_3: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize3',
@@ -94,6 +99,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_RELATIVE_SIZE: AIRPORT_ONT_PATH + 'relativeSize',
 	DT_RESOURCE_NAME: COUNTRY_ONT_PATH + 'resourceName',
 	DT_STATUS: AIRPORT_ONT_PATH + 'status',
+	DT_STATUS_AIRLINE: AIRLINE_ONT_PATH + 'status',
 	DT_SUPPLEMENTAL_EXPLANATION: COUNTRY_ONT_PATH + 'supplementalExplanation',
 	DT_TERRITORIAL_SEA: COUNTRY_ONT_PATH + 'territorialSea',
 	DT_TITLE: LEADERS_ONT_PATH + 'title',
@@ -105,8 +111,10 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_WATER_AREA: COUNTRY_ONT_PATH + 'waterArea',
 	DT_WIDTH: GENERAL_ONT_PATH + 'width',
 	DT_WIKI_URI: GENERAL_ONT_PATH + 'wikiURI',
+
 	// Base path for all things ontology definition
 	AIRCRAFT_ONT_PATH,
+	AIRLINE_ONT_PATH,
 	AIRPORT_ONT_PATH,
 	ASSET_ONT_PATH,
 	COUNTRY_ONT_PATH,
@@ -117,6 +125,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	IMAGE_ONT_PATH,
 	LEADERS_ONT_PATH,
 	MUNICIPALITY_ONT_PATH,
+
 	// Ontology definition paths for (predicate) object/relation properties
 	HAS_AGRICULTURAL_LAND: COUNTRY_ONT_PATH + 'hasAgriculturalLand',
 	HAS_AIRPORT: AIRPORT_ONT_PATH + 'hasAirport',
@@ -192,7 +201,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	MAIN_INSTANCE_PATH,
 	// Ontology class definition paths
 	ONT_AGRICULTURAL_LAND: COUNTRY_ONT_PATH + 'AgriculturalLand',
-	ONT_AIRLINE: AIRPORT_ONT_PATH + 'Airline',
+	ONT_AIRLINE: AIRLINE_ONT_PATH + 'Airline',
 	ONT_AIRPORT: AIRPORT_ONT_PATH + 'Airport',
 	ONT_ARABLE_LAND: COUNTRY_ONT_PATH + 'ArableLand',
 	ONT_ARTIFICIALLY_IRRIGATED_LAND: COUNTRY_ONT_PATH + 'ArtificiallyIrrigatedLand',
@@ -237,6 +246,7 @@ const ONTOLOGY_FILES = {
 	'dbpedia-country': fs.readFileSync(path.join('constants', 'ontology', 'dbpedia-country.schema.jsonld'), 'utf8'),
 	'foaf-foaf': fs.readFileSync(path.join('constants', 'ontology', 'foaf-foaf.schema.jsonld'), 'utf8'),
 	'funk-aircraft': fs.readFileSync(path.join('constants', 'ontology', 'funk-aircraft.schema.jsonld'), 'utf8'),
+	'funk-airline': fs.readFileSync(path.join('constants', 'ontology', 'funk-airline.schema.jsonld'), 'utf8'),
 	'funk-blade-ref': fs.readFileSync(path.join('constants', 'ontology', 'funk-blade-ref.schema.jsonld'), 'utf8'),
 	'funk-country': fs.readFileSync(path.join('constants', 'ontology', 'funk-country.schema.jsonld'), 'utf8'),
 	'funk-general': fs.readFileSync(path.join('constants', 'ontology', 'funk-general.schema.jsonld'), 'utf8'),

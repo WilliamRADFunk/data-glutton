@@ -1,0 +1,150 @@
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY airline "http://williamrobertfunk.com/ontologies/airline#" >
+    <!ENTITY airport "http://williamrobertfunk.com/ontologies/airport#" >
+    <!ENTITY country "http://williamrobertfunk.com/ontologies/country#" >
+    <!ENTITY blade "http://modusoperandi.com/ont/blade#">
+]>
+
+<rdf:RDF xmlns="http://www.w3.org/2002/07/owl#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:airline="http://williamrobertfunk.com/ontologies/airline#"
+  xmlns:airport="http://williamrobertfunk.com/ontologies/airport#"
+  xmlns:country="http://williamrobertfunk.com/ontologies/country#"
+  xmlns:blade="http://modusoperandi.com/ont/blade#">
+
+  <Ontology rdf:about="http://williamrobertfunk.com/ontologies/airline">
+    <versionInfo rdf:datatype="&xsd;decimal">1.0</versionInfo>
+    <dc:rights>Copyright 2019 William R.A.D. Funk. All rights reserved.</dc:rights>
+    <dc:creator>William R.A.D. Funk</dc:creator>
+    <dc:contributor>William R.A.D. Funk</dc:contributor>
+    <rdfs:comment>
+      Identifies application specific classes and annotations that are relevant
+      only to my associated applications.
+    </rdfs:comment>
+    <rdfs:label>Funk Ontology</rdfs:label>
+  </Ontology>
+
+  <!--
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Classes
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- http://williamrobertfunk.com/ontologies/airline#Airline -->
+
+  <Class rdf:about="&airline;Airline">
+    <rdfs:label>Airline</rdfs:label>
+    <rdfs:comment>
+      An organization providing a regular public service of air transportation on one or more routes.
+    </rdfs:comment>
+    <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
+  </Class>
+
+  <!--
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Object Properties
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- Country Ontology Extensions -->
+
+  <!-- http://williamrobertfunk.com/ontologies/country#hasCountry -->
+
+  <ObjectProperty rdf:about="&country;hasCountry">
+    <rdfs:domain rdf:resource="&airline;GovernmentOffice"/>
+    <rdfs:range rdf:resource="&country;Country"/>
+  </ObjectProperty>
+
+  <!--
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Datatype Properties
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- http://williamrobertfunk.com/ontologies/airline#alias -->
+
+  <DatatypeProperty rdf:about="&airline;alias">
+    <rdfs:label>Alias</rdfs:label>
+    <rdfs:comment>
+      A word or set of words by which an airline is known, referred to, or addressed.
+    </rdfs:comment>
+    <rdfs:domain rdf:resource="&airline;Airline"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airline#callsign -->
+
+  <DatatypeProperty rdf:about="&airline;callsign">
+    <rdfs:label>Callsign</rdfs:label>
+    <rdfs:comment>
+      A message, code, or tune that is broadcast by radio to identify the broadcaster or transmitter.
+    </rdfs:comment>
+    <rdfs:domain rdf:resource="&airline;Airline"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airline#name -->
+
+  <DatatypeProperty rdf:about="&airline;name">
+    <rdfs:label>Name</rdfs:label>
+    <rdfs:comment>
+      An alternate word or set of words by which an airline is known, referred to, or addressed.
+    </rdfs:comment>
+    <rdfs:domain rdf:resource="&airline;Airline"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airline#status -->
+
+  <DatatypeProperty rdf:about="&airline;status">
+    <rdfs:label>Status</rdfs:label>
+    <rdfs:comment>
+      The last known status of the airline (ie. operational or defunct).
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&airline;Airline"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- Airport Ontology Extensions -->
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#iataCode -->
+
+  <DatatypeProperty rdf:about="&airport;iataCode">
+    <rdfs:label>IATA Code</rdfs:label>
+    <rdfs:comment>
+      The International Air Transportation Association code associated with an airport or airline.
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&airline;Airline"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#icaoCode -->
+
+  <DatatypeProperty rdf:about="&airport;icaoCode">
+    <rdfs:label>ICAO Code</rdfs:label>
+    <rdfs:comment>
+      The International Civil Aviation Organization code associated with an airport.
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&airline;Airline"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+</rdf:RDF>

@@ -14,6 +14,8 @@ class GlobalStore {
 	public LOG_FILE_NAME: string = '';
 	public LOG_STREAM: any = null;
 	public IMAGES_TO_SCRAPE: ImageScrapableObject[] = [];
+	public jsonLD: Array<Partial<Entity>> = [];
+	public jsonNT: string = '';
 	public subResourceList: SubResourceReference[] = [
 		{
 			name: 'Airports',
