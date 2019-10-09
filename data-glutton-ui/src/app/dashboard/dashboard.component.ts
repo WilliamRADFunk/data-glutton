@@ -443,7 +443,9 @@ export class DashboardComponent implements OnDestroy, OnInit {
       }
       case 'Airlines': {
         this.airlineResources.filter(c => c.status === 0 || c.status === -1).forEach(source => {
-          this.fetchService.scrapeAirlineSource(source.name);
+          this.fetchService.scrapeAirlines().pipe(take(1)).subscribe(res => {
+            
+          });
         });
         break;
       }

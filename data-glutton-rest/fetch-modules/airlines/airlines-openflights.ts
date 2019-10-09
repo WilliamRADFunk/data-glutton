@@ -37,6 +37,35 @@ export function getAirlineOpenFlights(): void {
 				const country = lineItems[5];
 				const active = lineItems[6];
 
+				// Fetch or create airline entity
+				const airlineId = consts.ONTOLOGY.INST_AIRLINE + getUuid.default(country) + '-' + getUuid.default(name);
+				let airlineObjectProp: EntityContainer = {};
+				if (store.airlines.find({ '@id': { $eq: airlineId } })[0]) {
+					airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE] = store.airlines.find({ '@id': { $eq: airlineId } })[0];
+				} else {
+					airlineObjectProp = entityMaker(
+						consts.ONTOLOGY.HAS_AIRLINE,
+						consts.ONTOLOGY.ONT_AIRLINE,
+						airlineId,
+						`The Airline of ${name} (${country})`);
+					if (alias) {
+						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_ALIAS] = alias;
+					}
+					if (iata) {
+						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_IATA_CODE] = iata;
+					}
+					if (icao) {
+						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_ICAO_CODE] = icao;
+					}
+					if (callsign) {
+						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_CALLSIGN] = callsign;
+					}
+					if (active) {
+						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_STATUS_AIRLINE] = active.toLowerCase() === 'y' ? 'Open' : 'Closed';
+					}
+					store.airlines.insert(airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE]);
+				}
+
 				store.debugLogger(`Line from file: ${name}, ${alias}, ${iata}, ${icao}, ${callsign}, ${country}, ${active}`);
 			}
 		});

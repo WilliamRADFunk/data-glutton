@@ -81,8 +81,8 @@ export class FetchCoordinator {
     return this.http.get('http://localhost:3000/scrape-factbook');
   }
 
-  scrapeAirlines(source: string): Observable<any> {
-    return this.http.get(`http://localhost:3000/scrape-airlines/${source}`);
+  scrapeAirlines(): Observable<any> {
+    return this.http.get(`http://localhost:3000/scrape-airlines`);
   }
 
   scrapeAirlineSource(source: string): Observable<any> {
