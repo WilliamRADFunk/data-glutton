@@ -3,17 +3,17 @@ import express from 'express';
 
 import { consts } from './constants/constants';
 import { store } from './constants/globalStore';
+import { getAirlineResourcePromise } from './fetch-modules/airlines/data-getters';
 import { getAirportsHelosData } from './fetch-modules/all-airports/get-airport-helo-data';
 import { getCountriesData } from './fetch-modules/factbook/get-countries-data';
 import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
 import { getLeadersByCountriesData } from './fetch-modules/world-leaders/get-countries-data';
 import { getLeadersByCountryPromise } from './fetch-modules/world-leaders/get-country-data';
 import { CountryReference } from './models/country-reference';
+import { SubResourceReference } from './models/sub-resource-reference';
 import { flushStore } from './utils/flush-store';
 import { getCountries } from './utils/get-countries';
 import { saveFiles } from './utils/save-files';
-import { getAirlineOpenFlights } from 'fetch-modules/airlines/airlines-openflights';
-import { SubResourceReference } from 'models/sub-resource-reference';
 
 const app = express();
 app.use(cors());
@@ -42,13 +42,13 @@ app.get('/sub-resource/:source/:subSource', async (req, res) => {
     });
 });
 
-app.get('/airline/:airlineResource', async (req, res) => {
+app.get('/airlines/:airlineResource', async (req, res) => {
     const airlineResource = req && req.params && req.params.airlineResource;
-    const countryRef: SubResourceReference = store.airlineResourceList.find((c: SubResourceReference) => {
+    const airlineResourceRef: SubResourceReference = store.airlineResourceList.find((c: SubResourceReference) => {
         return c.name === airlineResource;
     });
-    if (countryRef) {
-        getCountryPromise(countryRef)
+    if (airlineResourceRef) {
+        getAirlineResourcePromise(airlineResourceRef)
             .then(done => {
                 return res.status(200).send({ success: true });
             })
@@ -129,8 +129,8 @@ app.get('/country-list', async (req, res) => {
     return res.send(store.countriesInList);
 });
 
-app.get('/scrape-airline', async (req, res) => {
-    getAirlineOpenFlights().then(done => {
+app.get('/scrape-airlines', async (req, res) => {
+    getAirlineResourcePromise(null).then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
         store.errorLogger(`scrape-factbook error: ${err.message}`);

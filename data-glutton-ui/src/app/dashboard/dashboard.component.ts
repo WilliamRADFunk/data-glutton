@@ -97,7 +97,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       .subscribe(airlineResources => {
         this.airlineResources = airlineResources.slice();
         this.airlineResources.forEach(source => {
-        this.reassignStatus(source);
+        // this.reassignStatus(source);
       });
     });
     this._subs.push(
