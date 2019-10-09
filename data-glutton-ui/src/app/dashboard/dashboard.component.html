@@ -204,60 +204,36 @@
               </ng-container>
             </ng-template>
             <ng-template #airlinesTemplate>
-              <ng-container *ngFor="let subResource of airlineResources">
+              <ng-container *ngIf="selected === 'Airlines'; else airportTemplate">
                 <div class="row no-gutters border-bottom pb-2 mb-2">
                   <div class="col">
                     <div class="h4 text-light text-outline stroke-shadow">
-                      Airline Sources
+                      Airlines
                     </div>
                   </div>
                 </div>
-                <div class="row">
-                  <div *ngIf="isComplete(subResource, true)" class="col-12">
+                <div class="row" *ngFor="let airlineResource of airlineResources">
+                  <div *ngIf="airlineResource.status !== 2" class="col-12">
                     <div
                       class="row no-gutters rounded bg-info display-item mb-1"
-                      [ngClass]="getAlertStatus(subResource, true)"
-                      ngbTooltip="This particular scraper curates thousands of entities and as such takes longer than usual to finish."
-                      container="body">
+                      [ngClass]="{'alert-info': airlineResource.status === 0, 'alert-warning': airlineResource.status === 1, 'alert-danger': airlineResource.status === -1}">
                       <div class="col-10 my-auto">
-                        <div class="display-item-label text-dark pl-2">{{ subResource.name }}</div>
+                        <div class="display-item-label text-dark pl-2">{{ airlineResource.name }}</div>
                       </div>
                       <div class="col-2 no-outline pr-1 pt-1">
-                        <button *ngIf="getButtonStatus(subResource, true).info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeAirportHeloSourceByName(subResource.name)">
+                        <button *ngIf="airlineResource.status === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeAirlineSourceByName(airlineResource.name)">
                           <span class="fa fa-play-circle-o"></span>
                         </button>
-                        <button *ngIf="isScrapingBusy(subResource, true)"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                        <button *ngIf="airlineResource.status === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                           <span class="fa fa-spinner fa-spin"></span>
                         </button>
-                        <button *ngIf="getButtonStatus(subResource, true).danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeAirportHeloSourceByName(subResource.name)">
+                        <button *ngIf="airlineResource.status === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeAirlineSourceByName(airlineResource.name)">
                           <span class="fa fa-refresh"></span>
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
-                <!-- If no all have status 0, then show list -->
-                <ng-container *ngIf="!getAllUntouched(subResource)">
-                  <div class="row"  *ngFor="let subSource of getSubSource(subResource)">
-                    <div class="col-12">
-                      <div
-                        class="row no-gutters rounded bg-info display-item mb-1"
-                        [ngClass]="{'alert-info': subSource.status === 0, 'alert-warning': subSource.status === 1, 'alert-danger': subSource.status === -1}">
-                        <div class="col-10 my-auto">
-                          <div class="display-item-label text-dark pl-4">{{ subSource.name }}</div>
-                        </div>
-                        <div class="col-2 no-outline pr-1 pt-1">
-                          <button *ngIf="subSource.status === 1" class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
-                            <span class="fa fa-spinner fa-spin"></span>
-                          </button>
-                          <button *ngIf="subSource.status === 2" class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
-                            <span class="fa fa-check"></span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </ng-container>
               </ng-container>
             </ng-template>
           </div>

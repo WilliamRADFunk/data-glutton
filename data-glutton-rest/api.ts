@@ -12,6 +12,8 @@ import { CountryReference } from './models/country-reference';
 import { flushStore } from './utils/flush-store';
 import { getCountries } from './utils/get-countries';
 import { saveFiles } from './utils/save-files';
+import { getAirlineOpenFlights } from 'fetch-modules/airlines/airlines-openflights';
+import { SubResourceReference } from 'models/sub-resource-reference';
 
 const app = express();
 app.use(cors());
@@ -38,6 +40,24 @@ app.get('/sub-resource/:source/:subSource', async (req, res) => {
         }
         return res.status(500).send({ success: false });
     });
+});
+
+app.get('/airline/:airlineResource', async (req, res) => {
+    const airlineResource = req && req.params && req.params.airlineResource;
+    const countryRef: SubResourceReference = store.airlineResourceList.find((c: SubResourceReference) => {
+        return c.name === airlineResource;
+    });
+    if (countryRef) {
+        getCountryPromise(countryRef)
+            .then(done => {
+                return res.status(200).send({ success: true });
+            })
+            .catch(err => {
+                return res.status(500).send({ message: 'Unable to scrape airline resource' });
+            });
+    } else {
+        return res.status(404).send({ message: 'Invalid airline resource name' });
+    }
 });
 
 app.get('/country/:countryName', async (req, res) => {
@@ -109,6 +129,15 @@ app.get('/country-list', async (req, res) => {
     return res.send(store.countriesInList);
 });
 
+app.get('/scrape-airline', async (req, res) => {
+    getAirlineOpenFlights().then(done => {
+        return res.status(200).send({ success: true });
+    }).catch(err => {
+        store.errorLogger(`scrape-factbook error: ${err.message}`);
+        return res.status(500).send({ success: false });
+    });
+});
+
 app.get('/scrape-sub-resources', async (req, res) => {
     getAirportsHelosData(null).then(done => {
         return res.status(200).send({ success: true });
@@ -144,15 +173,15 @@ app.get('/scrape-leaders', async (req, res) => {
 
 app.get('/dashboard', async (req, res) => {
     const dashboard: { [key: string]: { [key: string]: number } } = {
+        'Airlines': {
+            'Airlines': store.airlines.count()
+        },
         'Airport/Helo': {
             'Airports': store.airports.count(),
             'Helicopter Landing Zones': store.helicopterLandingZones.count(),
             'Municipalities': store.municipalities.count(),
             'Runways': store.runways.count(),
             'Surface Materials': store.surfaceMaterials.count(),
-        },
-        'Airlines': {
-            'Airlines': store.airlines.count()
         },
         'Factbook': {
             'Agricultural Lands': store.agriculturalLands.count(),

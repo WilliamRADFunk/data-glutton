@@ -195,6 +195,17 @@ export class DashboardComponent implements OnDestroy, OnInit {
     }
   }
 
+  public scrapeAirlineSource(source: SubResourceReference): void {
+    source.status = 1;
+    this.fetchService.scrapeAirlineSource(source.name).toPromise()
+      .then(done => {
+        source.status = 2;
+      })
+      .catch(err => {
+        source.status = -1;
+      });
+  }
+
   private scrapeCountry(country: CountryReference): void {
     country.status['CIA World Factbook'] = 1;
     this.fetchService.fetchCountry(country.name).toPromise()
@@ -441,9 +452,9 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.isScraping = false;
   }
 
-  public scrapeAirlineSource(source: string): void {
+  public scrapeAirlineSourceByName(source: string): void {
     const airlineResource = this.airlineResources.find(c => c.name === source);
-    this.fetchService.scrapeAirlineSource(airlineResource.name);
+    this.scrapeAirlineSource(airlineResource);
   }
 
   public scrapeLeadersOfCountryByName(countryName: string): void {
