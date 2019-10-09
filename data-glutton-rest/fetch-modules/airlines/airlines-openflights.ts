@@ -26,7 +26,19 @@ export function getAirlineOpenFlights(): void {
 	
 	if (lineReader) {
 		lineReader.on('line', (line) => {
-			store.debugLogger(`Line from file: ${line}`);
+			const lineItems = (line && line.split(',')) || [];
+			if (lineItems.length === 8) {
+				lineItems.shift();
+				const name = lineItems[0];
+				const alias = lineItems[1];
+				const iata = lineItems[2];
+				const icao = lineItems[3];
+				const callsign = lineItems[4];
+				const country = lineItems[5];
+				const active = lineItems[6];
+
+				store.debugLogger(`Line from file: ${name}, ${alias}, ${iata}, ${icao}, ${callsign}, ${country}, ${active}`);
+			}
 		});
 	}
 }
