@@ -20,6 +20,10 @@ class GlobalStore {
 		{
 			name: 'Airlines (Openflights)',
 			status: 0
+		},
+		{
+			name: 'Routes (Openflights)',
+			status: 0
 		}
 	];
 	public subResourceList: SubResourceReference[] = [
@@ -130,6 +134,7 @@ class GlobalStore {
 	public permanentPastureLands: Collection<Entity>;
 	public persons: Collection<Entity>;
 	public regionMaps: Collection<Entity>;
+	public routes: Collection<Entity>;
 	public runways: Collection<Entity>;
 	public surfaceMaterials: Collection<Entity>;
 	public terrains: Collection<Entity>;
@@ -170,6 +175,7 @@ class GlobalStore {
 		this.permanentPastureLands = this.db.addCollection('permanentPastureLands');
 		this.persons = this.db.addCollection('persons');
 		this.regionMaps = this.db.addCollection('regionMaps');
+		this.routes = this.db.addCollection('routes');
 		this.runways = this.db.addCollection('runways');
 		this.surfaceMaterials = this.db.addCollection('surfaceMaterials');
 		this.terrains = this.db.addCollection('terrains');

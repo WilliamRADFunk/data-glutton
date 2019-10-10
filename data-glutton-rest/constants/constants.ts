@@ -92,7 +92,9 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_NUM_OF_LAND_SITE_5: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize5',
 	DT_NUM_OF_LAND_SITE_6: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize6',
 	DT_NUM_OF_LAND_SITE_7: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize7',
+	DT_NUM_OF_STOPS: AIRLINE_ONT_PATH + 'numberOfStops',
 	DT_PERCENTAGE: GENERAL_ONT_PATH + 'percentage',
+	DT_PLANE_TYPE_CODE: AIRCRAFT_ONT_PATH + 'planeTypeCode',
 	DT_POPULATION_DISTRIBUTION: COUNTRY_ONT_PATH + 'populationDistribution',
 	DT_REGION_ISO_CODE: COUNTRY_ONT_PATH + 'regionCodeISO',
 	DT_REGION_SPECIFIC: LEADERS_ONT_PATH + 'regionSpecific',
@@ -128,6 +130,8 @@ const ONTOLOGY: { [key: string]: string } = {
 
 	// Ontology definition paths for (predicate) object/relation properties
 	HAS_AGRICULTURAL_LAND: COUNTRY_ONT_PATH + 'hasAgriculturalLand',
+	HAS_AIRCRAFT_TYPE: AIRCRAFT_ONT_PATH + 'hasAircraftType',
+	HAS_AIRLINE: AIRLINE_ONT_PATH + 'hasAirline',
 	HAS_AIRPORT: AIRPORT_ONT_PATH + 'hasAirport',
 	HAS_APPOINTED_GOVERNMENT_OFFICE: LEADERS_ONT_PATH + 'appointedGovernmentOffice',
 	HAS_ARABLE_LAND: COUNTRY_ONT_PATH + 'hasArableLand',
@@ -139,6 +143,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	HAS_CLIMATE_ZONE: COUNTRY_ONT_PATH + 'hasClimateZone',
 	HAS_COAST: COUNTRY_ONT_PATH + 'hasCoast',
 	HAS_COUNTRY: COUNTRY_ONT_PATH + 'hasCountry',
+	HAS_DESTINATION_AIRPORT: AIRLINE_ONT_PATH + 'hasDestinationAirport',
 	HAS_DOMAIN_AREA: COUNTRY_ONT_PATH + 'hasDomainArea',
 	HAS_ELEVATION: GENERAL_ONT_PATH + 'hasElevation',
 	HAS_FLAG: COUNTRY_ONT_PATH + 'hasNationalFlag',
@@ -157,13 +162,16 @@ const ONTOLOGY: { [key: string]: string } = {
 	HAS_PERMANENT_CROPS_LAND: COUNTRY_ONT_PATH + 'hasPermanentCropsLand',
 	HAS_PERMANENT_PASTURE_LAND: COUNTRY_ONT_PATH + 'hasPermanentPastureLand',
 	HAS_REGION_MAP: COUNTRY_ONT_PATH + 'hasRegionMap',
+	HAS_ROUTE: AIRLINE_ONT_PATH + 'hasRoute',
 	HAS_RUNWAY: AIRPORT_ONT_PATH + 'hasRunway',
+	HAS_SOURCE_AIRPORT: AIRLINE_ONT_PATH + 'hasSourceAirport',
 	HAS_SUPPLEMENTAL_IMG: COUNTRY_ONT_PATH + 'hasSupplementalImage',
 	HAS_SURFACE_MATERIAL: AIRPORT_ONT_PATH + 'hasSurfaceMaterial',
 	HAS_TERRAIN: COUNTRY_ONT_PATH + 'hasTerrain',
 	// Instance definition paths
 
 	INST_AGRICULTURAL_LAND: MAIN_INSTANCE_PATH + 'AgriculturalLand/',
+	INST_AIRCRAFT_TYPE: MAIN_INSTANCE_PATH + 'AircraftType/',
 	INST_AIRLINE: MAIN_INSTANCE_PATH + 'Airline/',
 	INST_AIRPORT: MAIN_INSTANCE_PATH + 'Airport/',
 	INST_ARABLE_LAND: MAIN_INSTANCE_PATH + 'ArableLand/',
@@ -194,6 +202,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	INST_PERMANENT_PASTURE_LAND: MAIN_INSTANCE_PATH + 'PermanentPastureLand/',
 	INST_PERSON: MAIN_INSTANCE_PATH + 'Person/',
 	INST_REGION_MAP: MAIN_INSTANCE_PATH + 'RegionMap/',
+	INST_ROUTE: MAIN_INSTANCE_PATH + 'Route/',
 	INST_RUNWAY: MAIN_INSTANCE_PATH + 'Runway/',
 	INST_SURFACE_MATERIAL: MAIN_INSTANCE_PATH + 'SurfaceMaterial/',
 	INST_TERRAIN: MAIN_INSTANCE_PATH + 'Terrain/',
@@ -201,6 +210,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	MAIN_INSTANCE_PATH,
 	// Ontology class definition paths
 	ONT_AGRICULTURAL_LAND: COUNTRY_ONT_PATH + 'AgriculturalLand',
+	ONT_AIRCRAFT_TYPE: AIRCRAFT_ONT_PATH + 'AircraftType',
 	ONT_AIRLINE: AIRLINE_ONT_PATH + 'Airline',
 	ONT_AIRPORT: AIRPORT_ONT_PATH + 'Airport',
 	ONT_ARABLE_LAND: COUNTRY_ONT_PATH + 'ArableLand',
@@ -212,6 +222,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	ONT_CLIMATE_ZONE: COUNTRY_ONT_PATH + 'ClimateZone',
 	ONT_COAST: COUNTRY_ONT_PATH + 'Coast',
 	ONT_COUNTRY: COUNTRY_ONT_PATH + 'Country',
+	ONT_DESTINATION_AIRPORT: AIRLINE_ONT_PATH + 'DestinationAirport',
 	ONT_DOMAIN_AREA: COUNTRY_ONT_PATH + 'DomainArea',
 	ONT_ELEVATION: GENERAL_ONT_PATH + 'Elevation',
 	ONT_FLAG: COUNTRY_ONT_PATH + 'NationalFlag',
@@ -231,7 +242,9 @@ const ONTOLOGY: { [key: string]: string } = {
 	ONT_PERMANENT_PASTURE_LAND: COUNTRY_ONT_PATH + 'PermanentPastureLand',
 	ONT_PERSON: LEADERS_ONT_PATH + 'Person',
 	ONT_REGION_MAP: COUNTRY_ONT_PATH + 'RegionMap',
+	ONT_ROUTE: AIRLINE_ONT_PATH + 'Route',
 	ONT_RUNWAY: AIRPORT_ONT_PATH + 'Runway',
+	ONT_SOURCE_AIRPORT: AIRLINE_ONT_PATH + 'SourceAirport',
 	ONT_SURFACE_MATERIAL: AIRPORT_ONT_PATH + 'SurfaceMaterial',
 	ONT_TERRAIN: COUNTRY_ONT_PATH + 'Terrain'
 };

@@ -53,6 +53,17 @@
     <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
   </Class>
 
+  <!-- http://williamrobertfunk.com/ontologies/airline#DestinationAirport -->
+
+  <Class rdf:about="&airline;DestinationAirport">
+    <rdfs:label>Destination Airport</rdfs:label>
+    <rdfs:comment>
+      Airport to which the route ends.
+    </rdfs:comment>
+    <equivalentClass rdf:resource="&airport;Airport" />
+    <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
+  </Class>
+
   <!-- http://williamrobertfunk.com/ontologies/airline#Route -->
 
   <Class rdf:about="&airline;Route">
@@ -63,6 +74,17 @@
     <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
   </Class>
 
+  <!-- http://williamrobertfunk.com/ontologies/airline#SourceAirport -->
+
+  <Class rdf:about="&airline;SourceAirport">
+    <rdfs:label>Source Airport</rdfs:label>
+    <rdfs:comment>
+      Airport from which the route begins.
+    </rdfs:comment>
+    <equivalentClass rdf:resource="&airport;Airport" />
+    <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
+  </Class>
+
   <!--
   ///////////////////////////////////////////////////////////////////////////////////////
   //
@@ -70,6 +92,13 @@
   //
   ///////////////////////////////////////////////////////////////////////////////////////
   -->
+
+  <!-- http://williamrobertfunk.com/ontologies/airline#hasAircraftType -->
+
+  <ObjectProperty rdf:about="&airline;hasAircraftType">
+    <rdfs:domain rdf:resource="&airline;Route"/>
+    <rdfs:range rdf:resource="&aircraft;AircraftType"/>
+  </ObjectProperty>
 
   <!-- http://williamrobertfunk.com/ontologies/airline#hasAirline -->
 
@@ -83,6 +112,20 @@
   <ObjectProperty rdf:about="&airline;hasRoute">
     <rdfs:domain rdf:resource="&airline;Airline"/>
     <rdfs:range rdf:resource="&airline;Route"/>
+  </ObjectProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airline#hasDestinationAirport -->
+
+  <ObjectProperty rdf:about="&airline;hasDestinationAirport">
+    <rdfs:domain rdf:resource="&airline;Airline"/>
+    <rdfs:range rdf:resource="&airline;DestinationAirport"/>
+  </ObjectProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airline#hasSourceAirport -->
+
+  <ObjectProperty rdf:about="&airline;hasSourceAirport">
+    <rdfs:domain rdf:resource="&airline;Airline"/>
+    <rdfs:range rdf:resource="&airline;SourceAirport"/>
   </ObjectProperty>
 
   <!-- Country Ontology Extensions -->
@@ -135,6 +178,17 @@
     <rdfs:range rdf:resource="&xsd;string"/>
   </DatatypeProperty>
 
+  <!-- http://williamrobertfunk.com/ontologies/airline#numberOfStops -->
+
+  <DatatypeProperty rdf:about="&airline;numberOfStops">
+    <rdfs:label>Number Of Stops</rdfs:label>
+    <rdfs:comment>
+      Number of stops along an airline's route.
+    </rdfs:comment>
+    <rdfs:domain rdf:resource="&airline;Route"/>
+    <rdfs:range rdf:resource="&xsd;number"/>
+  </DatatypeProperty>
+
   <!-- http://williamrobertfunk.com/ontologies/airline#status -->
 
   <DatatypeProperty rdf:about="&airline;status">
@@ -143,19 +197,6 @@
       The last known status of the airline (ie. operational or defunct).
     </rdfs:comment>
     <rdf:type rdf:resource="&owl;FunctionalProperty" />
-    <rdfs:domain rdf:resource="&airline;Airline"/>
-    <rdfs:range rdf:resource="&xsd;string"/>
-  </DatatypeProperty>
-
-  <!-- Aircraft Ontology Extensions -->
-
-  <!-- http://williamrobertfunk.com/ontologies/aircraft#planeTypeCode -->
-
-  <DatatypeProperty rdf:about="&aircraft;planeTypeCode">
-    <rdfs:label>Plane Type Code</rdfs:label>
-    <rdfs:comment>
-      3-letter codes for plane type(s) generally used for airline route flights
-    </rdfs:comment>
     <rdfs:domain rdf:resource="&airline;Airline"/>
     <rdfs:range rdf:resource="&xsd;string"/>
   </DatatypeProperty>

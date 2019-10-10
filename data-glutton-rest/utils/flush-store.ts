@@ -11,6 +11,10 @@ export function flushStore() {
 		{
 			name: 'Airlines (Openflights)',
 			status: 0
+		},
+		{
+			name: 'Routes (Openflights)',
+			status: 0
 		}
 	];
 	store.subResourceList = [
@@ -113,6 +117,7 @@ export function flushStore() {
 	store.permanentPastureLands.clear();
 	store.persons.clear();
 	store.regionMaps.clear();
+	store.routes.clear();
 	store.runways.clear();
 	store.surfaceMaterials.clear();
     store.terrains.clear();

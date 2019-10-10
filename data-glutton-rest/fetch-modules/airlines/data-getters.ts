@@ -1,9 +1,11 @@
 import { getAirlineOpenFlights } from './airlines-openflights';
+import { getRoutesOpenFlights } from './routes-openflights';
 import { store } from '../../constants/globalStore';
 import { SubResourceReference } from '../../models/sub-resource-reference';
 
 export const dataScrapers = {
 	getAirlineOpenFlights,
+	getRoutesOpenFlights
 };
 
 export function getAirlineResourcePromise(sourceRef: SubResourceReference): Promise<any> {
@@ -17,11 +19,20 @@ export function getAirlineResourcePromise(sourceRef: SubResourceReference): Prom
 					sourceRef.status = 2;
 				});
 			}
+			case 'Routes (Openflights)': {
+				return new Promise((resolve, reject) => {
+					resolve(getRoutesOpenFlights());
+					store.debugLogger(`Data scrape for ${sourceRef.name} is complete`);
+					sourceRef.status = 2;
+				});
+			}
 		}
 	} else {
 		store.airlineResourceList[0].status = 1;
 		return new Promise((resolve, reject) => {
-			resolve(getAirlineOpenFlights());
+			getAirlineOpenFlights();
+			getRoutesOpenFlights();
+			resolve();
 			store.debugLogger(`Data scrape for ${store.airlineResourceList[0].name} is complete`);
 			store.airlineResourceList[0].status = 2;
 		});
