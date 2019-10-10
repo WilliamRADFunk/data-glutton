@@ -17,6 +17,7 @@ export class EntitiesComponent implements OnDestroy, OnInit {
   activeInnerId: string = '';
   activeOuterId: string = '';
   entityCategories: { [key: string]: { [key: string]: { count: number; values: Entity[] } } } = {
+    'Airlines': {},
     'Airport/Helo': {},
     'Factbook': {},
     'World Leader': {}

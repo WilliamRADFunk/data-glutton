@@ -5,13 +5,11 @@ import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
-import { Entity } from '../../models/entity';
 import { EntityContainer } from '../../models/entity-container';
-import { airportDatahubList, isoCodeToDataCode } from '../../utils/country-code-lookup-tables';
+import { isoCodeToDataCode, countryNameToIsoCode } from '../../utils/country-code-lookup-tables';
 import { countryToId } from '../../utils/country-to-id';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
-import { getRelation } from '../../utils/get-relations';
 
 // Populate remaining airports from datahub list
 export function getAirlineOpenFlights(): void {
@@ -26,7 +24,7 @@ export function getAirlineOpenFlights(): void {
 	
 	if (lineReader) {
 		lineReader.on('line', (line) => {
-			const lineItems = (line && line.split(',')) || [];
+			const lineItems = ((line && line.split(',')) || []).map(item => item && item.replace(/\"/g, ''));
 			if (lineItems.length === 8) {
 				lineItems.shift();
 				const name = lineItems[0];
@@ -38,9 +36,9 @@ export function getAirlineOpenFlights(): void {
 				const active = lineItems[6];
 
 				// Fetch or create airline entity
-				const airlineId = consts.ONTOLOGY.INST_AIRLINE + getUuid.default(country) + '-' + getUuid.default(name);
+				const airlineId = consts.ONTOLOGY.INST_AIRLINE + getUuid.default(name);
 				let airlineObjectProp: EntityContainer = {};
-				if (store.airlines.find({ '@id': { $eq: airlineId } })[0]) {
+				if (store.airlines.find({ '@id': { $eq: airlineId } })[0] ) {
 					airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE] = store.airlines.find({ '@id': { $eq: airlineId } })[0];
 				} else {
 					airlineObjectProp = entityMaker(
@@ -48,20 +46,33 @@ export function getAirlineOpenFlights(): void {
 						consts.ONTOLOGY.ONT_AIRLINE,
 						airlineId,
 						`The Airline of ${name} (${country})`);
-					if (alias) {
+					if (alias && alias !== '\\N') {
 						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_ALIAS] = alias;
 					}
-					if (iata) {
+					if (iata && iata !== '\\N') {
 						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_IATA_CODE] = iata;
 					}
-					if (icao) {
+					if (icao && icao !== '\\N') {
 						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_ICAO_CODE] = icao;
 					}
-					if (callsign) {
+					if (callsign && callsign !== '\\N') {
 						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_CALLSIGN] = callsign;
 					}
 					if (active) {
 						airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_STATUS_AIRLINE] = active.toLowerCase() === 'y' ? 'Open' : 'Closed';
+					}
+					if (country && countryNameToIsoCode(country)) {
+						let countryId = countryToId(isoCodeToDataCode(countryNameToIsoCode(country))) || '';
+						const countryRef = store.countries.find({ '@id': { $eq: countryId } })[0];
+						if (countryRef) {
+							airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].objectProperties.push(
+								entityRefMaker(
+									consts.ONTOLOGY.HAS_COUNTRY,
+									store.countries,
+									countryId
+							));
+							store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_AIRLINE, airlineObjectProp));
+						}
 					}
 					store.airlines.insert(airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE]);
 				}

@@ -7,6 +7,7 @@
     <!ENTITY general "http://williamrobertfunk.com/ontologies/general#" >
     <!ENTITY image "http://williamrobertfunk.com/ontologies/image#" >
     <!ENTITY country "http://williamrobertfunk.com/ontologies/country#" >
+    <!ENTITY airline "http://williamrobertfunk.com/ontologies/airline#" >
     <!ENTITY airport "http://williamrobertfunk.com/ontologies/airport#" >
     <!ENTITY municipality "http://williamrobertfunk.com/ontologies/municipality#" >
     <!ENTITY wleaders "http://williamrobertfunk.com/ontologies/world-leaders#" >
@@ -24,6 +25,7 @@
   xmlns:general="http://williamrobertfunk.com/ontologies/general#"
   xmlns:image="http://williamrobertfunk.com/ontologies/image#"
   xmlns:country="http://williamrobertfunk.com/ontologies/country#"
+  xmlns:airline="http://williamrobertfunk.com/ontologies/airline#"
   xmlns:airport="http://williamrobertfunk.com/ontologies/airport#"
   xmlns:municipality="http://williamrobertfunk.com/ontologies/municipality#"
   xmlns:wleaders="http://williamrobertfunk.com/ontologies/world-leaders#"
@@ -471,6 +473,14 @@
   <!-- http://williamrobertfunk.com/ontologies/municipality#hasMunicipality -->
 
   <ObjectProperty rdf:about="&municipality;hasMunicipality">
+    <rdfs:domain rdf:resource="&country;Country"/>
+  </ObjectProperty>
+
+  <!-- Airline Ontology Extensions -->
+
+  <!-- http://williamrobertfunk.com/ontologies/airline#hasAirline -->
+
+  <ObjectProperty rdf:about="&airline;hasAirline">
     <rdfs:domain rdf:resource="&country;Country"/>
   </ObjectProperty>
 
