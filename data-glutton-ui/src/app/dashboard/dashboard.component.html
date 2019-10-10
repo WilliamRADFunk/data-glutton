@@ -53,7 +53,7 @@
             </div>
             <ng-container *ngFor="let key of scrapeKeys;">
               <div
-                *ngIf="isComplete(key.label, key.hasSubResources)"
+                *ngIf="!isComplete(key.label, key.hasSubResources)"
                 class="row no-gutters rounded bg-info display-item mb-1"
                 [class.green-border]="selected === key.label"
                 [ngClass]="getAlertStatus(key.label, key.hasSubResources)"
@@ -155,7 +155,7 @@
                     </div>
                   </div>
                   <div class="row">
-                    <div *ngIf="isComplete(subResource, true)" class="col-12">
+                    <div *ngIf="!isComplete(subResource, true)" class="col-12">
                       <div
                         class="row no-gutters rounded bg-info display-item mb-1"
                         [ngClass]="getAlertStatus(subResource, true)"
@@ -204,7 +204,7 @@
               </ng-container>
             </ng-template>
             <ng-template #airlinesTemplate>
-              <ng-container *ngIf="selected === 'Airlines'; else airportTemplate">
+              <ng-container>
                 <div class="row no-gutters border-bottom pb-2 mb-2">
                   <div class="col">
                     <div class="h4 text-light text-outline stroke-shadow">

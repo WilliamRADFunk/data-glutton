@@ -54,8 +54,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
       hasSubResources: false
     },
     {
-        label: 'CIA World Leaders',
-        hasSubResources: false
+      label: 'CIA World Leaders',
+      hasSubResources: false
     },
     {
       label: 'Airports/Helos',
@@ -89,7 +89,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       .subscribe(subResources => {
         this.subResources = subResources.slice();
         this.subResources.forEach(source => {
-        this.reassignStatus(source);
+        this.reassignStatusWithSubResources(source);
       });
     });
     this.fetchService.fetchAirlineResources()
@@ -135,7 +135,18 @@ export class DashboardComponent implements OnDestroy, OnInit {
     });
   }
 
-  private reassignStatus(source: SubResourceReference): void {
+  private getMainSource(sourceName: string): CountryReference[] | SubResourceReference[] {
+    switch(sourceName) {
+      case 'Airlines': {
+        return this.airlineResources;
+      }
+      default: {
+        return this.countries;
+      }
+    }
+  }
+
+  private reassignStatusWithSubResources(source: SubResourceReference): void {
     if (source.subRefs.some(sub => sub.status === 1)) {
       source.status = 1;
     } else if (source.subRefs.some(sub => sub.status === -1)) {
@@ -148,7 +159,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   private scrapeAirportHeloSource(source: SubResourceReference): void {
-    this.reassignStatus(source);
+    this.reassignStatusWithSubResources(source);
     if (source.status !== -1 && source.status !== 0) {
       return;
     }
@@ -158,11 +169,11 @@ export class DashboardComponent implements OnDestroy, OnInit {
         this.fetchService.fetchSubResource(source.name).toPromise()
           .then(done => {
             source.status = 2;
-            this.reassignStatus(source);
+            this.reassignStatusWithSubResources(source);
           })
           .catch(err => {
             source.status = -1;
-            this.reassignStatus(source);
+            this.reassignStatusWithSubResources(source);
           });
       }
     } else {
@@ -177,15 +188,15 @@ export class DashboardComponent implements OnDestroy, OnInit {
             });
           if (sub.status === -1 || sub.status === 0) {
             sub.status = 1;
-            this.reassignStatus(source);
+            this.reassignStatusWithSubResources(source);
             await this.fetchService.fetchSubResource(source.name, sub.name).toPromise()
               .then(done => {
                 sub.status = 2;
-                this.reassignStatus(source);
+                this.reassignStatusWithSubResources(source);
               })
               .catch(err => {
                 sub.status = -1;
-                this.reassignStatus(source);
+                this.reassignStatusWithSubResources(source);
               });
           }
         });
@@ -303,6 +314,11 @@ export class DashboardComponent implements OnDestroy, OnInit {
         .then(subResource => {
           this.subResources = subResource.slice();
         });
+    await this.fetchService.fetchAirlineResources()
+      .toPromise()
+      .then(airlineResources => {
+        this.airlineResources = airlineResources.slice();
+      });
     await this.fetchService.fetchCountries()
       .toPromise()
       .then(countries => {
@@ -385,39 +401,29 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public hasFailedStatus(dataSource: string, hasSubResources?: boolean): boolean {
     if (hasSubResources) {
-      this.subResources.forEach(sub => this.reassignStatus(sub));
+      this.subResources.forEach(sub => this.reassignStatusWithSubResources(sub));
       return this.subResources.some(a => a.status === -1 || a.subRefs.some(sub => sub.status === -1));
     } else {
-      return this.countries.some(c => c.status[dataSource] === -1);
+      return this.getMainSource(dataSource).some(c => (c.status[dataSource] || c.status) === -1);
     }
   }
 
   public isComplete(dataSource: string, hasSubResources?: boolean): boolean {
     if (hasSubResources) {
-      this.subResources.forEach(sub => this.reassignStatus(sub));
-      return !this.subResources.every(a => a.status === 2 || a.subRefs.every(sub => sub.status === 2));
+      this.subResources.forEach(sub => this.reassignStatusWithSubResources(sub));
+      return this.subResources.every(a => a.status === 2 && a.subRefs.every(sub => sub.status === 2));
     } else {
-      return !this.countries.every(c => c.status[dataSource] === 2);
+      return this.getMainSource(dataSource).every(c => (c.status[dataSource] || c.status) === 2);
     }
   }
 
   public isScrapingBusy(dataSource: string, hasSubResources?: boolean): boolean {
     if (hasSubResources) {
-      this.subResources.forEach(sub => this.reassignStatus(sub));
+      this.subResources.forEach(sub => this.reassignStatusWithSubResources(sub));
       return this.isScraping || this.subResources.some(a => a.status === 1);
     } else {
-      return this.isScraping || this.countries.some(c => c.status[dataSource] === 1);
+      return this.isScraping || this.getMainSource(dataSource).some(c => (c.status[dataSource] || c.status) === 1);
     }
-  }
-
-  public scrapeAirportHeloSourceByName(source: string): void {
-    const subResource = this.subResources.find(s => s.name === source);
-    this.scrapeAirportHeloSource(subResource);
-  }
-
-  public scrapeCountryByName(countryName: string): void {
-    const country = this.countries.find(c => c.name === countryName);
-    this.scrapeCountry(country);
   }
 
   public scrape(dataSource: string): void {
@@ -443,9 +449,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       }
       case 'Airlines': {
         this.airlineResources.filter(c => c.status === 0 || c.status === -1).forEach(source => {
-          this.fetchService.scrapeAirlines().pipe(take(1)).subscribe(res => {
-            
-          });
+          this.scrapeAirlineSource(source);
         });
         break;
       }
@@ -459,6 +463,16 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.scrapeAirlineSource(airlineResource);
   }
 
+  public scrapeAirportHeloSourceByName(source: string): void {
+    const subResource = this.subResources.find(s => s.name === source);
+    this.scrapeAirportHeloSource(subResource);
+  }
+
+  public scrapeCountryByName(countryName: string): void {
+    const country = this.countries.find(c => c.name === countryName);
+    this.scrapeCountry(country);
+  }
+
   public scrapeLeadersOfCountryByName(countryName: string): void {
     const country = this.countries.find(c => c.name === countryName);
     this.scrapeLeadersOfCountry(country);
@@ -467,7 +481,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   public switchSelected(dataSource: string): void {
     this.selected = dataSource;
     if (dataSource === 'Airports/Helos') {
-      this.reassignStatus(this.subResources[0]);
+      this.reassignStatusWithSubResources(this.subResources[0]);
     }
   }
 

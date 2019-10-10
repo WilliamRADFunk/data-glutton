@@ -7,6 +7,12 @@ export function flushStore() {
 	store.airlinesNotFound = [];
 	store.airportsNotFound = [];
 	store.airportTable = {};
+	store.airlineResourceList = [
+		{
+			name: 'Airlines (Openflights)',
+			status: 0
+		}
+	];
 	store.subResourceList = [
 		{
 			name: 'Airports',
