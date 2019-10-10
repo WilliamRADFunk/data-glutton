@@ -76,9 +76,16 @@ export class SourcesComponent implements OnInit {
         link: 'http://ourairports.com/data/'
       },
       {
-        description: `"OpenFlights Airports Database contains over 10,000 airports,
+        description: `"OpenFlights Airlines Database contains over 10,000 airlines,
           train stations and ferry terminals spanning the globe."`,
         label: 'OpenFlights-Airlines',
+        license: 'Open Database License + Database Contents License',
+        link: 'https://openflights.org/data.html'
+      },
+      {
+        description: `"OpenFlights Routes Database contains over 10,000 Routes,
+          train stations and ferry terminals spanning the globe."`,
+        label: 'OpenFlights-Routes',
         license: 'Open Database License + Database Contents License',
         link: 'https://openflights.org/data.html'
       },

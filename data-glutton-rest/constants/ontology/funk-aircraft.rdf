@@ -45,6 +45,16 @@
   ///////////////////////////////////////////////////////////////////////////////////////
   -->
 
+  <!-- http://williamrobertfunk.com/ontologies/aircraft#Aircraft -->
+
+  <Class rdf:about="&aircraft;Aircraft">
+    <rdfs:label>Aircraft</rdfs:label>
+    <rdfs:comment>
+      An airplane, helicopter, or other machine capable of flight.
+    </rdfs:comment>
+    <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
+  </Class>
+
   <!-- http://williamrobertfunk.com/ontologies/aircraft#HelicopterLandingZone -->
 
   <Class rdf:about="&aircraft;HelicopterLandingZone">
@@ -188,6 +198,17 @@
     </rdfs:comment>
     <rdfs:domain rdf:resource="&aircraft;HelicopterLandingZone"/>
     <rdfs:range rdf:resource="&xsd;integer"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/aircraft#planeTypeCode -->
+
+  <DatatypeProperty rdf:about="&aircraft;planeTypeCode">
+    <rdfs:label>Plane Type Code</rdfs:label>
+    <rdfs:comment>
+      3-letter codes for plane type(s) generally used for airline route flights
+    </rdfs:comment>
+    <rdfs:domain rdf:resource="&aircraft;Aircraft"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
   </DatatypeProperty>
 
   <!-- General Ontology Extensions -->
