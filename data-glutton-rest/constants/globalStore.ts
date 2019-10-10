@@ -104,6 +104,7 @@ class GlobalStore {
 	public failedImages: ImageScrapableObject[] = [];
 
 	public agriculturalLands: Collection<Entity>;
+	public aircraftTypes: Collection<Entity>;
 	public airlines: Collection<Entity>;
 	public airports: Collection<Entity>;
 	public arableLands: Collection<Entity>;
@@ -145,6 +146,7 @@ class GlobalStore {
 		this.db = new loki.default('loki.json');
 
 		this.agriculturalLands = this.db.addCollection('agriculturalLands');
+		this.aircraftTypes = this.db.addCollection('aircraftTypes');
 		this.airlines = this.db.addCollection('airlines');
 		this.airports = this.db.addCollection('airports');
 		this.arableLands = this.db.addCollection('arableLands');

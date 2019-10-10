@@ -88,6 +88,7 @@ export function flushStore() {
 	store.failedImages = [];
 
 	store.agriculturalLands.clear();
+	store.aircraftTypes.clear();
 	store.airlines.clear();
 	store.airports.clear();
 	store.arableLands.clear();
