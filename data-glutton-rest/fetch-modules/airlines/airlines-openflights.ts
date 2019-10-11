@@ -26,17 +26,17 @@ export function getAirlineOpenFlights(): void {
 		lineReader.on('line', (line) => {
 			const lineItems = ((line && line.split(',')) || []).map(item => item && item.replace(/\"/g, ''));
 			if (lineItems.length === 8) {
-				lineItems.shift();
-				const name = lineItems[0];
-				const alias = lineItems[1];
-				const iata = lineItems[2];
-				const icao = lineItems[3];
-				const callsign = lineItems[4];
-				const country = lineItems[5];
-				const active = lineItems[6];
+				const openFlightsId = lineItems[0]
+				const name = lineItems[1];
+				const alias = lineItems[2];
+				const iata = lineItems[3];
+				const icao = lineItems[4];
+				const callsign = lineItems[5];
+				const country = lineItems[6];
+				const active = lineItems[7];
 
 				// Fetch or create airline entity
-				const airlineId = consts.ONTOLOGY.INST_AIRLINE + getUuid.default(name);
+				const airlineId = consts.ONTOLOGY.INST_AIRLINE + getUuid.default(openFlightsId);
 				let airlineObjectProp: EntityContainer = {};
 				if (store.airlines.find({ '@id': { $eq: airlineId } })[0] ) {
 					airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE] = store.airlines.find({ '@id': { $eq: airlineId } })[0];
