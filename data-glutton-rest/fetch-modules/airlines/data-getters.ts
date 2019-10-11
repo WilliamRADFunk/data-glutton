@@ -1,40 +1,44 @@
 import { getAirlineOpenFlights } from './airlines-openflights';
 import { getRoutesOpenFlights } from './routes-openflights';
 import { store } from '../../constants/globalStore';
-import { SubResourceReference } from '../../models/sub-resource-reference';
 
 export const dataScrapers = {
 	getAirlineOpenFlights,
 	getRoutesOpenFlights
 };
 
-export function getAirlineResourcePromise(sourceRef: SubResourceReference): Promise<any> {
-	if (sourceRef) {
-		sourceRef.status = 1;
-		switch(sourceRef.name) {
-			case 'Airlines (Openflights)': {
-				return new Promise((resolve, reject) => {
-					resolve(getAirlineOpenFlights());
-					store.debugLogger(`Data scrape for ${sourceRef.name} is complete`);
-					sourceRef.status = 2;
-				});
-			}
-			case 'Routes (Openflights)': {
-				return new Promise((resolve, reject) => {
-					resolve(getRoutesOpenFlights());
-					store.debugLogger(`Data scrape for ${sourceRef.name} is complete`);
-					sourceRef.status = 2;
-				});
-			}
-		}
-	} else {
-		store.airlineResourceList[0].status = 1;
-		return new Promise((resolve, reject) => {
-			getAirlineOpenFlights();
-			getRoutesOpenFlights();
-			resolve();
-			store.debugLogger(`Data scrape for ${store.airlineResourceList[0].name} is complete`);
-			store.airlineResourceList[0].status = 2;
-		});
+export function getAirlineResourcePromise(source: string, subSource?: string): Promise<void> {
+	const subResourceSource = store.airlineResourceList.find(s => s.name === source);
+    const subResourceSubSource = subResourceSource.subRefs.find(s => s.name === subSource);
+	if (source === 'Airlines (Openflights)') {
+            subResourceSource.status = 1;
+            switch(subSource) {
+                  case 'Airlines': {
+                        return new Promise((resolve, reject) => {
+                              getAirlineOpenFlights();
+                              store.debugLogger(`Data scrape for ${subSource} is complete`);
+                              subResourceSubSource.status = 2;
+                              resolve();
+		            });
+                  }
+                  case 'Routes': {
+                        return new Promise((resolve, reject) => {
+                              dataScrapers.getRoutesOpenFlights();
+                              store.debugLogger(`Data scrape for ${subSource} is complete`);
+                              subResourceSubSource.status = 2;
+                              resolve();
+		            });
+                  }
+                  default: {
+                        return new Promise((resolve, reject) => {
+                            getAirlineOpenFlights();
+                            store.debugLogger(`Data scrape for Airports is complete`);
+							getRoutesOpenFlights();
+                            store.debugLogger(`Data scrape for Routes is complete`);
+                            store.airlineResourceList[0].subRefs.forEach(sub => sub.status = 2);
+                            resolve();
+		            });
+                  }
+            }
 	}
 }

@@ -22,8 +22,8 @@ export function getRoutesOpenFlights(): void {
 	
 	if (lineReader) {
 		lineReader.on('line', (line) => {
-			const lineItems = ((line && line.split(',')) || []).map(item => item && item.replace(/\"/g, ''));
-			if (lineItems.length === 8) {
+            const lineItems = ((line && line.split(',')) || []).map(item => item && item.replace(/\"/g, ''));
+			if (lineItems.length === 9) {
                 const airlineIataORIcao = lineItems[0];
 				const openFlightsId = lineItems[1];
 				const sourceAirportIataOrIcao = lineItems[2];

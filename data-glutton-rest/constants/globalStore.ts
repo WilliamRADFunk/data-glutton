@@ -19,11 +19,17 @@ class GlobalStore {
 	public airlineResourceList: SubResourceReference[] = [
 		{
 			name: 'Airlines (Openflights)',
-			status: 0
-		},
-		{
-			name: 'Routes (Openflights)',
-			status: 0
+			status: 0,
+			subRefs: [
+				{
+					name: 'Airlines',
+					status: 0
+				},
+				{
+					name: 'Routes',
+					status: 0
+				}
+			]
 		}
 	];
 	public subResourceList: SubResourceReference[] = [

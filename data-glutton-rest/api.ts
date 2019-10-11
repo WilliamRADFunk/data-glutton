@@ -42,22 +42,23 @@ app.get('/sub-resource/:source/:subSource', async (req, res) => {
     });
 });
 
-app.get('/airlines/:airlineResource', async (req, res) => {
-    const airlineResource = req && req.params && req.params.airlineResource;
-    const airlineResourceRef: SubResourceReference = store.airlineResourceList.find((c: SubResourceReference) => {
-        return c.name === airlineResource;
-    });
-    if (airlineResourceRef) {
-        getAirlineResourcePromise(airlineResourceRef)
-            .then(done => {
-                return res.status(200).send({ success: true });
-            })
-            .catch(err => {
-                return res.status(500).send({ message: 'Unable to scrape airline resource' });
-            });
-    } else {
-        return res.status(404).send({ message: 'Invalid airline resource name' });
+app.get('/airlines/:source/:airlineResource', async (req, res) => {
+    const source = req && req.params && req.params.source;
+    const subSource = req && req.params && req.params.subSource;
+    const sourceObj = store.airlineResourceList.filter(a => a.name === source);
+    const subSourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === subSource) : [];
+    if (subSourceObj.length) {
+        subSourceObj[0].status = 1;
     }
+    getAirlineResourcePromise(source, subSource).then(done => {
+        return res.status(200).send({ success: true });
+    }).catch(err => {
+        store.errorLogger(`Unable to scrape ${source}: ${err}`);
+        if (subSourceObj.length) {
+            subSourceObj[0].status = -1;
+        }
+        return res.status(500).send({ success: false });
+    });
 });
 
 app.get('/country/:countryName', async (req, res) => {
