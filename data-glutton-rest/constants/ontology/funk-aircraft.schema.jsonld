@@ -38,15 +38,10 @@
       }
     },
     {
-      "@id": "aircraft:numberOfLandingPointSize3",
+      "@id": "general:width",
       "@type": "owl:DatatypeProperty",
-      "rdfs:comment": "\n      Number of places in a Helicopter Landing Zone that contain three unobstructed concentric circles of\n      15, 35, and 50 meters in diameter respectively from inside out.\n\n      Medium utility and attack helicopters such as the UH-60, H-2, and AH-64.\n    ",
       "rdfs:domain": {
         "@id": "aircraft:HelicopterLandingZone"
-      },
-      "rdfs:label": "Landing Points (Size 3)",
-      "rdfs:range": {
-        "@id": "xsd:integer"
       }
     },
     {
@@ -94,15 +89,15 @@
       }
     },
     {
-      "@id": "general:length",
-      "@type": "owl:DatatypeProperty",
-      "rdfs:domain": {
-        "@id": "aircraft:HelicopterLandingZone"
-      }
+      "@id": "aircraft:HelicopterLandingZone",
+      "@type": "owl:Class",
+      "blade:navClass": true,
+      "rdfs:comment": "\n      A specified ground area for landing assault helicopters to embark or disembark troops and/or cargo.\n    ",
+      "rdfs:label": "Helicopter Landing Zone"
     },
     {
-      "@id": "general:unit",
-      "@type": "owl:DatatypeProperty",
+      "@id": "general:hasLocation",
+      "@type": "owl:ObjectProperty",
       "rdfs:domain": {
         "@id": "aircraft:HelicopterLandingZone"
       }
@@ -112,6 +107,49 @@
       "@type": "owl:ObjectProperty",
       "rdfs:domain": {
         "@id": "aircraft:HelicopterLandingZone"
+      }
+    },
+    {
+      "@id": "aircraft:numberOfLandingPointSize7",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:comment": "\n      Number of places in a Helicopter Landing Zone that contain three unobstructed concentric circles of\n      15, 75, and 150 meters in diameter respectively from inside out.\n\n      Slingload operations with night vision goggles (NVG).\n    ",
+      "rdfs:domain": {
+        "@id": "aircraft:HelicopterLandingZone"
+      },
+      "rdfs:label": "Landing Points (Size 7)",
+      "rdfs:range": {
+        "@id": "xsd:integer"
+      }
+    },
+    {
+      "@id": "general:length",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:domain": {
+        "@id": "aircraft:HelicopterLandingZone"
+      }
+    },
+    {
+      "@id": "aircraft:numberOfLandingPointSize3",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:comment": "\n      Number of places in a Helicopter Landing Zone that contain three unobstructed concentric circles of\n      15, 35, and 50 meters in diameter respectively from inside out.\n\n      Medium utility and attack helicopters such as the UH-60, H-2, and AH-64.\n    ",
+      "rdfs:domain": {
+        "@id": "aircraft:HelicopterLandingZone"
+      },
+      "rdfs:label": "Landing Points (Size 3)",
+      "rdfs:range": {
+        "@id": "xsd:integer"
+      }
+    },
+    {
+      "@id": "aircraft:planeTypeCode",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:comment": "\n      3-letter codes for plane type(s) generally used for airline route flights\n    ",
+      "rdfs:domain": {
+        "@id": "aircraft:AircraftType"
+      },
+      "rdfs:label": "Plane Type Code",
+      "rdfs:range": {
+        "@id": "xsd:string"
       }
     },
     {
@@ -128,34 +166,15 @@
       "rdfs:label": "Funk Ontology"
     },
     {
-      "@id": "aircraft:numberOfLandingPointSize7",
-      "@type": "owl:DatatypeProperty",
-      "rdfs:comment": "\n      Number of places in a Helicopter Landing Zone that contain three unobstructed concentric circles of\n      15, 75, and 150 meters in diameter respectively from inside out.\n\n      Slingload operations with night vision goggles (NVG).\n    ",
-      "rdfs:domain": {
-        "@id": "aircraft:HelicopterLandingZone"
-      },
-      "rdfs:label": "Landing Points (Size 7)",
-      "rdfs:range": {
-        "@id": "xsd:integer"
-      }
-    },
-    {
-      "@id": "aircraft:HelicopterLandingZone",
+      "@id": "aircraft:AircraftType",
       "@type": "owl:Class",
       "blade:navClass": true,
-      "rdfs:comment": "\n      A specified ground area for landing assault helicopters to embark or disembark troops and/or cargo.\n    ",
-      "rdfs:label": "Helicopter Landing Zone"
+      "rdfs:comment": "\n      A type of airplane, helicopter, or other machine capable of flight.\n    ",
+      "rdfs:label": "Aircraft Type"
     },
     {
-      "@id": "general:width",
+      "@id": "general:unit",
       "@type": "owl:DatatypeProperty",
-      "rdfs:domain": {
-        "@id": "aircraft:HelicopterLandingZone"
-      }
-    },
-    {
-      "@id": "general:hasLocation",
-      "@type": "owl:ObjectProperty",
       "rdfs:domain": {
         "@id": "aircraft:HelicopterLandingZone"
       }
