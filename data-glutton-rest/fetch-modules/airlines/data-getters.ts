@@ -14,28 +14,30 @@ export function getAirlineResourcePromise(source: string, subSource?: string): P
             subResourceSource.status = 1;
             switch(subSource) {
                   case 'Airlines': {
-                        return new Promise((resolve, reject) => {
-                              getAirlineOpenFlights();
-                              store.debugLogger(`Data scrape for ${subSource} is complete`);
-                              subResourceSubSource.status = 2;
-                              resolve();
+                        return new Promise(async (resolve, reject) => {
+							await getAirlineOpenFlights();
+							store.debugLogger(`Data scrape for ${subSource} is complete`);
+							subResourceSubSource.status = 2;
+							resolve();
 		            });
                   }
                   case 'Routes': {
-                        return new Promise((resolve, reject) => {
-                              dataScrapers.getRoutesOpenFlights();
+                        return new Promise(async (resolve, reject) => {
+                              await getRoutesOpenFlights();
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
-                              subResourceSubSource.status = 2;
+							  subResourceSubSource.status = 2;
+							  subResourceSource.status = 2;
                               resolve();
 		            });
                   }
                   default: {
-                        return new Promise((resolve, reject) => {
-                            getAirlineOpenFlights();
-                            store.debugLogger(`Data scrape for Airports is complete`);
-							getRoutesOpenFlights();
-                            store.debugLogger(`Data scrape for Routes is complete`);
-                            store.airlineResourceList[0].subRefs.forEach(sub => sub.status = 2);
+                        return new Promise(async (resolve, reject) => {
+                            await getAirlineOpenFlights();
+                            store.debugLogger(`*Data scrape for Airports is complete`);
+							await getRoutesOpenFlights();
+                            store.debugLogger(`*Data scrape for Routes is complete`);
+							store.airlineResourceList[0].subRefs.forEach(sub => sub.status = 2);
+							subResourceSource.status = 2;
                             resolve();
 		            });
                   }

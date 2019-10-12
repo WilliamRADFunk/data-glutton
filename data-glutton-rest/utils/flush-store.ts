@@ -10,11 +10,17 @@ export function flushStore() {
 	store.airlineResourceList = [
 		{
 			name: 'Airlines (Openflights)',
-			status: 0
-		},
-		{
-			name: 'Routes (Openflights)',
-			status: 0
+			status: 0,
+			subRefs: [
+				{
+					name: 'Airlines',
+					status: 0
+				},
+				{
+					name: 'Routes',
+					status: 0
+				}
+			]
 		}
 	];
 	store.subResourceList = [

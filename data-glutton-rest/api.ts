@@ -10,7 +10,6 @@ import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
 import { getLeadersByCountriesData } from './fetch-modules/world-leaders/get-countries-data';
 import { getLeadersByCountryPromise } from './fetch-modules/world-leaders/get-country-data';
 import { CountryReference } from './models/country-reference';
-import { SubResourceReference } from './models/sub-resource-reference';
 import { flushStore } from './utils/flush-store';
 import { getCountries } from './utils/get-countries';
 import { saveFiles } from './utils/save-files';
@@ -44,18 +43,18 @@ app.get('/sub-resource/:source/:subSource', async (req, res) => {
 
 app.get('/airlines/:source/:airlineResource', async (req, res) => {
     const source = req && req.params && req.params.source;
-    const subSource = req && req.params && req.params.subSource;
+    const airlineResource = req && req.params && req.params.airlineResource;
     const sourceObj = store.airlineResourceList.filter(a => a.name === source);
-    const subSourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === subSource) : [];
-    if (subSourceObj.length) {
-        subSourceObj[0].status = 1;
+    const airlineResourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === airlineResource) : [];
+    if (airlineResourceObj.length) {
+        airlineResourceObj[0].status = 1;
     }
-    getAirlineResourcePromise(source, subSource).then(done => {
+    getAirlineResourcePromise(source, airlineResource).then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
         store.errorLogger(`Unable to scrape ${source}: ${err}`);
-        if (subSourceObj.length) {
-            subSourceObj[0].status = -1;
+        if (airlineResourceObj.length) {
+            airlineResourceObj[0].status = -1;
         }
         return res.status(500).send({ success: false });
     });
@@ -128,24 +127,6 @@ app.get('/country-list', async (req, res) => {
     }
 
     return res.send(store.countriesInList);
-});
-
-app.get('/scrape-airlines', async (req, res) => {
-    getAirlineResourcePromise(null).then(done => {
-        return res.status(200).send({ success: true });
-    }).catch(err => {
-        store.errorLogger(`scrape-factbook error: ${err.message}`);
-        return res.status(500).send({ success: false });
-    });
-});
-
-app.get('/scrape-sub-resources', async (req, res) => {
-    getAirportsHelosData(null).then(done => {
-        return res.status(200).send({ success: true });
-    }).catch(err => {
-        store.errorLogger(`scrape-sub-resources error: ${err.message}`);
-        return res.status(500).send({ success: false });
-    });
 });
 
 app.get('/scrape-factbook', async (req, res) => {

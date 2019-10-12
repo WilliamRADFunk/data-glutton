@@ -519,6 +519,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.selected = dataSource;
     if (dataSource === 'Airports/Helos') {
       this.reassignStatusWithSubResources(this.subResources[0]);
+    } else if (dataSource === 'Airlines (Openflights)') {
+      this.reassignStatusWithSubResources(this.airlineResources[0]);
     }
   }
 
