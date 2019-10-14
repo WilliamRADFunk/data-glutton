@@ -6,7 +6,7 @@ import * as getUuid from 'uuid-by-string';
 import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { EntityContainer } from '../../models/entity-container';
-import { isoCodeToDataCode, countryNameToIsoCode } from '../../utils/country-code-lookup-tables';
+import { countryNameToIsoCode, isoCodeToDataCode } from '../../utils/country-code-lookup-tables';
 import { countryToId } from '../../utils/country-to-id';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
@@ -22,7 +22,7 @@ export async function getAirlineOpenFlights(): Promise<void> {
 		} catch(err) {
 			store.errorLogger(`Failed to read airline-openflights.dat: ${err.message}`);
 		}
-		
+
 		if (lineReader) {
             lineReader.on('close', () => {
                 return resolve();
@@ -66,7 +66,7 @@ export async function getAirlineOpenFlights(): Promise<void> {
 							airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_STATUS_AIRLINE] = active.toLowerCase() === 'y' ? 'Open' : 'Closed';
 						}
 						if (country && countryNameToIsoCode(country)) {
-							let countryId = countryToId(isoCodeToDataCode(countryNameToIsoCode(country))) || '';
+							const countryId = countryToId(isoCodeToDataCode(countryNameToIsoCode(country))) || '';
 							const countryRef = store.countries.find({ '@id': { $eq: countryId } })[0];
 							if (countryRef) {
 								airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].objectProperties.push(

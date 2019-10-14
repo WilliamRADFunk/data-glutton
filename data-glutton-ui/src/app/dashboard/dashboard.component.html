@@ -145,7 +145,7 @@
               </ng-container>
             </ng-template>
             <ng-template #airportTemplate>
-              <ng-container *ngIf="selected === 'Airports/Helos'; else airlinesTemplate">
+              <ng-container *ngIf="selected === 'Airports/Helos'">
                 <ng-container *ngFor="let subResource of subResources">
                   <div class="row no-gutters border-bottom pb-2 mb-2">
                     <div class="col">
@@ -199,63 +199,6 @@
                         </div>
                       </div>
                     </div>
-                  </ng-container>
-                </ng-container>
-              </ng-container>
-            </ng-template>
-            <ng-template #airlinesTemplate>
-              <ng-container>
-                <div class="row no-gutters border-bottom pb-2 mb-2">
-                  <div class="col">
-                    <div class="h4 text-light text-outline stroke-shadow">
-                      Airlines
-                    </div>
-                  </div>
-                </div>
-                <ng-container *ngFor="let subResource of airlineResources">
-                  <div class="row">
-                    <div *ngIf="subResource.status !== 2" class="col-12">
-                      <div
-                        class="row no-gutters rounded bg-info display-item mb-1"
-                        [ngClass]="{'alert-info': subResource.status === 0, 'alert-warning': subResource.status === 1, 'alert-danger': subResource.status === -1}">
-                        <div class="col-10 my-auto">
-                          <div class="display-item-label text-dark pl-2">{{ subResource.name }}</div>
-                        </div>
-                        <div class="col-2 no-outline pr-1 pt-1">
-                          <button *ngIf="subResource.status === 0"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeAirlineSourceByName(subResource.name)">
-                            <span class="fa fa-play-circle-o"></span>
-                          </button>
-                          <button *ngIf="subResource.status === 1"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
-                            <span class="fa fa-spinner fa-spin"></span>
-                          </button>
-                          <button *ngIf="subResource.status === -1"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeAirlineSourceByName(subResource.name)">
-                            <span class="fa fa-refresh"></span>
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <!-- If no all have status 0, then show list -->
-                  <ng-container *ngIf="!getAllUntouched(subResource)">
-                    <div class="row"  *ngFor="let subSource of getSubSource(airlineResources, subResource)">
-                      <div class="col-12">
-                        <div
-                          class="row no-gutters rounded bg-info display-item mb-1"
-                          [ngClass]="{'alert-info': subSource.status === 0, 'alert-warning': subSource.status === 1, 'alert-danger': subSource.status === -1}">
-                          <div class="col-10 my-auto">
-                            <div class="display-item-label text-dark pl-4">{{ subSource.name }}</div>
-                          </div>
-                          <div class="col-2 no-outline pr-1 pt-1">
-                            <button *ngIf="subSource.status === 1" class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
-                              <span class="fa fa-spinner fa-spin"></span>
-                            </button>
-                            <button *ngIf="subSource.status === 2" class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
-                              <span class="fa fa-check"></span>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>  
                   </ng-container>
                 </ng-container>
               </ng-container>

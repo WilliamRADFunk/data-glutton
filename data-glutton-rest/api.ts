@@ -3,7 +3,6 @@ import express from 'express';
 
 import { consts } from './constants/constants';
 import { store } from './constants/globalStore';
-import { getAirlineResourcePromise } from './fetch-modules/airlines/data-getters';
 import { getAirportsHelosData } from './fetch-modules/all-airports/get-airport-helo-data';
 import { getCountriesData } from './fetch-modules/factbook/get-countries-data';
 import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
@@ -36,25 +35,6 @@ app.get('/sub-resource/:source/:subSource', async (req, res) => {
         store.errorLogger(`Unable to scrape ${source}: ${err}`);
         if (subSourceObj.length) {
             subSourceObj[0].status = -1;
-        }
-        return res.status(500).send({ success: false });
-    });
-});
-
-app.get('/airlines/:source/:airlineResource', async (req, res) => {
-    const source = req && req.params && req.params.source;
-    const airlineResource = req && req.params && req.params.airlineResource;
-    const sourceObj = store.airlineResourceList.filter(a => a.name === source);
-    const airlineResourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === airlineResource) : [];
-    if (airlineResourceObj.length) {
-        airlineResourceObj[0].status = 1;
-    }
-    getAirlineResourcePromise(source, airlineResource).then(done => {
-        return res.status(200).send({ success: true });
-    }).catch(err => {
-        store.errorLogger(`Unable to scrape ${source}: ${err}`);
-        if (airlineResourceObj.length) {
-            airlineResourceObj[0].status = -1;
         }
         return res.status(500).send({ success: false });
     });
@@ -117,10 +97,6 @@ app.get('/sub-resource-list', async (req, res) => {
     return res.send(store.subResourceList);
 });
 
-app.get('/airline-resource-list', async (req, res) => {
-    return res.send(store.airlineResourceList);
-});
-
 app.get('/country-list', async (req, res) => {
     if (!store.countriesInList.length) {
         await getCountries();
@@ -155,15 +131,13 @@ app.get('/scrape-leaders', async (req, res) => {
 
 app.get('/dashboard', async (req, res) => {
     const dashboard: { [key: string]: { [key: string]: number } } = {
-        'Airlines': {
+        'Airport/Helo': {
             'Aircraft Types': store.aircraftTypes.count(),
             'Airlines': store.airlines.count(),
-            'Routes': store.routes.count()
-        },
-        'Airport/Helo': {
             'Airports': store.airports.count(),
             'Helicopter Landing Zones': store.helicopterLandingZones.count(),
             'Municipalities': store.municipalities.count(),
+            'Routes': store.routes.count(),
             'Runways': store.runways.count(),
             'Surface Materials': store.surfaceMaterials.count(),
         },

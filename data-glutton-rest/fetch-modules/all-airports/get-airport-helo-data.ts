@@ -4,7 +4,7 @@ import { dataScrapers } from './data-getters';
 export function getAirportsHelosData(source: string, subSource?: string): Promise<void> {
       const subResourceSource = store.subResourceList.find(s => s.name === source);
       const subResourceSubSource = subResourceSource.subRefs.find(s => s.name === subSource);
-	if (source === 'Airports') {
+	if (source === 'Airports ~ Heliports ~ Airlines ~ Routes') {
             subResourceSource.status = 1;
             switch(subSource) {
                   case 'GeoJson Airports': {
@@ -37,6 +37,22 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               subResourceSubSource.status = 2;
                               subResourceSource.status = 2;
+                              resolve();
+		            });
+                  }
+                  case 'Airlines': {
+                        return new Promise(async (resolve, reject) => {
+                              await dataScrapers.getAirlineOpenFlights();
+                              store.debugLogger(`Data scrape for ${subSource} is complete`);
+                              subResourceSubSource.status = 2;
+                              resolve();
+		            });
+                  }
+                  case 'Routes': {
+                        return new Promise(async (resolve, reject) => {
+                              await dataScrapers.getRoutesOpenFlights();
+                              store.debugLogger(`Data scrape for ${subSource} is complete`);
+                              subResourceSubSource.status = 2;
                               resolve();
 		            });
                   }

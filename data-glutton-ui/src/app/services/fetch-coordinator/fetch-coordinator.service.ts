@@ -57,10 +57,6 @@ export class FetchCoordinator {
     return this.http.get(`http://localhost:3000/sub-resource/${source}/${subSource || ''}`);
   }
 
-  fetchAirlineResources(): Observable<any> {
-    return this.http.get(`http://localhost:3000/airline-resource-list/`);
-  }
-
   fetchCountry(countryName: string): Observable<any> {
     return this.http.get(`http://localhost:3000/country/${countryName}`);
   }
@@ -79,10 +75,6 @@ export class FetchCoordinator {
 
   scrapeFactbook(): Observable<any> {
     return this.http.get('http://localhost:3000/scrape-factbook');
-  }
-
-  scrapeAirlineSource(source: string, subSource?: string): Observable<any> {
-    return this.http.get(`http://localhost:3000/airlines/${source}/${subSource || ''}`);
   }
 
   async runFactbookFetcher(): Promise<any> {

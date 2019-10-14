@@ -16,25 +16,9 @@ class GlobalStore {
 	public IMAGES_TO_SCRAPE: ImageScrapableObject[] = [];
 	public jsonLD: Array<Partial<Entity>> = [];
 	public jsonNT: string = '';
-	public airlineResourceList: SubResourceReference[] = [
-		{
-			name: 'Airlines (Openflights)',
-			status: 0,
-			subRefs: [
-				{
-					name: 'Airlines',
-					status: 0
-				},
-				{
-					name: 'Routes',
-					status: 0
-				}
-			]
-		}
-	];
 	public subResourceList: SubResourceReference[] = [
 		{
-			name: 'Airports',
+			name: 'Airports ~ Heliports ~ Airlines ~ Routes',
 			status: 0,
 			subRefs: [
 				{
@@ -49,48 +33,56 @@ class GlobalStore {
 					name: 'DataHub Airports Source ~1',
 					status: 0
 				},
-				{
-					name: 'DataHub Airports Source ~2',
-					status: 0
-				},
-				{
-					name: 'DataHub Airports Source ~3',
-					status: 0
-				},
-				{
-					name: 'DataHub Airports Source ~4',
-					status: 0
-				},
-				{
-					name: 'DataHub Airports Source ~5',
-					status: 0
-				},
-				{
-					name: 'DataHub Airports Source ~6',
-					status: 0
-				},
-				{
-					name: 'DataHub Airports Source ~7',
-					status: 0
-				},
-				{
-					name: 'DataHub Airports Source ~8',
-					status: 0
-				},
-				{
-					name: 'DataHub Airports Source ~9',
-					status: 0
-				},
-				{
-					name: 'DataHub Airports Source ~10',
-					status: 0
-				},
+				// {
+				// 	name: 'DataHub Airports Source ~2',
+				// 	status: 0
+				// },
+				// {
+				// 	name: 'DataHub Airports Source ~3',
+				// 	status: 0
+				// },
+				// {
+				// 	name: 'DataHub Airports Source ~4',
+				// 	status: 0
+				// },
+				// {
+				// 	name: 'DataHub Airports Source ~5',
+				// 	status: 0
+				// },
+				// {
+				// 	name: 'DataHub Airports Source ~6',
+				// 	status: 0
+				// },
+				// {
+				// 	name: 'DataHub Airports Source ~7',
+				// 	status: 0
+				// },
+				// {
+				// 	name: 'DataHub Airports Source ~8',
+				// 	status: 0
+				// },
+				// {
+				// 	name: 'DataHub Airports Source ~9',
+				// 	status: 0
+				// },
+				// {
+				// 	name: 'DataHub Airports Source ~10',
+				// 	status: 0
+				// },
 				{
 					name: 'Airport Runways',
 					status: 0
 				},
 				{
 					name: 'Helicopter Landing Zones',
+					status: 0
+				},
+				{
+					name: 'Airlines',
+					status: 0
+				},
+				{
+					name: 'Routes',
 					status: 0
 				}
 			]

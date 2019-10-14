@@ -7,25 +7,9 @@ export function flushStore() {
 	store.airlinesNotFound = [];
 	store.airportsNotFound = [];
 	store.airportTable = {};
-	store.airlineResourceList = [
-		{
-			name: 'Airlines (Openflights)',
-			status: 0,
-			subRefs: [
-				{
-					name: 'Airlines',
-					status: 0
-				},
-				{
-					name: 'Routes',
-					status: 0
-				}
-			]
-		}
-	];
 	store.subResourceList = [
 		{
-			name: 'Airports',
+			name: 'Airports ~ Heliports ~ Airlines ~ Routes',
 			status: 0,
 			subRefs: [
 				{
@@ -82,6 +66,14 @@ export function flushStore() {
 				},
 				{
 					name: 'Helicopter Landing Zones',
+					status: 0
+				},
+				{
+					name: 'Airlines',
+					status: 0
+				},
+				{
+					name: 'Routes',
 					status: 0
 				}
 			]
