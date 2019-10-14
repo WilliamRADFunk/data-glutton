@@ -30,13 +30,13 @@ export class DashboardComponent implements OnDestroy, OnInit {
   subResources: SubResourceReference[] = [];
   countries: CountryReference[] = [];
   dashboard: { [key: string]: { [key: string]: number } } = {
-    'Airport/Helo': {},
+    'Ports & Related': {},
     'Factbook': {},
     'World Leader': {}
   };
   downloadable: boolean = true;
   exportOptions: { [key: string]: { [key: string]: boolean } } = {
-    'Airport/Helo': {},
+    'Ports & Related': {},
     'Factbook': {},
     'Ontologies': { 'Download Ontologies': false },
     'World Leader': {}
@@ -55,7 +55,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       hasSubResources: false
     },
     {
-      label: 'Airports/Helos',
+      label: 'Ports & Related',
       hasSubResources: true
     }
   ];
@@ -410,7 +410,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
         });
         break;
       }
-      case 'Airports/Helos': {
+      case 'Ports & Related': {
         this.subResources.filter(c => c.status === 0 || c.status === -1).forEach(source => {
           this.scrapeAirportHeloSource(source);
         });
@@ -438,7 +438,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public switchSelected(dataSource: string): void {
     this.selected = dataSource;
-    if (dataSource === 'Airports/Helos') {
+    if (dataSource === 'Ports & Related') {
       this.reassignStatusWithSubResources(this.subResources[0]);
     }
   }
