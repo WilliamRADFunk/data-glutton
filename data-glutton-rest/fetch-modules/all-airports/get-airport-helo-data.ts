@@ -36,7 +36,6 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
                               dataScrapers.getHelicopterLandingZones();
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               subResourceSubSource.status = 2;
-                              subResourceSource.status = 2;
                               resolve();
 		            });
                   }
@@ -53,6 +52,7 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
                               await dataScrapers.getRoutesOpenFlights();
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               subResourceSubSource.status = 2;
+                              subResourceSource.status = 2;
                               resolve();
 		            });
                   }

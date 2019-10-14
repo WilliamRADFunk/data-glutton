@@ -36,7 +36,7 @@ export async function getRoutesOpenFlights(): Promise<void> {
                     const destinationAirportOpenFlightsId = lineItems[5];
                     const codeshare = lineItems[6];
                     const numStops = lineItems[7];
-                    const planeTypes = lineItems[8].split(' ').map(x => x && x.trim() && Number(x));
+                    const planeTypes = lineItems[8].split(' ').map(x => x && x.trim()).filter(y => !!y);
 
                     const airLineRef = store.airlines
                         .find({ '@id': { $eq: consts.ONTOLOGY.INST_AIRLINE + getUuid.default(openFlightsId.toString()) } })[0];
@@ -45,7 +45,6 @@ export async function getRoutesOpenFlights(): Promise<void> {
                     const destinationAirportRef = store.airports
                         .find({ '@id': { $eq: consts.ONTOLOGY.INST_AIRPORT + getUuid.default(destinationAirportIataOrIcao) } })[0];
 
-                    store.debugLogger(`Line from file: ${airLineRef}, ${sourceAirportRef}, ${destinationAirportRef}`);
                     if (airLineRef && sourceAirportRef  && destinationAirportRef) {
                         // Fetch or create route entity
                         const routeId = consts.ONTOLOGY.INST_ROUTE + getUuid.default(sourceAirportOpenFlightsId) + ' ' +  + getUuid.default(destinationAirportOpenFlightsId);
@@ -72,7 +71,7 @@ export async function getRoutesOpenFlights(): Promise<void> {
                                 `The Route between ${sourceAirportRef[consts.RDFS.label]} and ${destinationAirportRef[consts.RDFS.label]}`);
                             if (planeTypes.length) {
                                 planeTypes.forEach(pt => {
-                                    const aircraftTypeId = consts.ONTOLOGY.INST_ROUTE + getUuid.default(pt.toString());
+                                    const aircraftTypeId = consts.ONTOLOGY.INST_ROUTE + getUuid.default(pt);
                                     let aircraftTypeRef = store.aircraftTypes.find({ '@id': { $eq: aircraftTypeId } })[0];
                                     let aircraftTypeObjProp = {};
                                     if (!aircraftTypeRef) {
@@ -106,9 +105,8 @@ export async function getRoutesOpenFlights(): Promise<void> {
                                     store.airports,
                                     destinationAirportRef['@id']
                             ));
+                            store.routes.insert(routeObjectProp[consts.ONTOLOGY.HAS_ROUTE]);
                         }
-
-                        store.debugLogger(`Line from file: ${airlineIataORIcao}, ${openFlightsId}, ${sourceAirportIataOrIcao}, ${destinationAirportIataOrIcao}, ${numStops}, ${planeTypes.join(' ')}`);
                     }
                 }
             });
