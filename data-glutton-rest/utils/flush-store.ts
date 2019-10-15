@@ -73,10 +73,18 @@ export function flushStore() {
 					status: 0
 				},
 				{
+					name: 'Planes',
+					status: 0
+				},
+				{
 					name: 'Routes',
 					status: 0
 				}
 			]
+		},
+		{
+			name: 'Seaports',
+			status: 0
 		}
 	];
 	store.countriesInList = [];

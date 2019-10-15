@@ -33,27 +33,22 @@
       }
     },
     {
-      "@id": "airline:status",
-      "@type": [
-        "owl:FunctionalProperty",
-        "owl:DatatypeProperty"
-      ],
-      "rdfs:comment": "\n      The last known status of the airline (ie. operational or defunct).\n    ",
+      "@id": "country:hasCountry",
+      "@type": "owl:ObjectProperty",
       "rdfs:domain": {
-        "@id": "airline:Airline"
+        "@id": "airline:GovernmentOffice"
       },
-      "rdfs:label": "Status",
       "rdfs:range": {
-        "@id": "xsd:string"
+        "@id": "country:Country"
       }
     },
     {
       "@id": "airport:iataCode",
       "@type": [
-        "owl:DatatypeProperty",
-        "owl:FunctionalProperty"
+        "owl:FunctionalProperty",
+        "owl:DatatypeProperty"
       ],
-      "rdfs:comment": "\n      The International Air Transportation Association code associated with an airport or airline.\n    ",
+      "rdfs:comment": "\n      The International Air Transportation Association code associated with an airport, airline, or aircraft.\n    ",
       "rdfs:domain": {
         "@id": "airline:Airline"
       },
@@ -102,23 +97,38 @@
       "rdfs:label": "Route"
     },
     {
+      "@id": "airline:alias",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:comment": "\n      A word or set of words by which an airline is known, referred to, or addressed.\n    ",
+      "rdfs:domain": {
+        "@id": "airline:Airline"
+      },
+      "rdfs:label": "Alias",
+      "rdfs:range": {
+        "@id": "xsd:string"
+      }
+    },
+    {
+      "@id": "airport:icaoCode",
+      "@type": [
+        "owl:FunctionalProperty",
+        "owl:DatatypeProperty"
+      ],
+      "rdfs:comment": "\n      The International Civil Aviation Organization code associated with an airport, airline, or aircraft.\n    ",
+      "rdfs:domain": {
+        "@id": "airline:Airline"
+      },
+      "rdfs:label": "ICAO Code",
+      "rdfs:range": {
+        "@id": "xsd:string"
+      }
+    },
+    {
       "@id": "airline:Airline",
       "@type": "owl:Class",
       "blade:navClass": true,
       "rdfs:comment": "\n      An organization providing a regular public service of air transportation on one or more routes.\n    ",
       "rdfs:label": "Airline"
-    },
-    {
-      "@id": "airline:numberOfStops",
-      "@type": "owl:DatatypeProperty",
-      "rdfs:comment": "\n      Number of stops along an airline's route.\n    ",
-      "rdfs:domain": {
-        "@id": "airline:Route"
-      },
-      "rdfs:label": "Number Of Stops",
-      "rdfs:range": {
-        "@id": "xsd:number"
-      }
     },
     {
       "@id": "airline:DestinationAirport",
@@ -141,18 +151,15 @@
       }
     },
     {
-      "@id": "airport:icaoCode",
-      "@type": [
-        "owl:DatatypeProperty",
-        "owl:FunctionalProperty"
-      ],
-      "rdfs:comment": "\n      The International Civil Aviation Organization code associated with an airport.\n    ",
+      "@id": "airline:numberOfStops",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:comment": "\n      Number of stops along an airline's route.\n    ",
       "rdfs:domain": {
-        "@id": "airline:Airline"
+        "@id": "airline:Route"
       },
-      "rdfs:label": "ICAO Code",
+      "rdfs:label": "Number Of Stops",
       "rdfs:range": {
-        "@id": "xsd:string"
+        "@id": "xsd:number"
       }
     },
     {
@@ -168,26 +175,18 @@
       }
     },
     {
-      "@id": "http://williamrobertfunk.com/ontologies/airline",
-      "@type": "owl:Ontology",
-      "dc:contributor": "William R.A.D. Funk",
-      "dc:creator": "William R.A.D. Funk",
-      "dc:rights": "Copyright 2019 William R.A.D. Funk. All rights reserved.",
-      "owl:versionInfo": {
-        "@type": "xsd:decimal",
-        "@value": "1.0"
-      },
-      "rdfs:comment": "\n      Identifies application specific classes and annotations that are relevant\n      only to my associated applications.\n    ",
-      "rdfs:label": "Funk Ontology"
-    },
-    {
-      "@id": "country:hasCountry",
-      "@type": "owl:ObjectProperty",
+      "@id": "airline:status",
+      "@type": [
+        "owl:DatatypeProperty",
+        "owl:FunctionalProperty"
+      ],
+      "rdfs:comment": "\n      The last known status of the airline (ie. operational or defunct).\n    ",
       "rdfs:domain": {
-        "@id": "airline:GovernmentOffice"
+        "@id": "airline:Airline"
       },
+      "rdfs:label": "Status",
       "rdfs:range": {
-        "@id": "country:Country"
+        "@id": "xsd:string"
       }
     },
     {
@@ -201,16 +200,17 @@
       }
     },
     {
-      "@id": "airline:alias",
-      "@type": "owl:DatatypeProperty",
-      "rdfs:comment": "\n      A word or set of words by which an airline is known, referred to, or addressed.\n    ",
-      "rdfs:domain": {
-        "@id": "airline:Airline"
+      "@id": "http://williamrobertfunk.com/ontologies/airline",
+      "@type": "owl:Ontology",
+      "dc:contributor": "William R.A.D. Funk",
+      "dc:creator": "William R.A.D. Funk",
+      "dc:rights": "Copyright 2019 William R.A.D. Funk. All rights reserved.",
+      "owl:versionInfo": {
+        "@type": "xsd:decimal",
+        "@value": "1.0"
       },
-      "rdfs:label": "Alias",
-      "rdfs:range": {
-        "@id": "xsd:string"
-      }
+      "rdfs:comment": "\n      Identifies application specific classes and annotations that are relevant\n      only to my associated applications.\n    ",
+      "rdfs:label": "Funk Ontology"
     }
   ]
 }

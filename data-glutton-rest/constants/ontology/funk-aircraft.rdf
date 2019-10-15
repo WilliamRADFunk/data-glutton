@@ -7,6 +7,8 @@
     <!ENTITY foaf "http://xmlns.com/foaf/0.1/" >
     <!ENTITY general "http://williamrobertfunk.com/ontologies/general#" >
     <!ENTITY aircraft "http://williamrobertfunk.com/ontologies/aircraft#" >
+    <!ENTITY airline "http://williamrobertfunk.com/ontologies/airline#" >
+    <!ENTITY airport "http://williamrobertfunk.com/ontologies/airport#" >
     <!ENTITY pos "http://www.w3.org/2003/01/geo/wgs84_pos#">
     <!ENTITY dbp "http://dbpedia.org/ontology/">
     <!ENTITY blade "http://modusoperandi.com/ont/blade#">
@@ -21,6 +23,8 @@
   xmlns:foaf="http://xmlns.com/foaf/0.1/"
   xmlns:general="http://williamrobertfunk.com/ontologies/general#"
   xmlns:aircraft="http://williamrobertfunk.com/ontologies/aircraft#"
+  xmlns:airline="http://williamrobertfunk.com/ontologies/airline#"
+  xmlns:airport="http://williamrobertfunk.com/ontologies/airport#"
   xmlns:pos="http://www.w3.org/2003/01/geo/wgs84_pos#"
   xmlns:dbp="http://dbpedia.org/ontology"
   xmlns:blade="http://modusoperandi.com/ont/blade#">
@@ -211,6 +215,17 @@
     <rdfs:range rdf:resource="&xsd;string"/>
   </DatatypeProperty>
 
+  <!-- http://williamrobertfunk.com/ontologies/aircraft#name -->
+
+  <DatatypeProperty rdf:about="&aircraft;name">
+    <rdfs:label>Name</rdfs:label>
+    <rdfs:comment>
+      An alternate word or set of words by which an aircraft is known, referred to, or addressed.
+    </rdfs:comment>
+    <rdfs:domain rdf:resource="&aircraft;Aircraft"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
   <!-- General Ontology Extensions -->
 
   <!-- http://williamrobertfunk.com/ontologies/general#width -->
@@ -229,6 +244,32 @@
 
   <DatatypeProperty rdf:about="&general;unit">
     <rdfs:domain rdf:resource="&aircraft;HelicopterLandingZone"/>
+  </DatatypeProperty>
+
+  <!-- Airport Ontology Extensions -->
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#iataCode -->
+
+  <DatatypeProperty rdf:about="&airport;iataCode">
+    <rdfs:label>IATA Code</rdfs:label>
+    <rdfs:comment>
+      The International Air Transportation Association code associated with an airport, airline, or aircraft.
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&aircraft;AircraftType"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- http://williamrobertfunk.com/ontologies/airport#icaoCode -->
+
+  <DatatypeProperty rdf:about="&airport;icaoCode">
+    <rdfs:label>ICAO Code</rdfs:label>
+    <rdfs:comment>
+      The International Civil Aviation Organization code associated with an airport, airline, or aircraft.
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&aircraft;AircraftType"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
   </DatatypeProperty>
 
 </rdf:RDF>

@@ -84,6 +84,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_MEAN_ELEVATION: GENERAL_ONT_PATH + 'meanElevation',
 	DT_MIME_TYPE: ASSET_ONT_PATH + 'mimeType',
 	DT_NAME: FOAF_ONT_PATH + 'name',
+	DT_NAME_AIRCRAFT: AIRCRAFT_ONT_PATH + 'name',
 	DT_NAME_AIRLINE: AIRLINE_ONT_PATH + 'name',
 	DT_NUM_OF_LAND_SITE_1: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize1',
 	DT_NUM_OF_LAND_SITE_2: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize2',

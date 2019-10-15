@@ -4,6 +4,7 @@ import { AirportNpmSourceObject } from '../models/airport-npm-source-object';
 import * as airportDatahub from '../assets/airports-datahub.json';
 import * as airportDataNpm from '../assets/airports-npm.json';
 import * as airportDataSource from '../assets/airports-source.json';
+import * as seaportDataSource from '../assets/seaports-geojson.json';
 
 export function createLookupTable(): void {
     airportDataNpm.forEach((ap: AirportNpmSourceObject) => {
@@ -15,6 +16,8 @@ export function createLookupTable(): void {
 
 export const airportDataLocal = airportDataSource;
 export const airportDataList = airportDataNpm;
+export const seaportDataLocal = seaportDataSource;
+
 const segmentedList = [];
 const megaList = Object.values(airportDatahub);
 const divisor = Math.floor(megaList.length / 10);

@@ -47,6 +47,14 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
                               resolve();
 		            });
                   }
+                  case 'Planes': {
+                        return new Promise(async (resolve, reject) => {
+                              await dataScrapers.getPlanesOpenFlights();
+                              store.debugLogger(`Data scrape for ${subSource} is complete`);
+                              subResourceSubSource.status = 2;
+                              resolve();
+		            });
+                  }
                   case 'Routes': {
                         return new Promise(async (resolve, reject) => {
                               await dataScrapers.getRoutesOpenFlights();

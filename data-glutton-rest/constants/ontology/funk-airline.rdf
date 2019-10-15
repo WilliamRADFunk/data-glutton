@@ -208,7 +208,7 @@
   <DatatypeProperty rdf:about="&airport;iataCode">
     <rdfs:label>IATA Code</rdfs:label>
     <rdfs:comment>
-      The International Air Transportation Association code associated with an airport or airline.
+      The International Air Transportation Association code associated with an airport, airline, or aircraft.
     </rdfs:comment>
     <rdf:type rdf:resource="&owl;FunctionalProperty" />
     <rdfs:domain rdf:resource="&airline;Airline"/>
@@ -220,7 +220,7 @@
   <DatatypeProperty rdf:about="&airport;icaoCode">
     <rdfs:label>ICAO Code</rdfs:label>
     <rdfs:comment>
-      The International Civil Aviation Organization code associated with an airport.
+      The International Civil Aviation Organization code associated with an airport, airline, or aircraft.
     </rdfs:comment>
     <rdf:type rdf:resource="&owl;FunctionalProperty" />
     <rdfs:domain rdf:resource="&airline;Airline"/>

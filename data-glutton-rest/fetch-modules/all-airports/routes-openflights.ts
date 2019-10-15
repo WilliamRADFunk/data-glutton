@@ -9,6 +9,8 @@ import { EntityContainer } from '../../models/entity-container';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
+let counter = 0;
+
 // Populate remaining airports from datahub list
 export async function getRoutesOpenFlights(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -23,6 +25,7 @@ export async function getRoutesOpenFlights(): Promise<void> {
 
         if (lineReader) {
             lineReader.on('close', () => {
+                store.airportMemoTable = {};
                 return resolve();
             });
             lineReader.on('line', (line) => {
@@ -38,14 +41,56 @@ export async function getRoutesOpenFlights(): Promise<void> {
                     const numStops = lineItems[7];
                     const planeTypes = lineItems[8].split(' ').map(x => x && x.trim()).filter(y => !!y);
 
-                    const airLineRef = store.airlines
+                    const airlineRef = store.airlines
                         .find({ '@id': { $eq: consts.ONTOLOGY.INST_AIRLINE + getUuid.default(openFlightsId.toString()) } })[0];
-                    const sourceAirportRef = store.airports
-                        .find({ '@id': { $eq: consts.ONTOLOGY.INST_AIRPORT + getUuid.default(sourceAirportIataOrIcao) } })[0];
-                    const destinationAirportRef = store.airports
-                        .find({ '@id': { $eq: consts.ONTOLOGY.INST_AIRPORT + getUuid.default(destinationAirportIataOrIcao) } })[0];
+                    
+                    if (!airlineRef) {
+                        counter++;
+                        store.debugLogger(`${counter}`);
+                        return;
+                    }
 
-                    if (airLineRef && sourceAirportRef  && destinationAirportRef) {
+                    let sourceAirportRef;
+                    const sourceAirportId = consts.ONTOLOGY.INST_AIRPORT + getUuid.default(sourceAirportIataOrIcao);
+                    const searchBySourceObject = {};
+                    searchBySourceObject[consts.ONTOLOGY.DT_IATA_CODE] = { $eq: sourceAirportIataOrIcao };
+                    if (store.airportMemoTable[sourceAirportIataOrIcao]) {
+                        sourceAirportRef = store.airportMemoTable[sourceAirportIataOrIcao];
+                    } else if (store.airports.find({ '@id': { $eq: sourceAirportId } })[0]) {
+                        sourceAirportRef = store.airports.find({ '@id': { $eq: sourceAirportId } })[0];
+                        store.airportMemoTable[sourceAirportIataOrIcao] = sourceAirportRef;
+                    } else if (store.airports.find(searchBySourceObject)[0]) {
+                        sourceAirportRef = store.airports.find(searchBySourceObject)[0];
+                        store.airportMemoTable[sourceAirportIataOrIcao] = sourceAirportRef;
+                    }
+
+                    if (!sourceAirportRef) {
+                        counter++;
+                        store.debugLogger(`${counter}`);
+                        return;
+                    }
+
+                    let destinationAirportRef;
+                    const destinationAirportId = consts.ONTOLOGY.INST_AIRPORT + getUuid.default(destinationAirportIataOrIcao);
+                    const searchByDestinationObject = {};
+                    searchByDestinationObject[consts.ONTOLOGY.DT_IATA_CODE] = { $eq: destinationAirportIataOrIcao };
+                    if (store.airportMemoTable[destinationAirportIataOrIcao]) {
+                        destinationAirportRef = store.airportMemoTable[destinationAirportIataOrIcao];
+                    } else if (store.airports.find({ '@id': { $eq: destinationAirportId } })[0]) {
+                        destinationAirportRef = store.airports.find({ '@id': { $eq: destinationAirportId } })[0];
+                        store.airportMemoTable[destinationAirportIataOrIcao] = destinationAirportRef;
+                    } else if (store.airports.find(searchByDestinationObject)[0]) {
+                        destinationAirportRef = store.airports.find(searchByDestinationObject)[0];
+                        store.airportMemoTable[destinationAirportIataOrIcao] = destinationAirportRef;
+                    }
+
+                    if (!sourceAirportRef) {
+                        counter++;
+                        store.debugLogger(`${counter}`);
+                        return;
+                    }
+
+                    if (airlineRef && sourceAirportRef  && destinationAirportRef) {
                         // Fetch or create route entity
                         const routeId = consts.ONTOLOGY.INST_ROUTE + getUuid.default(sourceAirportOpenFlightsId) + ' ' +  + getUuid.default(destinationAirportOpenFlightsId);
                         let routeObjectProp: EntityContainer = {};
@@ -53,15 +98,15 @@ export async function getRoutesOpenFlights(): Promise<void> {
                             routeObjectProp[consts.ONTOLOGY.HAS_ROUTE] = store.routes.find({ '@id': { $eq: routeId } })[0];
                             const airlines = routeObjectProp[consts.ONTOLOGY.HAS_ROUTE].objectProperties
                                 .filter(ref => !!ref[consts.ONTOLOGY.HAS_AIRLINE])
-                                .filter(ref => ref[consts.ONTOLOGY.HAS_AIRLINE]['@id'] === airLineRef['@id']);
+                                .filter(ref => ref[consts.ONTOLOGY.HAS_AIRLINE]['@id'] === airlineRef['@id']);
                             if (!airlines.length) {
                                 routeObjectProp[consts.ONTOLOGY.HAS_ROUTE].objectProperties.push(
                                     entityRefMaker(
                                         consts.ONTOLOGY.HAS_AIRLINE,
                                         store.airlines,
-                                        airLineRef['@id']
+                                        airlineRef['@id']
                                 ));
-                                airLineRef.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_ROUTE, routeObjectProp));
+                                airlineRef.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_ROUTE, routeObjectProp));
                             }
                         } else {
                             routeObjectProp = entityMaker(
@@ -71,25 +116,17 @@ export async function getRoutesOpenFlights(): Promise<void> {
                                 `The Route between ${sourceAirportRef[consts.RDFS.label]} and ${destinationAirportRef[consts.RDFS.label]}`);
                             if (planeTypes.length) {
                                 planeTypes.forEach(pt => {
-                                    const aircraftTypeId = consts.ONTOLOGY.INST_ROUTE + getUuid.default(pt);
-                                    let aircraftTypeRef = store.aircraftTypes.find({ '@id': { $eq: aircraftTypeId } })[0];
+                                    const aircraftTypeId = consts.ONTOLOGY.INST_AIRCRAFT_TYPE + getUuid.default(pt);
                                     let aircraftTypeObjProp = {};
-                                    if (!aircraftTypeRef) {
-                                        aircraftTypeObjProp = entityMaker(
-                                            consts.ONTOLOGY.HAS_AIRCRAFT_TYPE,
-                                            consts.ONTOLOGY.ONT_AIRCRAFT_TYPE,
-                                            aircraftTypeId,
-                                            `AirCraft Type`);
-                                        aircraftTypeRef = aircraftTypeObjProp[consts.ONTOLOGY.HAS_AIRCRAFT_TYPE];
-                                        aircraftTypeRef.datatypeProperties[consts.ONTOLOGY.DT_PLANE_TYPE_CODE] = pt;
-                                        store.aircraftTypes.insert(aircraftTypeObjProp[consts.ONTOLOGY.HAS_AIRCRAFT_TYPE]);
+                                    if (store.aircraftTypes.find({ '@id': { $eq: aircraftTypeId } })[0] ) {
+                                        aircraftTypeObjProp[consts.ONTOLOGY.HAS_AIRCRAFT_TYPE] = store.aircraftTypes.find({ '@id': { $eq: aircraftTypeId } })[0];
+                                        routeObjectProp[consts.ONTOLOGY.HAS_ROUTE].objectProperties.push(
+                                            entityRefMaker(
+                                                consts.ONTOLOGY.HAS_AIRCRAFT_TYPE,
+                                                store.aircraftTypes,
+                                                aircraftTypeId
+                                        ));
                                     }
-                                    routeObjectProp[consts.ONTOLOGY.HAS_ROUTE].objectProperties.push(
-                                        entityRefMaker(
-                                            consts.ONTOLOGY.HAS_AIRCRAFT_TYPE,
-                                            store.aircraftTypes,
-                                            aircraftTypeRef['@id']
-                                    ));
                                 });
                             }
 

@@ -82,10 +82,18 @@ class GlobalStore {
 					status: 0
 				},
 				{
+					name: 'Planes',
+					status: 0
+				},
+				{
 					name: 'Routes',
 					status: 0
 				}
 			]
+		},
+		{
+			name: 'Seaports',
+			status: 0
 		}
 	];
 	public countriesInList: CountryReference[] = [];
@@ -96,6 +104,8 @@ class GlobalStore {
 	public airlinesNotFound: string[] = [];
 	public airportsNotFound: string[] = [];
 	public airportTable: { [key: string]: AirportNpmSourceObject } = {};
+	public airportMemoTable: { [key: string]: Entity } = {};
+
 	public failedAirlines: string[] = [];
 	public failedAirports: string[] = [];
 	public failedCountries: CountryReference[] = [];
@@ -135,6 +145,7 @@ class GlobalStore {
 	public regionMaps: Collection<Entity>;
 	public routes: Collection<Entity>;
 	public runways: Collection<Entity>;
+	public seaports: Collection<Entity>;
 	public surfaceMaterials: Collection<Entity>;
 	public terrains: Collection<Entity>;
 
@@ -177,6 +188,7 @@ class GlobalStore {
 		this.regionMaps = this.db.addCollection('regionMaps');
 		this.routes = this.db.addCollection('routes');
 		this.runways = this.db.addCollection('runways');
+		this.seaports = this.db.addCollection('seaports');
 		this.surfaceMaterials = this.db.addCollection('surfaceMaterials');
 		this.terrains = this.db.addCollection('terrains');
 	}

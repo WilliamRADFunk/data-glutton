@@ -131,16 +131,6 @@ app.get('/scrape-leaders', async (req, res) => {
 
 app.get('/dashboard', async (req, res) => {
     const dashboard: { [key: string]: { [key: string]: number } } = {
-        'Ports & Related': {
-            'Aircraft Types': store.aircraftTypes.count(),
-            'Airlines': store.airlines.count(),
-            'Airports': store.airports.count(),
-            'Helicopter Landing Zones': store.helicopterLandingZones.count(),
-            'Municipalities': store.municipalities.count(),
-            'Routes': store.routes.count(),
-            'Runways': store.runways.count(),
-            'Surface Materials': store.surfaceMaterials.count(),
-        },
         'Factbook': {
             'Agricultural Lands': store.agriculturalLands.count(),
             'Arable Lands': store.arableLands.count(),
@@ -168,6 +158,16 @@ app.get('/dashboard', async (req, res) => {
             'Permanent Pasture Lands': store.permanentPastureLands.count(),
             'Region Maps': store.regionMaps.count(),
             'Terrains': store.terrains.count()
+        },
+        'Ports & Related': {
+            'Aircraft Types': store.aircraftTypes.count(),
+            'Airlines': store.airlines.count(),
+            'Airports': store.airports.count(),
+            'Helicopter Landing Zones': store.helicopterLandingZones.count(),
+            'Municipalities': store.municipalities.count(),
+            'Routes': store.routes.count(),
+            'Runways': store.runways.count(),
+            'Surface Materials': store.surfaceMaterials.count(),
         },
         'World Leader': {
             'Government Offices': store.govOffices.count(),

@@ -30,15 +30,15 @@ export class DashboardComponent implements OnDestroy, OnInit {
   subResources: SubResourceReference[] = [];
   countries: CountryReference[] = [];
   dashboard: { [key: string]: { [key: string]: number } } = {
-    'Ports & Related': {},
     'Factbook': {},
+    'Ports & Related': {},
     'World Leader': {}
   };
   downloadable: boolean = true;
   exportOptions: { [key: string]: { [key: string]: boolean } } = {
-    'Ports & Related': {},
     'Factbook': {},
     'Ontologies': { 'Download Ontologies': false },
+    'Ports & Related': {},
     'World Leader': {}
   };
   /**

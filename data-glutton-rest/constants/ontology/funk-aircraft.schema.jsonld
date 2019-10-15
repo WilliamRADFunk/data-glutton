@@ -1,6 +1,8 @@
 {
   "@context": {
     "aircraft": "http://williamrobertfunk.com/ontologies/aircraft#",
+    "airline": "http://williamrobertfunk.com/ontologies/airline#",
+    "airport": "http://williamrobertfunk.com/ontologies/airport#",
     "blade": "http://modusoperandi.com/ont/blade#",
     "dbp": "http://dbpedia.org/ontology",
     "dc": "http://purl.org/dc/elements/1.1/",
@@ -57,15 +59,18 @@
       }
     },
     {
-      "@id": "aircraft:numberOfLandingPointSize5",
-      "@type": "owl:DatatypeProperty",
-      "rdfs:comment": "\n      Number of places in a Helicopter Landing Zone that contain three unobstructed concentric circles of\n      15, 60, and 100 meters in diameter respectively from inside out.\n\n      Slingload helicopters and aircraft of an unknown origin.\n    ",
+      "@id": "airport:iataCode",
+      "@type": [
+        "owl:DatatypeProperty",
+        "owl:FunctionalProperty"
+      ],
+      "rdfs:comment": "\n      The International Air Transportation Association code associated with an airport, airline, or aircraft.\n    ",
       "rdfs:domain": {
-        "@id": "aircraft:HelicopterLandingZone"
+        "@id": "aircraft:AircraftType"
       },
-      "rdfs:label": "Landing Points (Size 5)",
+      "rdfs:label": "IATA Code",
       "rdfs:range": {
-        "@id": "xsd:integer"
+        "@id": "xsd:string"
       }
     },
     {
@@ -96,8 +101,8 @@
       "rdfs:label": "Helicopter Landing Zone"
     },
     {
-      "@id": "general:hasLocation",
-      "@type": "owl:ObjectProperty",
+      "@id": "general:unit",
+      "@type": "owl:DatatypeProperty",
       "rdfs:domain": {
         "@id": "aircraft:HelicopterLandingZone"
       }
@@ -122,6 +127,31 @@
       }
     },
     {
+      "@id": "http://williamrobertfunk.com/ontologies/aircraft",
+      "@type": "owl:Ontology",
+      "dc:contributor": "William R.A.D. Funk",
+      "dc:creator": "William R.A.D. Funk",
+      "dc:rights": "Copyright 2019 William R.A.D. Funk. All rights reserved.",
+      "owl:versionInfo": {
+        "@type": "xsd:decimal",
+        "@value": "1.0"
+      },
+      "rdfs:comment": "\n      Identifies application specific classes and annotations that are relevant\n      only to my associated applications.\n    ",
+      "rdfs:label": "Funk Ontology"
+    },
+    {
+      "@id": "aircraft:name",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:comment": "\n      An alternate word or set of words by which an aircraft is known, referred to, or addressed.\n    ",
+      "rdfs:domain": {
+        "@id": "aircraft:Aircraft"
+      },
+      "rdfs:label": "Name",
+      "rdfs:range": {
+        "@id": "xsd:string"
+      }
+    },
+    {
       "@id": "general:length",
       "@type": "owl:DatatypeProperty",
       "rdfs:domain": {
@@ -141,6 +171,21 @@
       }
     },
     {
+      "@id": "airport:icaoCode",
+      "@type": [
+        "owl:DatatypeProperty",
+        "owl:FunctionalProperty"
+      ],
+      "rdfs:comment": "\n      The International Civil Aviation Organization code associated with an airport, airline, or aircraft.\n    ",
+      "rdfs:domain": {
+        "@id": "aircraft:AircraftType"
+      },
+      "rdfs:label": "ICAO Code",
+      "rdfs:range": {
+        "@id": "xsd:string"
+      }
+    },
+    {
       "@id": "aircraft:planeTypeCode",
       "@type": "owl:DatatypeProperty",
       "rdfs:comment": "\n      3-letter codes for plane type(s) generally used for airline route flights\n    ",
@@ -153,19 +198,6 @@
       }
     },
     {
-      "@id": "http://williamrobertfunk.com/ontologies/aircraft",
-      "@type": "owl:Ontology",
-      "dc:contributor": "William R.A.D. Funk",
-      "dc:creator": "William R.A.D. Funk",
-      "dc:rights": "Copyright 2019 William R.A.D. Funk. All rights reserved.",
-      "owl:versionInfo": {
-        "@type": "xsd:decimal",
-        "@value": "1.0"
-      },
-      "rdfs:comment": "\n      Identifies application specific classes and annotations that are relevant\n      only to my associated applications.\n    ",
-      "rdfs:label": "Funk Ontology"
-    },
-    {
       "@id": "aircraft:AircraftType",
       "@type": "owl:Class",
       "blade:navClass": true,
@@ -173,10 +205,22 @@
       "rdfs:label": "Aircraft Type"
     },
     {
-      "@id": "general:unit",
-      "@type": "owl:DatatypeProperty",
+      "@id": "general:hasLocation",
+      "@type": "owl:ObjectProperty",
       "rdfs:domain": {
         "@id": "aircraft:HelicopterLandingZone"
+      }
+    },
+    {
+      "@id": "aircraft:numberOfLandingPointSize5",
+      "@type": "owl:DatatypeProperty",
+      "rdfs:comment": "\n      Number of places in a Helicopter Landing Zone that contain three unobstructed concentric circles of\n      15, 60, and 100 meters in diameter respectively from inside out.\n\n      Slingload helicopters and aircraft of an unknown origin.\n    ",
+      "rdfs:domain": {
+        "@id": "aircraft:HelicopterLandingZone"
+      },
+      "rdfs:label": "Landing Points (Size 5)",
+      "rdfs:range": {
+        "@id": "xsd:integer"
       }
     }
   ]
