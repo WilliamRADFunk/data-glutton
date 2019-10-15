@@ -105,6 +105,7 @@ class GlobalStore {
 	public airportsNotFound: string[] = [];
 	public airportTable: { [key: string]: AirportNpmSourceObject } = {};
 	public airportMemoTable: { [key: string]: Entity } = {};
+	public routesData: string[] = [];
 
 	public failedAirlines: string[] = [];
 	public failedAirports: string[] = [];
