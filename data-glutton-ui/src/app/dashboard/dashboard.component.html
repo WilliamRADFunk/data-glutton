@@ -146,14 +146,14 @@
             </ng-template>
             <ng-template #airportTemplate>
               <ng-container *ngIf="selected === 'Ports & Related'">
-                <ng-container *ngFor="let subResource of subResources">
-                  <div class="row no-gutters border-bottom pb-2 mb-2">
-                    <div class="col">
-                      <div class="h4 text-light text-outline stroke-shadow">
-                        Ports & Related Sources
-                      </div>
+                <div class="row no-gutters border-bottom pb-2 mb-2">
+                  <div class="col">
+                    <div class="h4 text-light text-outline stroke-shadow">
+                      Ports & Related Sources
                     </div>
                   </div>
+                </div>
+                <ng-container *ngFor="let subResource of subResources">
                   <div class="row">
                     <div *ngIf="!isComplete(subResource, true)" class="col-12">
                       <div

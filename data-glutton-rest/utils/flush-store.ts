@@ -84,7 +84,8 @@ export function flushStore() {
 		},
 		{
 			name: 'Seaports',
-			status: 0
+			status: 0,
+			subRefs: []
 		}
 	];
 	store.countriesInList = [];

@@ -93,7 +93,8 @@ class GlobalStore {
 		},
 		{
 			name: 'Seaports',
-			status: 0
+			status: 0,
+			subRefs: []
 		}
 	];
 	public countriesInList: CountryReference[] = [];

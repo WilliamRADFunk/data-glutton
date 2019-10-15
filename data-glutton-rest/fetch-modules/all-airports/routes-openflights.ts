@@ -10,11 +10,19 @@ import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
 let counter = 0;
+let totalLines;
+let oldPercent = 0;
 
 // Populate remaining airports from datahub list
 export async function getRoutesOpenFlights(): Promise<void> {
     return new Promise((resolve, reject) => {
+        totalLines = store.routesData.length;
         store.routesData.forEach(line => {
+            const percent = Math.ceil((counter / totalLines) * 100);
+            if (percent !== oldPercent) {
+                oldPercent = percent;
+                store.progressLogger('RoutesFromOpenFlights', counter / totalLines);
+            }
             const lineItems = ((line && line.split(',')) || []).map(item => item && item.replace(/\"/g, ''));
             if (lineItems.length === 9) {
                 const airlineIataORIcao = lineItems[0];
@@ -32,7 +40,6 @@ export async function getRoutesOpenFlights(): Promise<void> {
 
                 if (!airlineRef) {
                     counter++;
-                    store.debugLogger(`${counter}`);
                     return;
                 }
 
@@ -52,7 +59,6 @@ export async function getRoutesOpenFlights(): Promise<void> {
 
                 if (!sourceAirportRef) {
                     counter++;
-                    store.debugLogger(`${counter}`);
                     return;
                 }
 
@@ -72,7 +78,6 @@ export async function getRoutesOpenFlights(): Promise<void> {
 
                 if (!sourceAirportRef) {
                     counter++;
-                    store.debugLogger(`${counter}`);
                     return;
                 }
 
@@ -132,6 +137,7 @@ export async function getRoutesOpenFlights(): Promise<void> {
                     }
                 }
             }
+            counter++;
         });
         resolve();
     });
