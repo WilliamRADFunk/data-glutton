@@ -6,6 +6,7 @@ import { getRunwaysFromOurAirports } from './airports-oa-runways';
 import { getHelicopterLandingZones } from './helicopter-landing-zones';
 import { getPlanesOpenFlights } from './planes-openflights';
 import { getRoutesOpenFlights } from './routes-openflights';
+import { getSeaportsFromGeoJson } from './seaports-geojson';
 
 export const dataScrapers = {
 	getAirlineOpenFlights,
@@ -15,5 +16,6 @@ export const dataScrapers = {
 	getHelicopterLandingZones,
 	getPlanesOpenFlights,
 	getRoutesOpenFlights,
-	getRunwaysFromOurAirports
+	getRunwaysFromOurAirports,
+	getSeaportsFromGeoJson
 };

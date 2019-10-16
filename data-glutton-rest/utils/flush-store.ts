@@ -127,6 +127,7 @@ export function flushStore() {
 	store.regionMaps.clear();
 	store.routes.clear();
 	store.runways.clear();
+	store.seaports.clear();
 	store.surfaceMaterials.clear();
     store.terrains.clear();
 

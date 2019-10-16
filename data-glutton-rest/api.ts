@@ -3,7 +3,7 @@ import express from 'express';
 
 import { consts } from './constants/constants';
 import { store } from './constants/globalStore';
-import { getAirportsHelosData } from './fetch-modules/all-airports/get-airport-helo-data';
+import { getAirportsHelosData } from './fetch-modules/all-ports/get-airport-helo-data';
 import { getCountriesData } from './fetch-modules/factbook/get-countries-data';
 import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
 import { getLeadersByCountriesData } from './fetch-modules/world-leaders/get-countries-data';

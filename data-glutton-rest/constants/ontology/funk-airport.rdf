@@ -43,16 +43,6 @@
   ///////////////////////////////////////////////////////////////////////////////////////
   -->
 
-  <!-- http://williamrobertfunk.com/ontologies/airport#Airline -->
-
-  <Class rdf:about="&airport;Airline">
-    <rdfs:label>Airline</rdfs:label>
-    <rdfs:comment>
-      an organization providing a regular public service of air transportation on one or more routes.
-    </rdfs:comment>
-    <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
-  </Class>
-
   <!-- http://williamrobertfunk.com/ontologies/airport#Airport -->
 
   <Class rdf:about="&airport;Airport">
@@ -129,7 +119,7 @@
   </ObjectProperty>
 
   <!-- Municipality Ontology Extensions -->
-  
+
   <!-- http://williamrobertfunk.com/ontologies/municipality#hasMunicipality -->
 
   <ObjectProperty rdf:about="&municipality;hasMunicipality">
@@ -154,7 +144,6 @@
     </rdfs:comment>
     <rdf:type rdf:resource="&owl;FunctionalProperty" />
     <rdfs:domain rdf:resource="&airport;Airport"/>
-    <rdfs:domain rdf:resource="&airport;Airline"/>
     <rdfs:range rdf:resource="&xsd;string"/>
   </DatatypeProperty>
 
@@ -229,7 +218,6 @@
   <!-- http://williamrobertfunk.com/ontologies/general#wikiURI -->
 
   <DatatypeProperty rdf:about="&general;wikiURI">
-    <rdfs:domain rdf:resource="&airport;Airline"/>
     <rdfs:domain rdf:resource="&airport;Airport"/>
   </DatatypeProperty>
 

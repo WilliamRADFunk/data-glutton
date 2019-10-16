@@ -17,6 +17,7 @@ const IMAGE_ONT_PATH = 'http://williamrobertfunk.com/ontologies/image#';
 const LEADERS_ONT_PATH = 'http://williamrobertfunk.com/ontologies/world-leaders#';
 const MAIN_INSTANCE_PATH = 'http://williamrobertfunk.com/instance/';
 const MUNICIPALITY_ONT_PATH = 'http://williamrobertfunk.com/ontologies/municipality#';
+const SEAPORT_ONT_PATH = 'http://williamrobertfunk.com/ontologies/seaport#';
 const WGS84_POS = {
 	ALT: GEO_ONT_PATH + 'alt',
 	LAT: GEO_ONT_PATH + 'lat',
@@ -86,6 +87,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	DT_NAME: FOAF_ONT_PATH + 'name',
 	DT_NAME_AIRCRAFT: AIRCRAFT_ONT_PATH + 'name',
 	DT_NAME_AIRLINE: AIRLINE_ONT_PATH + 'name',
+	DT_NAME_SEAPORT: SEAPORT_ONT_PATH + 'name',
 	DT_NUM_OF_LAND_SITE_1: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize1',
 	DT_NUM_OF_LAND_SITE_2: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize2',
 	DT_NUM_OF_LAND_SITE_3: AIRCRAFT_ONT_PATH + 'numberOfLandingPointSize3',
@@ -128,6 +130,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	IMAGE_ONT_PATH,
 	LEADERS_ONT_PATH,
 	MUNICIPALITY_ONT_PATH,
+	SEAPORT_ONT_PATH,
 
 	// Ontology definition paths for (predicate) object/relation properties
 	HAS_AGRICULTURAL_LAND: COUNTRY_ONT_PATH + 'hasAgriculturalLand',
@@ -205,6 +208,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	INST_REGION_MAP: MAIN_INSTANCE_PATH + 'RegionMap/',
 	INST_ROUTE: MAIN_INSTANCE_PATH + 'Route/',
 	INST_RUNWAY: MAIN_INSTANCE_PATH + 'Runway/',
+	INST_SEAPORT: MAIN_INSTANCE_PATH + 'Seaport/',
 	INST_SURFACE_MATERIAL: MAIN_INSTANCE_PATH + 'SurfaceMaterial/',
 	INST_TERRAIN: MAIN_INSTANCE_PATH + 'Terrain/',
 	// Base path for all things instance definition
@@ -245,6 +249,7 @@ const ONTOLOGY: { [key: string]: string } = {
 	ONT_REGION_MAP: COUNTRY_ONT_PATH + 'RegionMap',
 	ONT_ROUTE: AIRLINE_ONT_PATH + 'Route',
 	ONT_RUNWAY: AIRPORT_ONT_PATH + 'Runway',
+	ONT_SEAPORT: SEAPORT_ONT_PATH + 'Seaport',
 	ONT_SOURCE_AIRPORT: AIRLINE_ONT_PATH + 'SourceAirport',
 	ONT_SURFACE_MATERIAL: AIRPORT_ONT_PATH + 'SurfaceMaterial',
 	ONT_TERRAIN: COUNTRY_ONT_PATH + 'Terrain'

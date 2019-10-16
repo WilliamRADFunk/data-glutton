@@ -1,0 +1,97 @@
+<!DOCTYPE rdf:RDF [
+    <!ENTITY rdf "http://www.w3.org/1999/02/22-rdf-syntax-ns#" >
+    <!ENTITY owl "http://www.w3.org/2002/07/owl#" >
+    <!ENTITY xsd "http://www.w3.org/2001/XMLSchema#" >
+    <!ENTITY rdfs "http://www.w3.org/2000/01/rdf-schema#" >
+    <!ENTITY dc "http://purl.org/dc/elements/1.1/" >
+    <!ENTITY general "http://williamrobertfunk.com/ontologies/general#" >
+    <!ENTITY seaport "http://williamrobertfunk.com/ontologies/seaport#" >
+    <!ENTITY blade "http://modusoperandi.com/ont/blade#">
+]>
+
+<rdf:RDF xmlns="http://www.w3.org/2002/07/owl#"
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:owl="http://www.w3.org/2002/07/owl#"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+  xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+  xmlns:dc="http://purl.org/dc/elements/1.1/"
+  xmlns:general="http://williamrobertfunk.com/ontologies/general#"
+  xmlns:seaport="http://williamrobertfunk.com/ontologies/seaport#"
+  xmlns:blade="http://modusoperandi.com/ont/blade#">
+
+  <Ontology rdf:about="http://williamrobertfunk.com/ontologies/seaport">
+    <versionInfo rdf:datatype="&xsd;decimal">1.3</versionInfo>
+    <dc:rights>Copyright 2019 William R.A.D. Funk. All rights reserved.</dc:rights>
+    <dc:creator>William R.A.D. Funk</dc:creator>
+    <dc:contributor>William R.A.D. Funk</dc:contributor>
+    <rdfs:comment>
+      Identifies application specific classes and annotations that are relevant
+      only to my associated applications.
+    </rdfs:comment>
+    <rdfs:label>Funk Ontology</rdfs:label>
+  </Ontology>
+
+  <!--
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Classes
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- http://williamrobertfunk.com/ontologies/seaport#Seaport -->
+
+  <Class rdf:about="&seaport;Seaport">
+    <rdfs:label>Seaport</rdfs:label>
+    <rdfs:comment>
+      a harbor for seagoing ships.
+    </rdfs:comment>
+    <blade:navClass rdf:datatype="&xsd;boolean">true</blade:navClass>
+  </Class>
+
+  <!--
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Object Properties
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- General Ontology Extensions -->
+
+  <!-- http://williamrobertfunk.com/ontologies/general#hasLocation -->
+
+  <ObjectProperty rdf:about="&general;hasLocation">
+    <rdfs:domain rdf:resource="&seaport;Seaport"/>
+    <rdfs:range rdf:resource="&general;Location"/>
+  </ObjectProperty>
+
+  <!--
+  ///////////////////////////////////////////////////////////////////////////////////////
+  //
+  // Datatype Properties
+  //
+  ///////////////////////////////////////////////////////////////////////////////////////
+  -->
+
+  <!-- http://williamrobertfunk.com/ontologies/seaport#name -->
+
+  <DatatypeProperty rdf:about="&seaport;name">
+    <rdfs:label>Name</rdfs:label>
+    <rdfs:comment>
+      An alternate word or set of words by which an airline is known, referred to, or addressed.
+    </rdfs:comment>
+    <rdf:type rdf:resource="&owl;FunctionalProperty" />
+    <rdfs:domain rdf:resource="&seaport;Seaport"/>
+    <rdfs:range rdf:resource="&xsd;string"/>
+  </DatatypeProperty>
+
+  <!-- General Ontology Extensions -->
+
+  <!-- http://williamrobertfunk.com/ontologies/general#wikiURI -->
+
+  <DatatypeProperty rdf:about="&general;wikiURI">
+    <rdfs:domain rdf:resource="&seaport;Seaport"/>
+  </DatatypeProperty>
+
+</rdf:RDF>
