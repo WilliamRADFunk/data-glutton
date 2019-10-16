@@ -165,13 +165,13 @@
                           <div class="display-item-label text-dark pl-2">{{ subResource.name }}</div>
                         </div>
                         <div class="col-2 no-outline pr-1 pt-1">
-                          <button *ngIf="getButtonStatus(subResource, true).info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapeAirportHeloSourceByName(subResource.name)">
+                          <button *ngIf="getButtonStatus(subResource, true).info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapePortSourceByName(subResource.name)">
                             <span class="fa fa-play-circle-o"></span>
                           </button>
                           <button *ngIf="isScrapingBusy(subResource, true)"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                             <span class="fa fa-spinner fa-spin"></span>
                           </button>
-                          <button *ngIf="getButtonStatus(subResource, true).danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapeAirportHeloSourceByName(subResource.name)">
+                          <button *ngIf="getButtonStatus(subResource, true).danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapePortSourceByName(subResource.name)">
                             <span class="fa fa-refresh"></span>
                           </button>
                         </div>

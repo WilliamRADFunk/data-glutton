@@ -167,6 +167,7 @@ app.get('/dashboard', async (req, res) => {
             'Municipalities': store.municipalities.count(),
             'Routes': store.routes.count(),
             'Runways': store.runways.count(),
+            'Seaports': store.seaports.count(),
             'Surface Materials': store.surfaceMaterials.count(),
         },
         'World Leader': {

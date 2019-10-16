@@ -94,7 +94,10 @@ class GlobalStore {
 		{
 			name: 'Seaports',
 			status: 0,
-			subRefs: []
+			subRefs: [{
+				name: 'GeoJson Seaports',
+				status: 0
+			}]
 		}
 	];
 	public countriesInList: CountryReference[] = [];

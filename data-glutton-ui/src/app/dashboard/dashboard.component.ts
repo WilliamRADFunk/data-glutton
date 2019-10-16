@@ -143,52 +143,38 @@ export class DashboardComponent implements OnDestroy, OnInit {
     }
   }
 
-  private scrapeAirportHeloSource(source: SubResourceReference): void {
+  private scrapePortSource(source: SubResourceReference): void {
     this.reassignStatusWithSubResources(source);
     if (source.status !== -1 && source.status !== 0) {
       return;
     }
     source.status = 1;
-    if (source.name !== 'Airports ~ Heliports ~ Airlines ~ Routes') {
-      if (source.status === -1 || source.status === 0) {
-        this.fetchService.fetchSubResource(source.name).toPromise()
-          .then(done => {
-            source.status = 2;
-            this.reassignStatusWithSubResources(source);
+    const start = async () => {
+      await this.asyncForEach(source.subRefs, async (sub) => {
+        await this.fetchService.fetchDashboard().toPromise()
+          .then(data => {
+            this.dashboard = data.dashboard;
           })
           .catch(err => {
-            source.status = -1;
-            this.reassignStatusWithSubResources(source);
+            console.error('fetchDashboard error: ', err.message);
           });
-      }
-    } else {
-      const start = async () => {
-        await this.asyncForEach(source.subRefs, async (sub) => {
-          await this.fetchService.fetchDashboard().toPromise()
-            .then(data => {
-              this.dashboard = data.dashboard;
+        if (sub.status === -1 || sub.status === 0) {
+          sub.status = 1;
+          this.reassignStatusWithSubResources(source);
+          await this.fetchService.fetchSubResource(source.name, sub.name).toPromise()
+            .then(done => {
+              sub.status = 2;
+              this.reassignStatusWithSubResources(source);
             })
             .catch(err => {
-              console.error('fetchDashboard error: ', err.message);
+              sub.status = -1;
+              this.reassignStatusWithSubResources(source);
             });
-          if (sub.status === -1 || sub.status === 0) {
-            sub.status = 1;
-            this.reassignStatusWithSubResources(source);
-            await this.fetchService.fetchSubResource(source.name, sub.name).toPromise()
-              .then(done => {
-                sub.status = 2;
-                this.reassignStatusWithSubResources(source);
-              })
-              .catch(err => {
-                sub.status = -1;
-                this.reassignStatusWithSubResources(source);
-              });
-          }
-        });
-      };
-      // Creates an asyncronous version of the forEach loop.
-      start();
-    }
+        }
+      });
+    };
+    // Creates an asyncronous version of the forEach loop.
+    start();
   }
 
   private scrapeCountry(country: CountryReference): void {
@@ -412,7 +398,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
       }
       case 'Ports & Related': {
         this.subResources.filter(c => c.status === 0 || c.status === -1).forEach(source => {
-          this.scrapeAirportHeloSource(source);
+          this.scrapePortSource(source);
         });
         break;
       }
@@ -421,9 +407,9 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.isScraping = false;
   }
 
-  public scrapeAirportHeloSourceByName(source: string): void {
+  public scrapePortSourceByName(source: string): void {
     const subResource = this.subResources.find(s => s.name === source);
-    this.scrapeAirportHeloSource(subResource);
+    this.scrapePortSource(subResource);
   }
 
   public scrapeCountryByName(countryName: string): void {

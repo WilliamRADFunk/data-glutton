@@ -77,11 +77,21 @@ export function getAirportsHelosData(source: string, subSource?: string): Promis
 	} else if (source === 'Seaports') {
             subResourceSource.status = 1;
             switch(subSource) {
+                  case 'GeoJson Seaports': {
+                        return new Promise((resolve, reject) => {
+                              dataScrapers.getSeaportsFromGeoJson();
+                              store.debugLogger(`Data scrape for ${subSource} is complete`);
+                              subResourceSubSource.status = 2;
+                              subResourceSource.status = 2;
+                              resolve();
+		            });
+                  }
                   default: {
                         return new Promise((resolve, reject) => {
                               dataScrapers.getSeaportsFromGeoJson();
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               subResourceSubSource.status = 2;
+                              subResourceSource.status = 2;
                               resolve();
 		            });
                   }

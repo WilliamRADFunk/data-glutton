@@ -4,7 +4,7 @@ import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { AirportProperties } from '../../models/airport-properties';
 import { EntityContainer } from '../../models/entity-container';
-import { GeoFeature } from '../../models/geofeature';
+import { AirportGeoFeature } from '../../models/geofeature';
 import { airportDataLocal, isoCodeToDataCode } from '../../utils/country-code-lookup-tables';
 import { countryToId } from '../../utils/country-to-id';
 import { entityMaker } from '../../utils/entity-maker';
@@ -13,7 +13,7 @@ import { entityRefMaker } from '../../utils/entity-ref-maker';
 export function getAirportsFromGeoJson(): void {
 	const totalItems = Object.keys(airportDataLocal.features).length;
 	let lastPercentageEmitted = 0;
-	Object.values(airportDataLocal.features).forEach((ap: GeoFeature, index: number) => {
+	Object.values(airportDataLocal.features).forEach((ap: AirportGeoFeature, index: number) => {
 		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
 			store.progressLogger('AirportsFromGeoJson', index / totalItems);
 			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
