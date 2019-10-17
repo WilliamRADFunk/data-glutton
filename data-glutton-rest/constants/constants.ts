@@ -295,11 +295,13 @@ const ONTOLOGIES = {
 	'foaf-foaf': null,
 	'funk-aircraft': null,
 	'funk-airline': null,
+	'funk-airport': null,
 	'funk-blade-ref': null,
 	'funk-country': null,
 	'funk-general': null,
 	'funk-image': null,
 	'funk-municipality': null,
+	'funk-seaport': null,
 	'funk-world-leaders': null,
 	'w3-owl': null,
 	'w3-wgs84_pos': null
