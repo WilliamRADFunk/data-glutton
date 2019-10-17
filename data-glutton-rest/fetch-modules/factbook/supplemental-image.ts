@@ -1,15 +1,17 @@
 import * as htmlToText from 'html-to-text';
+import * as download from 'image-downloader';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { EntityContainer } from '../../models/entity-container';
+import { ImageScrapableObject } from "../../models/image-scrapable-object";
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
 export function getSupplementalImages(cheerioElem: CheerioSelector, country: string, countryId: string) {
 	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
-	cheerioElem('div.item.photo-all').each((index: number, element: CheerioElement) => {
+	cheerioElem('div.item.photo-all').each(async (index: number, element: CheerioElement) => {
 		const suppImages = objectProperties.filter((rel: EntityContainer) => rel[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]);
 		const a = cheerioElem(element).find('img').attr('src');
 		let b = cheerioElem(element).find('img').attr('alt');
@@ -56,11 +58,20 @@ export function getSupplementalImages(cheerioElem: CheerioSelector, country: str
 				timeout: consts.BASE.DATA_REQUEST_TIMEOUT,
 				url: suppImgUrl
 			};
+			console.log('suppImgUrl', suppImgUrl);
 
 			store.IMAGES_TO_SCRAPE.push({
 				fileName,
 				options
 			});
+
+			await download.image(options)
+				.then(({ filename, image }) => {
+					store.debugLogger(`File saved to ${filename}`);
+				})
+				.catch(err => {
+					store.errorLogger(`~~~~ Failed to download: ${fileName}, ${err}`);
+				});
 		}
 	});
 }

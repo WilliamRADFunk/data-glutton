@@ -1,15 +1,17 @@
+import * as download from 'image-downloader';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { EntityContainer } from '../../models/entity-container';
+import { ImageScrapableObject } from "../../models/image-scrapable-object";
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
 export function getBorderMapImg(cheerioElem: CheerioSelector, country: string, countryId: string): void {
 	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
-	cheerioElem('div.locatorBox').each((index: number, element: CheerioElement) => {
+	cheerioElem('div.locatorBox').each(async (index: number, element: CheerioElement) => {
 		let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_BORDER_MAP);
 		const a = cheerioElem(element).find('img').attr('src');
 		let borderMapUrl;

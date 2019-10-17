@@ -27,7 +27,7 @@
     "formatter-json": "^0.1.1",
     "funktologies": "^0.1.5",
     "html-to-text": "^4.0.0",
-    "image-downloader": "^3.4.2",
+    "image-downloader": "^3.5.0",
     "jsonld": "^1.8.0",
     "jszip": "^3.2.2",
     "log4js": "^4.1.0",
