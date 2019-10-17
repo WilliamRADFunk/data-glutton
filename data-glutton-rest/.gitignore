@@ -3,6 +3,7 @@
 # compiled output
 /dist
 /tmp
+/temp
 /out-tsc
 /data-glutton.zip
 # Only exists if Bazel was run
