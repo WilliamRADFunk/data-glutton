@@ -54,7 +54,7 @@ export function getSupplementalImages(cheerioElem: CheerioSelector, country: str
 			datatypeProp[consts.ONTOLOGY.DT_CONTENTS] = fileName;
 
 			const options = {
-				dest: `dist/images/${fileName}`,
+				dest: `temp/images/${fileName}`,
 				timeout: consts.BASE.DATA_REQUEST_TIMEOUT,
 				url: suppImgUrl
 			};
