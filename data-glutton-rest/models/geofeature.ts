@@ -1,5 +1,5 @@
-import { SeaportProperties } from './seaport-properties';
 import { AirportProperties } from './airport-properties';
+import { SeaportProperties } from './seaport-properties';
 
 export interface AirportGeoFeature {
     type: string;

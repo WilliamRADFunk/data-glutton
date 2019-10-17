@@ -36,8 +36,8 @@ app.get('/sub-resource/:source/:subSource', async (req, res) => {
         return res.status(200).send({ success: true });
     }).catch(err => {
         store.errorLogger(`Unable to scrape ${source}: ${err}`);
-        sourceObj[0] && (sourceObj[0].status = -1);
         if (subSourceObj.length) {
+            sourceObj[0].status = -1
             subSourceObj[0].status = -1;
         }
         return res.status(500).send({ success: false });

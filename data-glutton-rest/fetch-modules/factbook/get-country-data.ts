@@ -3,10 +3,10 @@ import rp from 'request-promise-native';
 
 import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
-import { dataScrapers } from './data-getters';
 import { CountryReference } from '../../models/country-reference';
 import { countryToId } from '../../utils/country-to-id';
 import { getCountryURL } from '../../utils/get-country-url';
+import { dataScrapers } from './data-getters';
 
 const numberOfScrapers: number = Object.keys(dataScrapers).length;
 

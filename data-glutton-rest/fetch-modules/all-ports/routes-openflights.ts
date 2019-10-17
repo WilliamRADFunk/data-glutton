@@ -1,6 +1,3 @@
-import * as fs from 'graceful-fs';
-import * as path from 'path';
-import * as readline from 'readline';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
@@ -25,14 +22,14 @@ export async function getRoutesOpenFlights(): Promise<void> {
             }
             const lineItems = ((line && line.split(',')) || []).map(item => item && item.replace(/\"/g, ''));
             if (lineItems.length === 9) {
-                const airlineIataORIcao = lineItems[0];
+                // const airlineIataORIcao = lineItems[0];
                 const openFlightsId = lineItems[1];
                 const sourceAirportIataOrIcao = lineItems[2];
                 const sourceAirportOpenFlightsId = lineItems[3];
                 const destinationAirportIataOrIcao = lineItems[4];
                 const destinationAirportOpenFlightsId = lineItems[5];
-                const codeshare = lineItems[6];
-                const numStops = lineItems[7];
+                // const codeshare = lineItems[6];
+                // const numStops = lineItems[7];
                 const planeTypes = lineItems[8].split(' ').map(x => x && x.trim()).filter(y => !!y);
 
                 const airlineRef = store.airlines

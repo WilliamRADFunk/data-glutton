@@ -30,15 +30,15 @@ export function parsedSingleLineCaveat(
 				const hasPropAlready = prevHasList.some((p: EntityContainer) => p[consts.ONTOLOGY[hasProp]]['@id'].includes(guid));
 				if (dataPropItem && !hasPropAlready) {
 					let objectProp: EntityContainer = {};
-					if ((<any>store)[storeKey].find({ '@id': { $eq: guid } })[0]) {
-						objectProp[consts.ONTOLOGY[hasProp]] = (<any>store)[storeKey].find({ '@id': { $eq: guid } })[0];
+					if (store[storeKey].find({ '@id': { $eq: guid } })[0]) {
+						objectProp[consts.ONTOLOGY[hasProp]] = store[storeKey].find({ '@id': { $eq: guid } })[0];
 					} else {
 						objectProp = entityMaker(
 							consts.ONTOLOGY[hasProp],
 							consts.ONTOLOGY[baseOntProp],
 							guid,
 							`${label} (${dataPropItem})`);
-						(<any>store)[storeKey].insert(objectProp[consts.ONTOLOGY[hasProp]]);
+						store[storeKey].insert(objectProp[consts.ONTOLOGY[hasProp]]);
 					}
 					objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropName]] = dataPropItem;
 					store.countries.find({ '@id': { $eq: origParams.countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY[hasProp], objectProp));

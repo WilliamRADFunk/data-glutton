@@ -7,9 +7,6 @@ import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { EntityContainer } from '../../models/entity-container';
 import { entityMaker } from '../../utils/entity-maker';
-import { entityRefMaker } from '../../utils/entity-ref-maker';
-
-let counter = 0;
 
 // Populate remaining airports from datahub list
 export async function getPlanesOpenFlights(): Promise<void> {

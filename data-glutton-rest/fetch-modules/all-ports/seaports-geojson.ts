@@ -5,8 +5,7 @@ import { store } from '../../constants/globalStore';
 import { EntityContainer } from '../../models/entity-container';
 import { SeaportGeoFeature } from '../../models/geofeature';
 import { SeaportProperties } from '../../models/seaport-properties';
-import { isoCodeToDataCode, seaportDataLocal } from '../../utils/country-code-lookup-tables';
-import { countryToId } from '../../utils/country-to-id';
+import { seaportDataLocal } from '../../utils/country-code-lookup-tables';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 

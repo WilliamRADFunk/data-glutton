@@ -34,7 +34,7 @@ export function parsedThreeValStrings(
 					consts.ONTOLOGY[baseOntProp],
 					guid,
 					`${label} for ${country}`);
-				(<any>store)[storeKey].insert(objectProp[consts.ONTOLOGY[hasProp]]);
+				store[storeKey].insert(objectProp[consts.ONTOLOGY[hasProp]]);
 				objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropNames[0]]] = val1;
 				objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropNames[1]]] = val2;
 				objectProp[consts.ONTOLOGY[hasProp]].datatypeProperties[consts.ONTOLOGY[dataPropNames[2]]] = val3 || 'N/A';
