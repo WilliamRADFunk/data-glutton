@@ -27,7 +27,7 @@ const LIST_SIZE = 5;
 })
 export class DashboardComponent implements OnDestroy, OnInit {
   private _subs: Subscription[] = [];
-  subResources: SubResourceReference[] = [];
+  activeOntFormat: string = 'both';
   countries: CountryReference[] = [];
   dashboard: { [key: string]: { [key: string]: number } } = {
     'Factbook': {},
@@ -45,6 +45,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
    * Flag to track if scaping is underway.
    */
   isScraping: boolean = true;
+  portsAndRelated: SubResourceReference[] = [];
   scrapeKeys: { label: string; hasSubResources: boolean; }[] = [
     {
       label: 'CIA World Factbook',
@@ -56,12 +57,11 @@ export class DashboardComponent implements OnDestroy, OnInit {
     },
     {
       label: 'Ports & Related',
-      hasSubResources: true
+      hasSubResources: false
     }
   ];
   selected: string = 'CIA World Factbook';
   selectedFileCount: number = 0;
-  activeOntFormat: string = 'both';
 
   constructor(private readonly fetchService: FetchCoordinator) { }
 
@@ -76,15 +76,15 @@ export class DashboardComponent implements OnDestroy, OnInit {
       .subscribe(countries => {
         this.countries = countries.slice();
         this.isScraping = false;
-    });
+      });
     this.fetchService.fetchSubResources()
       .pipe(take(1))
-      .subscribe(subResources => {
-        this.subResources = subResources.slice();
-        this.subResources.forEach(source => {
-        this.reassignStatusWithSubResources(source);
+      .subscribe(portsAndRelated => {
+        this.portsAndRelated = portsAndRelated.slice();
+        this.portsAndRelated.forEach(source => {
+          this.reassignStatusWithSubResources(source);
+        });
       });
-    });
     this._subs.push(
       this.fetchService.fetchDashboardStream()
         .pipe(catchError(err => {
@@ -122,8 +122,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   private getMainSource(sourceName: string): CountryReference[] | SubResourceReference[] {
     switch (sourceName) {
-      case 'Other': {
-        return [];
+      case 'Ports & Related': {
+        return this.portsAndRelated;
       }
       default: {
         return this.countries;
@@ -261,9 +261,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public exportSelectChange(majorKey: string, minorKey: string, e: Event): void {
     e.stopPropagation();
-    console.log('exportSelectChange', majorKey, minorKey, this.exportOptions[majorKey][minorKey]);
     this.exportOptions[majorKey][minorKey] = !this.exportOptions[majorKey][minorKey];
-    console.log('exportSelectChange', majorKey, minorKey, this.exportOptions[majorKey][minorKey]);
     this.countSelectedFiles();
   }
 
@@ -272,7 +270,10 @@ export class DashboardComponent implements OnDestroy, OnInit {
     await this.fetchService.fetchSubResources()
       .toPromise()
         .then(subResource => {
-          this.subResources = subResource.slice();
+          this.portsAndRelated = subResource.slice();
+          this.portsAndRelated.forEach(source => {
+            this.reassignStatusWithSubResources(source);
+          });
         });
     await this.fetchService.fetchCountries()
       .toPromise()
@@ -356,8 +357,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public hasFailedStatus(dataSource: string, hasSubResources?: boolean): boolean {
     if (hasSubResources) {
-      this.subResources.forEach(sub => this.reassignStatusWithSubResources(sub));
-      return this.subResources.some(a => a.status === -1 || a.subRefs.some(sub => sub.status === -1));
+      const sourceRef = this.portsAndRelated.find(source => source.name === dataSource);
+      return sourceRef.status === -1 || sourceRef.subRefs.some(sub => sub.status === -1);
     } else {
       return this.getMainSource(dataSource).some(c => (c.status[dataSource] || c.status) === -1);
     }
@@ -365,8 +366,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public isComplete(dataSource: string, hasSubResources?: boolean): boolean {
     if (hasSubResources) {
-      this.subResources.forEach(sub => this.reassignStatusWithSubResources(sub));
-      return this.subResources.every(a => a.status === 2 && a.subRefs.every(sub => sub.status === 2));
+      const sourceRef = this.portsAndRelated.find(source => source.name === dataSource);
+      return sourceRef.status === 2 && sourceRef.subRefs.every(sub => sub.status === 2);
     } else {
       return this.getMainSource(dataSource).every(c => (c.status[dataSource] || c.status) === 2);
     }
@@ -374,8 +375,8 @@ export class DashboardComponent implements OnDestroy, OnInit {
 
   public isScrapingBusy(dataSource: string, hasSubResources?: boolean): boolean {
     if (hasSubResources) {
-      this.subResources.forEach(sub => this.reassignStatusWithSubResources(sub));
-      return this.isScraping || this.subResources.some(a => a.status === 1);
+      const sourceRef = this.portsAndRelated.find(source => source.name === dataSource);
+      return this.isScraping || sourceRef.subRefs.some(a => a.status === 1);
     } else {
       return this.isScraping || this.getMainSource(dataSource).some(c => (c.status[dataSource] || c.status) === 1);
     }
@@ -397,7 +398,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
         break;
       }
       case 'Ports & Related': {
-        this.subResources.filter(c => c.status === 0 || c.status === -1).forEach(source => {
+        this.portsAndRelated.filter(c => c.status === 0 || c.status === -1).forEach(source => {
           this.scrapePortSource(source);
         });
         break;
@@ -408,7 +409,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
   }
 
   public scrapePortSourceByName(source: string): void {
-    const subResource = this.subResources.find(s => s.name === source);
+    const subResource = this.portsAndRelated.find(s => s.name === source);
     this.scrapePortSource(subResource);
   }
 
@@ -425,7 +426,9 @@ export class DashboardComponent implements OnDestroy, OnInit {
   public switchSelected(dataSource: string): void {
     this.selected = dataSource;
     if (dataSource === 'Ports & Related') {
-      this.reassignStatusWithSubResources(this.subResources[0]);
+      this.portsAndRelated.forEach(s => {
+        this.reassignStatusWithSubResources(s);
+      });
     }
   }
 

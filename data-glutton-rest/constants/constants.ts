@@ -266,11 +266,13 @@ const ONTOLOGY_FILES = {
 	'foaf-foaf': fs.readFileSync(path.join('constants', 'ontology', 'foaf-foaf.schema.jsonld'), 'utf8'),
 	'funk-aircraft': fs.readFileSync(path.join('constants', 'ontology', 'funk-aircraft.schema.jsonld'), 'utf8'),
 	'funk-airline': fs.readFileSync(path.join('constants', 'ontology', 'funk-airline.schema.jsonld'), 'utf8'),
+	'funk-airport': fs.readFileSync(path.join('constants', 'ontology', 'funk-airport.schema.jsonld'), 'utf8'),
 	'funk-blade-ref': fs.readFileSync(path.join('constants', 'ontology', 'funk-blade-ref.schema.jsonld'), 'utf8'),
 	'funk-country': fs.readFileSync(path.join('constants', 'ontology', 'funk-country.schema.jsonld'), 'utf8'),
 	'funk-general': fs.readFileSync(path.join('constants', 'ontology', 'funk-general.schema.jsonld'), 'utf8'),
 	'funk-image': fs.readFileSync(path.join('constants', 'ontology', 'funk-image.schema.jsonld'), 'utf8'),
 	'funk-municipality': fs.readFileSync(path.join('constants', 'ontology', 'funk-municipality.schema.jsonld'), 'utf8'),
+	'funk-seaport': fs.readFileSync(path.join('constants', 'ontology', 'funk-seaport.schema.jsonld'), 'utf8'),
 	'funk-world-leaders': fs.readFileSync(path.join('constants', 'ontology', 'funk-world-leaders.schema.jsonld'), 'utf8'),
 	'w3-owl': fs.readFileSync(path.join('constants', 'ontology', 'w3-owl.schema.jsonld'), 'utf8'),
 	'w3-wgs84_pos': fs.readFileSync(path.join('constants', 'ontology', 'w3-wgs84_pos.schema.jsonld'), 'utf8')

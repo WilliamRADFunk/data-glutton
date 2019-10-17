@@ -153,25 +153,25 @@
                     </div>
                   </div>
                 </div>
-                <ng-container *ngFor="let subResource of subResources">
+                <ng-container *ngFor="let subResource of portsAndRelated">
                   <div class="row">
-                    <div *ngIf="!isComplete(subResource, true)" class="col-12">
+                    <div *ngIf="!isComplete(subResource.name, true)" class="col-12">
                       <div
                         class="row no-gutters rounded bg-info display-item mb-1"
-                        [ngClass]="getAlertStatus(subResource, true)"
+                        [ngClass]="getAlertStatus(subResource.name, true)"
                         ngbTooltip="This particular scraper curates thousands of entities and as such takes longer than usual to finish."
                         container="body">
                         <div class="col-10 my-auto">
                           <div class="display-item-label text-dark pl-2">{{ subResource.name }}</div>
                         </div>
                         <div class="col-2 no-outline pr-1 pt-1">
-                          <button *ngIf="getButtonStatus(subResource, true).info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapePortSourceByName(subResource.name)">
+                          <button *ngIf="getButtonStatus(subResource.name, true).info"  class="btn btn-sm btn-outline-primary rounded pull-right" (click)="scrapePortSourceByName(subResource.name)">
                             <span class="fa fa-play-circle-o"></span>
                           </button>
-                          <button *ngIf="isScrapingBusy(subResource, true)"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
+                          <button *ngIf="isScrapingBusy(subResource.name, true)"  class="btn btn-sm btn-outline-dark rounded pull-right" disabled=true>
                             <span class="fa fa-spinner fa-spin"></span>
                           </button>
-                          <button *ngIf="getButtonStatus(subResource, true).danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapePortSourceByName(subResource.name)">
+                          <button *ngIf="getButtonStatus(subResource.name, true).danger"  class="btn btn-sm btn-outline-dark rounded pull-right" (click)="scrapePortSourceByName(subResource.name)">
                             <span class="fa fa-refresh"></span>
                           </button>
                         </div>
@@ -180,7 +180,7 @@
                   </div>
                   <!-- If no all have status 0, then show list -->
                   <ng-container *ngIf="!getAllUntouched(subResource)">
-                    <div class="row"  *ngFor="let subSource of getSubSource(subResources, subResource)">
+                    <div class="row"  *ngFor="let subSource of getSubSource(portsAndRelated, subResource)">
                       <div class="col-12">
                         <div
                           class="row no-gutters rounded bg-info display-item mb-1"
@@ -294,7 +294,7 @@
                           <ul class="list-unstyled px-0">
                             <li *ngFor="let item of getExportFragment(key, index) | keyvalue">
                               <div class="dashboard-item">
-                                <label class="w-100 my-0" (click)="exportSelectChange(key, item.key)">
+                                <label class="w-100 my-0" (click)="exportSelectChange(key, item.key, $event)">
                                   <div class="dashboard-item-label d-inline-block" ngbTooltip="{{item.key}}" container="body">{{ item.key }}:</div>
                                   <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input id="{{ key }}~{{ item.key }}" type="checkbox" [checked]="item.value" value="{{ item.value }}"/></div>
                                 </label>

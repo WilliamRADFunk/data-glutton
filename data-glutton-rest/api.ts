@@ -3,7 +3,7 @@ import express from 'express';
 
 import { consts } from './constants/constants';
 import { store } from './constants/globalStore';
-import { getAirportsHelosData } from './fetch-modules/all-ports/get-airport-helo-data';
+import { getPortsData } from './fetch-modules/all-ports/get-ports-data';
 import { getCountriesData } from './fetch-modules/factbook/get-countries-data';
 import { getCountryPromise } from './fetch-modules/factbook/get-country-data';
 import { getLeadersByCountriesData } from './fetch-modules/world-leaders/get-countries-data';
@@ -24,15 +24,19 @@ app.get('/', (req, res) => {
 app.get('/sub-resource/:source/:subSource', async (req, res) => {
     const source = req && req.params && req.params.source;
     const subSource = req && req.params && req.params.subSource;
-    const sourceObj = store.subResourceList.filter(a => a.name === source);
+    const sourceObj = store.subResourceList.filter(a => a.name === source) || [];
+    if (sourceObj.length) {
+        sourceObj[0].status = 1;
+    }
     const subSourceObj = sourceObj.length ? sourceObj[0].subRefs.filter(sub => sub.name === subSource) : [];
     if (subSourceObj.length) {
         subSourceObj[0].status = 1;
     }
-    getAirportsHelosData(source, subSource).then(done => {
+    getPortsData(source, subSource).then(done => {
         return res.status(200).send({ success: true });
     }).catch(err => {
         store.errorLogger(`Unable to scrape ${source}: ${err}`);
+        sourceObj[0] && (sourceObj[0].status = -1);
         if (subSourceObj.length) {
             subSourceObj[0].status = -1;
         }
