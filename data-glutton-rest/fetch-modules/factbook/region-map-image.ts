@@ -1,3 +1,5 @@
+import * as htmlToText from 'html-to-text';
+import * as download from 'image-downloader';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
@@ -9,7 +11,7 @@ import { getRelation } from '../../utils/get-relations';
 
 export function getRegionMapImg(cheerioElem: CheerioSelector, country: string, countryId: string) {
 	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
-	cheerioElem('div.mapBox').each((index: number, element: CheerioElement) => {
+	cheerioElem('div.mapBox').each(async (index: number, element: CheerioElement) => {
 		let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_REGION_MAP);
 		const rmId = consts.ONTOLOGY.INST_REGION_MAP + getUuid.default(country);
 		let objectProp: EntityContainer = {};
@@ -27,6 +29,8 @@ export function getRegionMapImg(cheerioElem: CheerioSelector, country: string, c
 			map = objectProp[consts.ONTOLOGY.HAS_REGION_MAP];
 		}
 		const a = cheerioElem(element).find('img').attr('src');
+		let b = cheerioElem(element).find('img').attr('alt');
+		b = b && htmlToText.fromString(b);
 		let regionMapImgUrl;
 		if (a && a.replace('../', '')) {
 			regionMapImgUrl = consts.BASE.URL_BASE_FACTBOOK + a.replace('../', '');
@@ -45,8 +49,35 @@ export function getRegionMapImg(cheerioElem: CheerioSelector, country: string, c
 					store.regionMaps.insert(map);
 				}
 				store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_REGION_MAP, objectProp));
+
+				datatypeProp[consts.ONTOLOGY.DT_CONTENT_DESCRIPTION] = b || null;
+				map.datatypeProperties = datatypeProp;
+
+				const pathSplit: string[] = regionMapImgUrl.split('/');
+				const fileName: string = pathSplit[pathSplit.length - 1].split('?')[0].toLowerCase();
+				datatypeProp[consts.ONTOLOGY.DT_MIME_TYPE] = fileName.split('.')[1];
+				datatypeProp[consts.ONTOLOGY.DT_COLLECTION_TIMESTAMP] = (new Date()).toISOString();
+				datatypeProp[consts.ONTOLOGY.DT_CONTENTS] = fileName;
+
+				const options = {
+					dest: `temp/images/${fileName}`,
+					timeout: consts.BASE.DATA_REQUEST_TIMEOUT,
+					url: regionMapImgUrl
+				};
+
+				await download.image(options)
+					.then(({ filename, image }) => {
+						store.debugLogger(`File saved to ${filename}`);
+					})
+					.catch(err => {
+						store.errorLogger(`~~~~ Failed to download: ${fileName}, ${err}`);
+
+						store.failedImages.push({
+							fileName,
+							options
+						});
+					});
 			}
 		}
-		// TODO: scrape physical image from url and store it.
 	});
 }

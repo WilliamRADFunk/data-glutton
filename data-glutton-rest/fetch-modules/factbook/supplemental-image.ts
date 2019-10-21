@@ -5,7 +5,6 @@ import * as getUuid from 'uuid-by-string';
 import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { EntityContainer } from '../../models/entity-container';
-import { ImageScrapableObject } from "../../models/image-scrapable-object";
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
@@ -58,12 +57,6 @@ export function getSupplementalImages(cheerioElem: CheerioSelector, country: str
 				timeout: consts.BASE.DATA_REQUEST_TIMEOUT,
 				url: suppImgUrl
 			};
-			console.log('suppImgUrl', suppImgUrl);
-
-			store.IMAGES_TO_SCRAPE.push({
-				fileName,
-				options
-			});
 
 			await download.image(options)
 				.then(({ filename, image }) => {
@@ -71,6 +64,11 @@ export function getSupplementalImages(cheerioElem: CheerioSelector, country: str
 				})
 				.catch(err => {
 					store.errorLogger(`~~~~ Failed to download: ${fileName}, ${err}`);
+
+					store.failedImages.push({
+						fileName,
+						options
+					});
 				});
 		}
 	});

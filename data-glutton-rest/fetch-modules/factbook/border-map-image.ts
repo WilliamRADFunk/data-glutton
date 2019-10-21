@@ -1,10 +1,10 @@
+import * as htmlToText from 'html-to-text';
 import * as download from 'image-downloader';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
 import { store } from '../../constants/globalStore';
 import { EntityContainer } from '../../models/entity-container';
-import { ImageScrapableObject } from "../../models/image-scrapable-object";
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
@@ -14,6 +14,8 @@ export function getBorderMapImg(cheerioElem: CheerioSelector, country: string, c
 	cheerioElem('div.locatorBox').each(async (index: number, element: CheerioElement) => {
 		let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_BORDER_MAP);
 		const a = cheerioElem(element).find('img').attr('src');
+		let b = cheerioElem(element).find('img').attr('alt');
+		b = b && htmlToText.fromString(b);
 		let borderMapUrl;
 		let bmId;
 		if (a && a.replace('../', '')) {
@@ -39,8 +41,33 @@ export function getBorderMapImg(cheerioElem: CheerioSelector, country: string, c
 		if (borderMapUrl) {
 			const datatypeProp: { [key: string]: string|number } = {};
 			datatypeProp[consts.ONTOLOGY.DT_LOCATOR_URI] = borderMapUrl;
+			datatypeProp[consts.ONTOLOGY.DT_CONTENT_DESCRIPTION] = b || null;
 			map.datatypeProperties = datatypeProp;
+
+			const pathSplit: string[] = borderMapUrl.split('/');
+			const fileName: string = pathSplit[pathSplit.length - 1].split('?')[0].toLowerCase();
+			datatypeProp[consts.ONTOLOGY.DT_MIME_TYPE] = fileName.split('.')[1];
+			datatypeProp[consts.ONTOLOGY.DT_COLLECTION_TIMESTAMP] = (new Date()).toISOString();
+			datatypeProp[consts.ONTOLOGY.DT_CONTENTS] = fileName;
+
+			const options = {
+				dest: `temp/images/${fileName}`,
+				timeout: consts.BASE.DATA_REQUEST_TIMEOUT,
+				url: borderMapUrl
+			};
+
+			await download.image(options)
+				.then(({ filename, image }) => {
+					store.debugLogger(`File saved to ${filename}`);
+				})
+				.catch(err => {
+					store.errorLogger(`~~~~ Failed to download: ${fileName}, ${err}`);
+
+					store.failedImages.push({
+						fileName,
+						options
+					});
+				});
 		}
-		// TODO: scrape physical image from url and store it.
 	});
 }
