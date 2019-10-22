@@ -8,9 +8,11 @@ import { EntityContainer } from '../../models/entity-container';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
-export function getSupplementalImages(cheerioElem: CheerioSelector, country: string, countryId: string) {
+export async function getSupplementalImages(cheerioElem: CheerioSelector, country: string, countryId: string): Promise<void> {
 	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
-	cheerioElem('div.item.photo-all').each(async (index: number, element: CheerioElement) => {
+	const photos = cheerioElem('div.item.photo-all').toArray();
+	for (let i = 0; i < photos.length; i++) {
+		const element: CheerioElement = photos[i];
 		const suppImages = objectProperties.filter((rel: EntityContainer) => rel[consts.ONTOLOGY.HAS_SUPPLEMENTAL_IMG]);
 		const a = cheerioElem(element).find('img').attr('src');
 		let b = cheerioElem(element).find('img').attr('alt');
@@ -58,18 +60,17 @@ export function getSupplementalImages(cheerioElem: CheerioSelector, country: str
 				url: suppImgUrl
 			};
 
-			await download.image(options)
-				.then(({ filename, image }) => {
+			async function downloadImg() {
+				try {
+					const { filename, image } = await download.image(options)
 					store.debugLogger(`File saved to ${filename}`);
-				})
-				.catch(err => {
+				} catch (err) {
 					store.errorLogger(`~~~~ Failed to download: ${fileName}, ${err}`);
+					throw Error(`~~~~ Failed to download image from : ${country}, ${err}`);
+				}
+			}
 
-					store.failedImages.push({
-						fileName,
-						options
-					});
-				});
+			await downloadImg();
 		}
-	});
+	};
 }

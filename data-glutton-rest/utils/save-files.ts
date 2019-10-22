@@ -32,6 +32,15 @@ export function saveFiles(files: string[], excludeOntology?: boolean): Promise<a
 		}).filter(x => !!x);
 
 		const zip = JSZip();
+		const imgsFolder = zip.folder('images');
+		fs.readdirSync(path.join('temp', 'images')).forEach(async (fileName) => {
+			try {
+				const fileData = fs.readFileSync(path.join('temp', 'images', fileName));
+				imgsFolder.file(fileName, fileData);
+			} catch (err) {
+				store.errorLogger(`Failed to read ${fileName} for downloading purposes.`);
+			}
+		});
 
 		if (!excludeOntology) {
 			const ontsFolder = zip.folder('ontologies');

@@ -42,9 +42,8 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 			} else {
 				mainObj[key] = objP[key];
 			}
-		})
+		});
 		// Add it to the graph that belongs to this entity type.
-		// jsonLD['@graph'].push(mainObj);
 		store.jsonLD.push(mainObj);
 	};
 

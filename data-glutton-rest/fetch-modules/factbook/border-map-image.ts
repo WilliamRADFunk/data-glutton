@@ -9,9 +9,11 @@ import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
-export function getBorderMapImg(cheerioElem: CheerioSelector, country: string, countryId: string): void {
+export async function getBorderMapImg(cheerioElem: CheerioSelector, country: string, countryId: string): Promise<void> {
 	const objectProperties = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties;
-	cheerioElem('div.locatorBox').each(async (index: number, element: CheerioElement) => {
+	const photos = cheerioElem('div.locatorBox').toArray();
+	for (let i = 0; i < photos.length; i++) {
+		const element: CheerioElement = photos[i];
 		let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_BORDER_MAP);
 		const a = cheerioElem(element).find('img').attr('src');
 		let b = cheerioElem(element).find('img').attr('alt');
@@ -56,18 +58,17 @@ export function getBorderMapImg(cheerioElem: CheerioSelector, country: string, c
 				url: borderMapUrl
 			};
 
-			await download.image(options)
-				.then(({ filename, image }) => {
+			async function downloadImg() {
+				try {
+					const { filename, image } = await download.image(options)
 					store.debugLogger(`File saved to ${filename}`);
-				})
-				.catch(err => {
+				} catch (err) {
 					store.errorLogger(`~~~~ Failed to download: ${fileName}, ${err}`);
+					throw Error(`~~~~ Failed to download image from : ${country}, ${err}`);
+				}
+			}
 
-					store.failedImages.push({
-						fileName,
-						options
-					});
-				});
+			await downloadImg();
 		}
-	});
+	};
 }

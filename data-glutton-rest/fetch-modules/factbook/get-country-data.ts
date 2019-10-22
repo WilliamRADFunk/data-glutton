@@ -19,14 +19,14 @@ export function getCountryData(country: CountryReference, url: string): Promise<
 	if (country && url) {
 		return new Promise((resolve, reject) => {
 			rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
-				.then((html: CheerioElement) => {
+				.then(async (html: CheerioElement) => {
 					const $ = cheerio.load(html);
 					const countryId = countryToId(country.dataCode);
 					dataScrapers.getArea($, country.name, countryId);
 					store.progressLogger(country.name, 1 / numberOfScrapers);
 					dataScrapers.getBackground($, country.name, countryId);
 					store.progressLogger(country.name, 2 / numberOfScrapers);
-					dataScrapers.getBorderMapImg($, country.name, countryId);
+					await dataScrapers.getBorderMapImg($, country.name, countryId);
 					store.progressLogger(country.name, 3 / numberOfScrapers);
 					dataScrapers.getBorders($, country.name, countryId);
 					store.progressLogger(country.name, 4 / numberOfScrapers);
@@ -56,9 +56,9 @@ export function getCountryData(country: CountryReference, url: string): Promise<
 					store.progressLogger(country.name, 16 / numberOfScrapers);
 					dataScrapers.getPopDist($, country.name, countryId);
 					store.progressLogger(country.name, 17 / numberOfScrapers);
-					dataScrapers.getRegionMapImg($, country.name, countryId);
+					await dataScrapers.getRegionMapImg($, country.name, countryId);
 					store.progressLogger(country.name, 18 / numberOfScrapers);
-					dataScrapers.getSupplementalImages($, country.name, countryId);
+					await dataScrapers.getSupplementalImages($, country.name, countryId);
 					store.progressLogger(country.name, 19 / numberOfScrapers);
 					dataScrapers.getTerrains($, country.name, countryId);
 					store.progressLogger(country.name, 20 / numberOfScrapers);
