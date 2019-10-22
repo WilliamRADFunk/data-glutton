@@ -4,7 +4,11 @@
   "description": "The backend services for scraping data and delivering it to the ui.",
   "main": "api.js",
   "scripts": {
-    "start": "ts-node api.ts",
+    "clean": "run-s clean:*",
+    "clean:entities": "rimraf \"temp\\entities\\**\\!(*.gitkeep)\"",
+    "clean:images": "rimraf \"temp\\images\\!(*.gitkeep)\"",
+    "initiate": "ts-node api.ts",
+    "start": "run-s clean initiate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "WilliamRADFunk",
