@@ -46,6 +46,10 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 		// Add it to the graph that belongs to this entity type.
 		store.jsonLD.push(mainObj);
 	};
+	// TODO: Add to file, one item at a time.
+	store.jsonLD.forEach(ent => {
+
+	});
 
 	folders[1].file(`${fileName}.schema.jsonld`, JSON.stringify(store.jsonLD));
 
