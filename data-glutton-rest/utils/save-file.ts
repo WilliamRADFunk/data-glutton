@@ -1,3 +1,6 @@
+import * as fs from 'graceful-fs';
+import * as path from 'path';
+
 import { Entity } from 'funktologies';
 
 import { consts } from '../constants/constants';
@@ -8,6 +11,12 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 	folders[0].file(`${fileName}.json`, JSON.stringify(store[storeName].chain().simplesort(consts.RDFS.label).data()));
 	// JSON-LD file construction.
 	store.jsonLD = [];
+
+	try {
+		fs.writeFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`), '[\n');
+	} catch(err) {
+		store.errorLogger(`Failed to write jsonld file ${fileName}: ${err}`);
+	}
 
 	const asAList: Entity[] = store[storeName].chain().simplesort(consts.RDFS.label).data();
 	const length = asAList.length;
@@ -48,8 +57,10 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 	};
 	// TODO: Add to file, one item at a time.
 	store.jsonLD.forEach(ent => {
-
+		fs.writeFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`), `${JSON.stringify(ent)},\n`);
 	});
+	
+	fs.writeFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`), ']');
 
 	folders[1].file(`${fileName}.schema.jsonld`, JSON.stringify(store.jsonLD));
 
