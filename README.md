@@ -13,6 +13,12 @@ Contains front and back ends.
 
 3. Run `npm run start` and wait until you see a line containing the test: `Data Glutton Backend listening on port 3000!`
 
+`Note:`
+
+_As long as the backend process isn't exited, exiting or refreshing of the browser window won't lose any of the previously scraped entities._
+
+_If the download of files process in interrupted on the frontend, it may not download the zip bundle to your download folder, but the backend process will still finish the process and the zip bundle can still be found within the assets folder of the frontend file structure when the process has naturally concluded._
+
 ### Frontend
 
 1. Open a separate console window, powershell, or terminal. Navigate to data-glutton/data-glutton-ui
