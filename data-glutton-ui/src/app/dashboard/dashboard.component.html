@@ -218,14 +218,16 @@
                   class="btn btn-sm btn-danger d-inline-block text-light pull-right mt-1 ml-2"
                   (click)="exportNone()"
                   ngbTooltip="Unselect all"
-                  container="body">
+                  container="body"
+                  [disabled]="!downloadable">
                   <span class="fa fa-square-o"></span>
                 </button>
                 <button
                   class="btn btn-sm btn-info d-inline-block text-light pull-right mt-1 ml-2"
                   (click)="exportAll()"
                   ngbTooltip="Select all"
-                  container="body">
+                  container="body"
+                  [disabled]="!downloadable">
                   <span class="fa fa-check-square-o"></span>
                 </button>
                 <button

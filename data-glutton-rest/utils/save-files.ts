@@ -41,6 +41,7 @@ export function saveFiles(files: string[], excludeOntology?: boolean): Promise<a
 				store.errorLogger(`Failed to read ${fileName} for downloading purposes.`);
 			}
 		});
+		store.debugLogger(`Finished writing image files`);
 
 		if (!excludeOntology) {
 			const ontsFolder = zip.folder('ontologies');
@@ -66,6 +67,7 @@ export function saveFiles(files: string[], excludeOntology?: boolean): Promise<a
 					store.errorLogger(`Failed to read ${fileName} for downloading purposes.`);
 				}
 			});
+			store.debugLogger(`Finished writing ontology files`);
 		}
 
 		if (storeNames.length) {
@@ -77,6 +79,7 @@ export function saveFiles(files: string[], excludeOntology?: boolean): Promise<a
 			storeNames.forEach((name: string, index: number) => {
 				saveFile(name, fileNames[index], consts.ONTOLOGY.ONT_COUNTRY, [entsJsonFolder, entsJsonLdFolder, entsNTriplesFolder]);
 			});
+			store.debugLogger(`Finished writing entities files`);
 		}
 
 		zip.generateAsync({ type: 'nodebuffer' })

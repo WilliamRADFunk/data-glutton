@@ -9,6 +9,7 @@ import { store } from '../constants/globalStore';
 export function saveFile(storeName: string, fileName: string, context: string, folders: any[]): void {
 	// Create normal JSON file for this entity type.
 	folders[0].file(`${fileName}.json`, JSON.stringify(store[storeName].chain().simplesort(consts.RDFS.label).data()));
+	store.debugLogger(`Finished writing ${fileName}.json`);
 	// Create json-ld file for this entity type.
 	try {
 		fs.writeFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`), '[\n');
@@ -62,14 +63,27 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 	// Write jsonld entities to file one at a time and then add to zip bundle.
 	store.jsonLD.forEach(ent => {
 		fs.appendFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`), `${JSON.stringify(ent)},\n`);
+		store.debugLogger(`    Appended ${ent['@id']} to file: ${fileName}.schema.jsonld`);
 	});
 	fs.appendFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`), ']');
-	const jsonldFileData = fs.readFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`));
-	folders[1].file(`${fileName}.schema.jsonld`, jsonldFileData);
+	// Reading jsonld file in order to add it to the bundle.
+	try {
+		const jsonldFileData = fs.readFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`));
+		folders[1].file(`${fileName}.schema.jsonld`, jsonldFileData);
+		store.debugLogger(`Finished writing ${fileName}.schema.jsonld`);
+	} catch(err) {
+		store.errorLogger(`Failed to read jsonld file ${fileName}: ${err}`);
+	}
 	// Write ntriple entities to file one at a time and then add to zip bundle.
 	convertJsonldToNTriples(fileName);
-	const ntriplesFileData = fs.readFileSync(path.join('temp', 'entities', 'n-triples', `${fileName}.schema.nt`));
-	folders[2].file(`${fileName}.schema.nt`, ntriplesFileData);
+	// Reading n-triples file in order to add it to the bundle.
+	try {
+		const ntriplesFileData = fs.readFileSync(path.join('temp', 'entities', 'n-triples', `${fileName}.schema.nt`));
+		folders[2].file(`${fileName}.schema.nt`, ntriplesFileData);
+		store.debugLogger(`Finished writing ${fileName}.schema.nt`);
+	} catch(err) {
+		store.errorLogger(`Failed to read ntriples file ${fileName}: ${err}`);
+	}
 	// Clean up after entity type.
 	store.jsonLD.length = 0;
 };

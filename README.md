@@ -37,6 +37,12 @@ In the left section (`Entities Collected`), you will see the number of entities 
 
 In the right section (`Export Options`), you can select specific entities you want to download and whether you want to include the ontology files in that download.
 
+`Note:`
+
+_Some sections scrape *ALOT* of entities. This can be a very time consuming process. Might be a good time to get a cup of coffee._
+
+_The same can be said when downloading these entities to a zip bundle. There are millions of triples and this takes time. When in doubt, look at the console window that's running the backend process. You'll see a logged progression of whatever step it's on at that moment._
+
 ### Entities Page
 
 On this page, you have the option to either view the entities you've collected by category, or via a simple search mode. The toggles to switch between each mode is in the upper-righthand corner of the `Entities` section.
