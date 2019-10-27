@@ -239,6 +239,7 @@
                   <span class="fa fa-download"></span>
                   <span>&nbsp;&nbsp;{{ selectedFileCount }}</span>
                 </button>
+                <span *ngIf="!downloadable" class="fa fa-spinner fa-spin"></span>
               </div>
             </div>
             <div class="row no-gutters rounded mb-1">

@@ -7,6 +7,10 @@ import { consts } from '../constants/constants';
 import { store } from '../constants/globalStore';
 
 export function saveFile(storeName: string, fileName: string, context: string, folders: any[]): void {
+	if (!storeName || !store[storeName] || !fileName) {
+		store.errorLogger(`Couldn't translate ${storeName} into a store value for ${fileName}.json`);
+		return;
+	}
 	// Create normal JSON file for this entity type.
 	folders[0].file(`${fileName}.json`, JSON.stringify(store[storeName].chain().simplesort(consts.RDFS.label).data()));
 	store.debugLogger(`Finished writing ${fileName}.json`);
