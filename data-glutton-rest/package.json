@@ -5,7 +5,10 @@
   "main": "api.js",
   "scripts": {
     "clean": "run-s clean:*",
-    "clean:entities": "rimraf \"temp\\entities\\**\\!(*.gitkeep)\"",
+    "clean:entities": "run-s clean:entities:*",
+    "clean:entities:json": "rimraf \"temp\\entities\\json\\!(*.gitkeep)\"",
+    "clean:entities:jsonld": "rimraf \"temp\\entities\\jsonld\\!(*.gitkeep)\"",
+    "clean:entities:ntriples": "rimraf \"temp\\entities\\n-triples\\!(*.gitkeep)\"",
     "clean:images": "rimraf \"temp\\images\\!(*.gitkeep)\"",
     "initiate": "ts-node api.ts",
     "start": "run-s clean initiate",
