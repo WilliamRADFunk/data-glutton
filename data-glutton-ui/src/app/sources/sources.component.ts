@@ -61,6 +61,13 @@ export class SourcesComponent implements OnInit {
         link: 'http://geojson.xyz/'
       },
       {
+        description: `"A simple, open source website, CDN, and CLI utility for
+          the fast access of GeoJSON data for web mapping examples and experiments."`,
+        label: 'GeoJson-Seaports',
+        license: 'Public Domain',
+        link: 'http://geojson.xyz/'
+      },
+      {
         description: `"DataHub began as a project by Datopian and Open
           Knowledge International. For over a decade they’ve been creating tools
           and applications for data. Original source: OurAirports.com"`,

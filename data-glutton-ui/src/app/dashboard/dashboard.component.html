@@ -231,7 +231,7 @@
                   <span class="fa fa-check-square-o"></span>
                 </button>
                 <button
-                  class="btn btn-sm btn-primary d-inline-block text-light pull-right mt-1"
+                  class="btn btn-sm btn-primary d-inline-block text-light pull-right mt-1 ml-2"
                   (click)="download()"
                   ngbTooltip="Download selected files"
                   container="body"
@@ -239,7 +239,9 @@
                   <span class="fa fa-download"></span>
                   <span>&nbsp;&nbsp;{{ selectedFileCount }}</span>
                 </button>
-                <span *ngIf="!downloadable" class="fa fa-spinner fa-spin"></span>
+                <div class="d-inline-block text-light pull-right mt-1 pt-1">
+                  <span *ngIf="!downloadable" class="fa fa-spinner fa-spin"></span>
+                </div>
               </div>
             </div>
             <div class="row no-gutters rounded mb-1">
