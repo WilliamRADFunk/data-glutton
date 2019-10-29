@@ -5,6 +5,7 @@
   "main": "api.js",
   "scripts": {
     "clean": "run-s clean:*",
+    "clean:assets": "rimraf \"assets\\*-updated.*\"",
     "clean:entities": "run-s clean:entities:*",
     "clean:entities:json": "rimraf \"temp\\entities\\json\\!(*.gitkeep)\"",
     "clean:entities:jsonld": "rimraf \"temp\\entities\\jsonld\\!(*.gitkeep)\"",
