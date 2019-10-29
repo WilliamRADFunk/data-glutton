@@ -1,3 +1,6 @@
+import * as fs from 'graceful-fs';
+import * as path from 'path';
+import rp from 'request-promise-native';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
@@ -5,17 +8,78 @@ import { store } from '../../constants/globalStore';
 import { AirportDatahubSourceObject } from '../../models/airport-datahub-source-object';
 import { Entity } from '../../models/entity';
 import { EntityContainer } from '../../models/entity-container';
-import { airportDatahubList, isoCodeToDataCode } from '../../utils/country-code-lookup-tables';
+import { isoCodeToDataCode } from '../../utils/country-code-lookup-tables';
 import { countryToId } from '../../utils/country-to-id';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 import { getRelation } from '../../utils/get-relations';
 
-// Populate remaining airports from datahub list
-export function getAirportsFromDatahub(partNum: number): void {
-	const totalItems = airportDatahubList[partNum - 1].length;
+function makeElevation(airport: Entity, apToScrape: AirportDatahubSourceObject) {
+	const objectProperties = airport.objectProperties;
+	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_ELEVATION);
+	const eId = consts.ONTOLOGY.INST_ELEVATION + getUuid.default(apToScrape.ident);
+	if (!map) {
+		let objectProp: EntityContainer = {};
+		const elevate = store.elevations.find({ '@id': { $eq: eId } })[0];
+		if (elevate) {
+			objectProp[consts.ONTOLOGY.HAS_ELEVATION] = elevate;
+		} else {
+			objectProp = entityMaker(
+				consts.ONTOLOGY.HAS_ELEVATION,
+				consts.ONTOLOGY.ONT_ELEVATION,
+				eId,
+				`Elevation for ${airport.name || apToScrape.name || apToScrape.ident}`);
+				store.elevations.insert(objectProp[consts.ONTOLOGY.HAS_ELEVATION]);
+		}
+		map = objectProp[consts.ONTOLOGY.HAS_ELEVATION];
+		airport.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_ELEVATION, objectProp));
+	}
+	map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT] = Number(apToScrape.elevation_ft);
+	map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT_DESCRIPTION] = 'The highest point of the airport\'s useable runway system measured in feet above mean sea level';
+	map.datatypeProperties[consts.ONTOLOGY.DT_UNIT] = 'ft';
+}
+
+function makeMunicipality(airport: Entity, apToScrape: AirportDatahubSourceObject, country?: Entity) {
+	const objectProperties = airport.objectProperties;
+	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_MUNICIPALITY);
+	const mId = consts.ONTOLOGY.INST_MUNICIPALITY + getUuid.default(apToScrape.ident);
+	if (!map) {
+		let objectProp: EntityContainer = {};
+		const city = store.municipalities.find({ '@id': { $eq: mId } })[0];
+		if (city) {
+			objectProp[consts.ONTOLOGY.HAS_MUNICIPALITY] = city;
+		} else {
+			objectProp = entityMaker(
+				consts.ONTOLOGY.HAS_MUNICIPALITY,
+				consts.ONTOLOGY.ONT_MUNICIPALITY,
+				mId,
+				`Municipality of ${airport.municipality || apToScrape.municipality}`);
+			store.municipalities.insert(objectProp[consts.ONTOLOGY.HAS_MUNICIPALITY]);
+		}
+		map = objectProp[consts.ONTOLOGY.HAS_MUNICIPALITY];
+		map.objectProperties.push(
+			entityRefMaker(
+				consts.ONTOLOGY.HAS_AIRPORT,
+				store.airports,
+				airport['@id']
+		));
+		airport.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MUNICIPALITY, objectProp));
+		map.datatypeProperties[consts.ONTOLOGY.DT_NAME] = apToScrape.municipality;
+		if (country) {
+			country.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MUNICIPALITY, objectProp));
+			map.objectProperties.push(
+				entityRefMaker(
+					consts.ONTOLOGY.HAS_COUNTRY,
+					store.countries,
+					country['@id']
+			));
+		}
+	}
+}
+
+function parseData(airportDatahub: AirportDatahubSourceObject[], totalItems: number, partNum: number): void {
 	let lastPercentageEmitted = 0;
-    airportDatahubList[partNum].forEach((ap: AirportDatahubSourceObject, index: number) => {
+	airportDatahub.forEach((ap: AirportDatahubSourceObject, index: number) => {
 		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
 			store.progressLogger(`AirportsFromDatahub Source #${partNum}`, index / totalItems);
 			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
@@ -152,65 +216,53 @@ export function getAirportsFromDatahub(partNum: number): void {
 	});
 }
 
-function makeElevation(airport: Entity, apToScrape: AirportDatahubSourceObject) {
-	const objectProperties = airport.objectProperties;
-	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_ELEVATION);
-	const eId = consts.ONTOLOGY.INST_ELEVATION + getUuid.default(apToScrape.ident);
-	if (!map) {
-		let objectProp: EntityContainer = {};
-		const elevate = store.elevations.find({ '@id': { $eq: eId } })[0];
-		if (elevate) {
-			objectProp[consts.ONTOLOGY.HAS_ELEVATION] = elevate;
+// Populate remaining airports from datahub list
+export async function getAirportsFromDatahub(partNum: number): Promise<void> {
+	let totalItems;
+	return new Promise((resolve, reject) => {
+	// If first in the series, fetch the live-site file
+		if (partNum === 1) {
+			const url = 'https://pkgstore.datahub.io/core/airport-codes/airport-codes_json/data/52caf662d370203844d4f79099da6796/airport-codes_json.json';
+			rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
+				.then(results => {
+					try {
+						fs.writeFileSync(path.join('assets', 'airports-datahub-updated.dat'), results);
+						// Populate list with live site info rather than saved file.
+						const segmentedList = [];
+						const airportDatahub = JSON.parse(results);
+						const megaList = Object.values(airportDatahub);
+						const divisor = Math.floor(megaList.length / 10);
+						do {
+							if (divisor > megaList.length) {
+								segmentedList.push(megaList.splice(0));
+							} else {
+								segmentedList.push(megaList.splice(0, divisor));
+							}
+						} while (megaList.length);
+						store.airportDatahubList = segmentedList;
+						// Only grab part 1
+						totalItems = store.airportDatahubList[0].length;
+						parseData(store.airportDatahubList[0], totalItems, partNum);
+						resolve();
+					} catch(err) {
+						store.errorLogger(`Filed to fetch airports from ${url}. Falling back to local copy. ${err}`);
+						totalItems = Object.keys(store.airportDatahubList[partNum - 1]).length;
+						parseData(store.airportDatahubList[partNum - 1], totalItems, partNum);
+						resolve();
+					};
+				})
+				.catch(err => {
+					store.errorLogger(`Filed to fetch airports from ${url}. Falling back to local copy. ${err}`);
+					totalItems = Object.keys(store.airportDatahubList[partNum - 1]).length;
+					parseData(store.airportDatahubList[partNum - 1], totalItems, partNum);
+					resolve();
+				});
+		
 		} else {
-			objectProp = entityMaker(
-				consts.ONTOLOGY.HAS_ELEVATION,
-				consts.ONTOLOGY.ONT_ELEVATION,
-				eId,
-				`Elevation for ${airport.name || apToScrape.name || apToScrape.ident}`);
-				store.elevations.insert(objectProp[consts.ONTOLOGY.HAS_ELEVATION]);
+			totalItems = Object.keys(store.airportDatahubList[partNum - 1]).length;
+			parseData(store.airportDatahubList[partNum - 1], totalItems, partNum);
+			resolve();
 		}
-		map = objectProp[consts.ONTOLOGY.HAS_ELEVATION];
-		airport.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_ELEVATION, objectProp));
-	}
-	map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT] = Number(apToScrape.elevation_ft);
-	map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT_DESCRIPTION] = 'The highest point of the airport\'s useable runway system measured in feet above mean sea level';
-	map.datatypeProperties[consts.ONTOLOGY.DT_UNIT] = 'ft';
+	});	
 }
 
-function makeMunicipality(airport: Entity, apToScrape: AirportDatahubSourceObject, country?: Entity) {
-	const objectProperties = airport.objectProperties;
-	let map = getRelation(objectProperties, consts.ONTOLOGY.HAS_MUNICIPALITY);
-	const mId = consts.ONTOLOGY.INST_MUNICIPALITY + getUuid.default(apToScrape.ident);
-	if (!map) {
-		let objectProp: EntityContainer = {};
-		const city = store.municipalities.find({ '@id': { $eq: mId } })[0];
-		if (city) {
-			objectProp[consts.ONTOLOGY.HAS_MUNICIPALITY] = city;
-		} else {
-			objectProp = entityMaker(
-				consts.ONTOLOGY.HAS_MUNICIPALITY,
-				consts.ONTOLOGY.ONT_MUNICIPALITY,
-				mId,
-				`Municipality of ${airport.municipality || apToScrape.municipality}`);
-			store.municipalities.insert(objectProp[consts.ONTOLOGY.HAS_MUNICIPALITY]);
-		}
-		map = objectProp[consts.ONTOLOGY.HAS_MUNICIPALITY];
-		map.objectProperties.push(
-			entityRefMaker(
-				consts.ONTOLOGY.HAS_AIRPORT,
-				store.airports,
-				airport['@id']
-		));
-		airport.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MUNICIPALITY, objectProp));
-		map.datatypeProperties[consts.ONTOLOGY.DT_NAME] = apToScrape.municipality;
-		if (country) {
-			country.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_MUNICIPALITY, objectProp));
-			map.objectProperties.push(
-				entityRefMaker(
-					consts.ONTOLOGY.HAS_COUNTRY,
-					store.countries,
-					country['@id']
-			));
-		}
-	}
-}

@@ -65,9 +65,9 @@ export function getPortsData(source: string, subSource?: string): Promise<void> 
 		            });
                   }
                   default: {
-                        return new Promise((resolve, reject) => {
+                        return new Promise(async (resolve, reject) => {
                               const partNum = Number(subSource.split('~')[1].trim());
-                              dataScrapers.getAirportsFromDatahub(partNum);
+                              await dataScrapers.getAirportsFromDatahub(partNum);
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               subResourceSubSource.status = 2;
                               resolve();

@@ -1,5 +1,6 @@
 import * as loki from 'lokijs';
 
+import { AirportDatahubSourceObject } from '../models/airport-datahub-source-object';
 import { AirportNpmSourceObject } from '../models/airport-npm-source-object';
 import { CountryReference } from '../models/country-reference';
 import { Entity } from '../models/entity';
@@ -110,6 +111,7 @@ class GlobalStore {
 	public airportTable: { [key: string]: AirportNpmSourceObject } = {};
 	public airportMemoTable: { [key: string]: Entity } = {};
 	public routesData: string[] = [];
+	public airportDatahubList: AirportDatahubSourceObject[][] = [];
 
 	public failedAirlines: string[] = [];
 	public failedAirports: string[] = [];

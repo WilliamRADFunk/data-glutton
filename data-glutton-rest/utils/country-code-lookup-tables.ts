@@ -32,7 +32,7 @@ do {
 		segmentedList.push(megaList.splice(0, divisor));
 	}
 } while (megaList.length);
-export const airportDatahubList = segmentedList;
+store.airportDatahubList = segmentedList;
 
 const isoCodeToDataCodeTable: { [key: string]: string } = {
 	AD: 'an',
