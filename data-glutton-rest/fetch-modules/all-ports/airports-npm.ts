@@ -10,9 +10,9 @@ import { countryToId } from '../../utils/country-to-id';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
-function parseData(airportDataList: AirportNpmSourceObject[], totalItems: number): void {
+function parseData(airportData: AirportNpmSourceObject[], totalItems: number): void {
 	let lastPercentageEmitted = 0;
-	Object.values(airportDataList).forEach((ap: AirportNpmSourceObject, index: number) => {
+	Object.values(airportData).forEach((ap: AirportNpmSourceObject, index: number) => {
 		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
 			store.progressLogger('AirportsFromNpm', index / totalItems);
 			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
@@ -84,7 +84,7 @@ function parseData(airportDataList: AirportNpmSourceObject[], totalItems: number
 					countryId
 			));
 			store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_AIRPORT, airportObjectProp));
-		
+
 			// Get relative size of airport (small, medium, large)
 			if (ap.size) {
 				store.airports.find({ '@id': { $eq: airportId } })[0].datatypeProperties[consts.ONTOLOGY.DT_RELATIVE_SIZE] = ap.size;
@@ -103,25 +103,26 @@ function parseData(airportDataList: AirportNpmSourceObject[], totalItems: number
 
 // Populate remaining airports from npm list
 export async function getAirportsFromNpm(): Promise<void> {
+	let totalItems;
 	return new Promise((resolve, reject) => {
 		const url = 'https://raw.githubusercontent.com/jbrooksuk/JSON-Airports/master/airports.json';
 		rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
 			.then(results => {
 				try {
 					const airports = JSON.parse(results);
-					const totalItems = Object.keys(airports).length;
+					totalItems = Object.keys(airports).length;
 					parseData(airports, totalItems);
 					resolve();
 				} catch(err) {
 					store.errorLogger(`Filed to fetch airports from ${url}. Falling back to local copy. ${err}`);
-					const totalItems = Object.keys(airportDataList).length;
+					totalItems = Object.keys(airportDataList).length;
 					parseData(airportDataList, totalItems);
 					resolve();
 				};
 			})
 			.catch(err => {
 				store.errorLogger(`Filed to fetch airports from ${url}. Falling back to local copy. ${err}`);
-				const totalItems = Object.keys(airportDataList).length;
+				totalItems = Object.keys(airportDataList).length;
 				parseData(airportDataList, totalItems);
 				resolve();
 			});

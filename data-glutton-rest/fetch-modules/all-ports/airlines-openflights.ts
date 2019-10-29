@@ -94,18 +94,24 @@ export async function getAirlineOpenFlights(): Promise<void> {
 			.then(results => {
 				try {
 					fs.writeFileSync(path.join('assets', 'airline-openflights-updated.dat'), results);
-					parseData(path.join('assets', 'airline-openflights-updated.dat'));
-					resolve();
+					parseData(path.join('assets', 'airline-openflights-updated.dat'))
+						.then(done => {
+							resolve();
+						});
 				} catch(err) {
 					store.errorLogger(`Filed to fetch airlines from ${url}. Falling back to local copy. ${err}`);
-					parseData(path.join('assets', 'airline-openflights.dat'));
-					resolve();
+					parseData(path.join('assets', 'airline-openflights.dat'))
+						.then(done => {
+							resolve();
+						});
 				};
 			})
 			.catch(err => {
 				store.errorLogger(`Filed to fetch airlines from ${url}. Falling back to local copy. ${err}`);
-				parseData(path.join('assets', 'airline-openflights.dat'));
-				resolve();
+				parseData(path.join('assets', 'airline-openflights.dat'))
+					.then(done => {
+						resolve();
+					});
 			});
 	});
 }

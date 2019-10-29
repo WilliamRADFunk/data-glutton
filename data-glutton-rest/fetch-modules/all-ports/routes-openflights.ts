@@ -24,7 +24,7 @@ function parseData(dataString: string): Promise<void> {
         } catch(err) {
             store.errorLogger(`Failed to read routes.dat: ${err.message}`);
         }
-        
+
         if (lineReader) {
             lineReader.on('close', () => {
                 totalLines = store.routesData.length;
@@ -169,18 +169,24 @@ export async function getRoutesOpenFlights(): Promise<void> {
 			.then(results => {
 				try {
 					fs.writeFileSync(path.join('assets', 'routes-openflights-updated.dat'), results);
-					parseData(path.join('assets', 'routes-openflights-updated.dat'));
-					resolve();
+                    parseData(path.join('assets', 'routes-openflights-updated.dat'))
+                        .then(done => {
+                            resolve();
+                        });
 				} catch(err) {
 					store.errorLogger(`Filed to fetch routes from ${url}. Falling back to local copy. ${err}`);
-					parseData(path.join('assets', 'routes-openflights.dat'));
-					resolve();
+					parseData(path.join('assets', 'routes-openflights.dat'))
+                        .then(done => {
+                            resolve();
+                        });
 				};
 			})
 			.catch(err => {
 				store.errorLogger(`Filed to fetch routes from ${url}. Falling back to local copy. ${err}`);
-				parseData(path.join('assets', 'routes-openflights.dat'));
-				resolve();
+				parseData(path.join('assets', 'routes-openflights.dat'))
+                    .then(done => {
+                        resolve();
+                    });
 			});
     });
 }

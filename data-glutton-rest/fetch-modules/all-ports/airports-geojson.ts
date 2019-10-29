@@ -11,9 +11,9 @@ import { countryToId } from '../../utils/country-to-id';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
-function parseData(airportDataLocal: AirportGeoFeature[], totalItems: number): void {
+function parseData(airportData: AirportGeoFeature[], totalItems: number): void {
 	let lastPercentageEmitted = 0;
-	Object.values(airportDataLocal).forEach((ap: AirportGeoFeature, index: number) => {
+	Object.values(airportData).forEach((ap: AirportGeoFeature, index: number) => {
 		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
 			store.progressLogger('AirportsFromGeoJson', index / totalItems);
 			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
@@ -109,27 +109,28 @@ function parseData(airportDataLocal: AirportGeoFeature[], totalItems: number): v
 }
 
 export async function getAirportsFromGeoJson(): Promise<void> {
+	let totalItems;
 	return new Promise((resolve, reject) => {
 		const url = 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_airports.geojson';
 		rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
 			.then(results => {
 				try {
 					const airports = JSON.parse(results);
-					const totalItems = Object.keys(airports.features).length;
+					totalItems = Object.keys(airports.features).length;
 					parseData(airports.features, totalItems);
 					resolve();
 				} catch(err) {
 					store.errorLogger(`Filed to fetch airports from ${url}. Falling back to local copy. ${err}`);
-					const totalItems = Object.keys(airportDataLocal.features).length;
+					totalItems = Object.keys(airportDataLocal.features).length;
 					parseData(airportDataLocal.features as AirportGeoFeature[], totalItems);
 					resolve();
 				};
 			})
 			.catch(err => {
 				store.errorLogger(`Filed to fetch airports from ${url}. Falling back to local copy. ${err}`);
-				const totalItems = Object.keys(airportDataLocal.features).length;
+				totalItems = Object.keys(airportDataLocal.features).length;
 				parseData(airportDataLocal.features as AirportGeoFeature[], totalItems);
 				resolve();
 			});
-	});	
+	});
 };
