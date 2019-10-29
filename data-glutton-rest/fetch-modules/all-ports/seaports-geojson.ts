@@ -1,3 +1,4 @@
+import rp from 'request-promise-native';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
@@ -9,10 +10,9 @@ import { seaportDataLocal } from '../../utils/country-code-lookup-tables';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
-export function getSeaportsFromGeoJson(): void {
-	const totalItems = Object.keys(seaportDataLocal.features).length;
+function parseData(seaportDataLocal: SeaportGeoFeature[], totalItems: number): void {
 	let lastPercentageEmitted = 0;
-	Object.values(seaportDataLocal.features).forEach((sp: SeaportGeoFeature, index: number) => {
+	Object.values(seaportDataLocal).forEach((sp: SeaportGeoFeature, index: number) => {
 		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
 			store.progressLogger('SeaportsFromGeoJson', index / totalItems);
 			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
@@ -70,4 +70,31 @@ export function getSeaportsFromGeoJson(): void {
 			locAttr.datatypeProperties = datatypeProp;
 		}
 	});
+}
+
+export async function getSeaportsFromGeoJson(): Promise<void> {
+	const totalItems = Object.keys(seaportDataLocal.features).length;
+	return new Promise((resolve, reject) => {
+		const url = 'https://d2ad6b4ur7yvpq.cloudfront.net/naturalearth-3.3.0/ne_10m_ports.geojson';
+		rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
+			.then(results => {
+				try {
+					const seaports = JSON.parse(results);
+					const totalItems = Object.keys(seaports.features).length;
+					parseData(seaports.features, totalItems);
+					resolve();
+				} catch(err) {
+					store.errorLogger(`Filed to fetch seaports from ${url}. Falling back to local copy. ${err}`);
+					const totalItems = Object.keys(seaportDataLocal.features).length;
+					parseData(seaportDataLocal.features as SeaportGeoFeature[], totalItems);
+					resolve();
+				};
+			})
+			.catch(err => {
+				store.errorLogger(`Filed to fetch seaports from ${url}. Falling back to local copy. ${err}`);
+				const totalItems = Object.keys(seaportDataLocal.features).length;
+				parseData(seaportDataLocal.features as SeaportGeoFeature[], totalItems);
+				resolve();
+			});
+	});	
 };

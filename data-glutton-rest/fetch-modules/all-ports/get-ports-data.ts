@@ -8,16 +8,16 @@ export function getPortsData(source: string, subSource?: string): Promise<void> 
             subResourceSource.status = 1;
             switch(subSource) {
                   case 'GeoJson Airports': {
-                        return new Promise((resolve, reject) => {
-                              dataScrapers.getAirportsFromGeoJson();
+                        return new Promise(async (resolve, reject) => {
+                              await dataScrapers.getAirportsFromGeoJson();
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               subResourceSubSource.status = 2;
                               resolve();
 		            });
                   }
                   case 'Npm Airports': {
-                        return new Promise((resolve, reject) => {
-                              dataScrapers.getAirportsFromNpm();
+                        return new Promise(async (resolve, reject) => {
+                              await dataScrapers.getAirportsFromNpm();
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               subResourceSubSource.status = 2;
                               resolve();
@@ -78,8 +78,8 @@ export function getPortsData(source: string, subSource?: string): Promise<void> 
             subResourceSource.status = 1;
             switch(subSource) {
                   case 'GeoJson Seaports': {
-                        return new Promise((resolve, reject) => {
-                              dataScrapers.getSeaportsFromGeoJson();
+                        return new Promise(async (resolve, reject) => {
+                              await dataScrapers.getSeaportsFromGeoJson();
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               subResourceSubSource.status = 2;
                               subResourceSource.status = 2;
@@ -87,8 +87,8 @@ export function getPortsData(source: string, subSource?: string): Promise<void> 
 		            });
                   }
                   default: {
-                        return new Promise((resolve, reject) => {
-                              dataScrapers.getSeaportsFromGeoJson();
+                        return new Promise(async (resolve, reject) => {
+                              await dataScrapers.getSeaportsFromGeoJson();
                               store.debugLogger(`Data scrape for ${subSource} is complete`);
                               subResourceSubSource.status = 2;
                               subResourceSource.status = 2;

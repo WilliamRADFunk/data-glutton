@@ -1,3 +1,4 @@
+import rp from 'request-promise-native';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
@@ -9,11 +10,9 @@ import { countryToId } from '../../utils/country-to-id';
 import { entityMaker } from '../../utils/entity-maker';
 import { entityRefMaker } from '../../utils/entity-ref-maker';
 
-// Populate remaining airports from npm list
-export function getAirportsFromNpm(): void {
-	const totalItems = Object.keys(airportDataList).length;
+function parseData(airportDataList: AirportNpmSourceObject[], totalItems: number): void {
 	let lastPercentageEmitted = 0;
-    Object.values(airportDataList).forEach((ap: AirportNpmSourceObject, index: number) => {
+	Object.values(airportDataList).forEach((ap: AirportNpmSourceObject, index: number) => {
 		if (lastPercentageEmitted !== Math.floor((index / totalItems) * 100)) {
 			store.progressLogger('AirportsFromNpm', index / totalItems);
 			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
@@ -99,5 +98,32 @@ export function getAirportsFromNpm(): void {
 				store.airports.find({ '@id': { $eq: airportId } })[0].datatypeProperties[consts.ONTOLOGY.DT_STATUS] = ap.status ? 'Open' : 'Closed';
 			}
 		}
+	});
+}
+
+// Populate remaining airports from npm list
+export async function getAirportsFromNpm(): Promise<void> {
+	return new Promise((resolve, reject) => {
+		const url = 'https://raw.githubusercontent.com/jbrooksuk/JSON-Airports/master/airports.json';
+		rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
+			.then(results => {
+				try {
+					const airports = JSON.parse(results);
+					const totalItems = Object.keys(airports).length;
+					parseData(airports, totalItems);
+					resolve();
+				} catch(err) {
+					store.errorLogger(`Filed to fetch airports from ${url}. Falling back to local copy. ${err}`);
+					const totalItems = Object.keys(airportDataList).length;
+					parseData(airportDataList, totalItems);
+					resolve();
+				};
+			})
+			.catch(err => {
+				store.errorLogger(`Filed to fetch airports from ${url}. Falling back to local copy. ${err}`);
+				const totalItems = Object.keys(airportDataList).length;
+				parseData(airportDataList, totalItems);
+				resolve();
+			});
 	});
 }

@@ -120,17 +120,6 @@ export class DashboardComponent implements OnDestroy, OnInit {
     });
   }
 
-  private getMainSource(sourceName: string): CountryReference[] | SubResourceReference[] {
-    switch (sourceName) {
-      case 'Ports & Related': {
-        return this.portsAndRelated;
-      }
-      default: {
-        return this.countries;
-      }
-    }
-  }
-
   private reassignStatusWithSubResources(source: SubResourceReference): void {
     if (source.subRefs.some(sub => sub.status === 1)) {
       source.status = 1;
@@ -348,6 +337,17 @@ export class DashboardComponent implements OnDestroy, OnInit {
     const carryOver = (keyCount % LIST_SIZE) ? 1 : 0;
     const total =  numOfListsBase + carryOver;
     return new Array(total);
+  }
+
+  public getMainSource(sourceName: string): CountryReference[] | SubResourceReference[] {
+    switch (sourceName) {
+      case 'Ports & Related': {
+        return this.portsAndRelated;
+      }
+      default: {
+        return this.countries;
+      }
+    }
   }
 
   public getSubSource(source: SubResourceReference[], dataSource: SubResourceReference): SubResourceReference[] {

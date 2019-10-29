@@ -10,30 +10,6 @@ import * as airportDataNpm from '../assets/airports-npm.json';
 import * as airportDataSource from '../assets/airports-source.json';
 import * as seaportDataSource from '../assets/seaports-geojson.json';
 
-
-// Prefetch routes data
-let lineReader;
-try {
-	lineReader = readline.createInterface({
-		input: fs.createReadStream(path.join('assets', 'routes.dat'))
-	});
-} catch(err) {
-	store.errorLogger(`Failed to read routes.dat: ${err.message}`);
-}
-async function getRoutesSource() {
-	const routesSource = new Promise((resolve, reject) => {
-		lineReader.on('close', () => {
-			return resolve();
-		});
-		lineReader.on('line', (line) => {
-			store.routesData.push(line);
-		});
-	});
-	return await routesSource;
-}
-getRoutesSource();
-
-
 export function createLookupTable(): void {
     airportDataNpm.forEach((ap: AirportNpmSourceObject) => {
         if (ap && ap.iata && ap.iso) {

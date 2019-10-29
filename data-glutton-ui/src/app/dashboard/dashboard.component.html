@@ -53,7 +53,7 @@
             </div>
             <ng-container *ngFor="let key of scrapeKeys;">
               <div
-                *ngIf="!isComplete(key.label, key.hasSubResources)"
+                *ngIf="!isComplete(key.label, key.hasSubResources) && countries.length"
                 class="row no-gutters rounded bg-info display-item mb-1"
                 [class.green-border]="selected === key.label"
                 [ngClass]="getAlertStatus(key.label, key.hasSubResources)"

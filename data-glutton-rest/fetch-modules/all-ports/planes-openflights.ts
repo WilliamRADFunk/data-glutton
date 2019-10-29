@@ -1,6 +1,7 @@
 import * as fs from 'graceful-fs';
 import * as path from 'path';
 import * as readline from 'readline';
+import rp from 'request-promise-native';
 import * as getUuid from 'uuid-by-string';
 
 import { consts } from '../../constants/constants';
@@ -8,10 +9,9 @@ import { store } from '../../constants/globalStore';
 import { EntityContainer } from '../../models/entity-container';
 import { entityMaker } from '../../utils/entity-maker';
 
-// Populate remaining airports from datahub list
-export async function getPlanesOpenFlights(): Promise<void> {
-    return new Promise((resolve, reject) => {
-        let lineReader;
+function parseData(dataString: string): Promise<void> {
+	return new Promise((res, rej) => {
+		let lineReader;
         try {
             lineReader = readline.createInterface({
                 input: fs.createReadStream(path.join('assets', 'planes.dat'))
@@ -22,7 +22,7 @@ export async function getPlanesOpenFlights(): Promise<void> {
 
         if (lineReader) {
             lineReader.on('close', () => {
-                return resolve();
+                return res();
             });
             lineReader.on('line', (line) => {
                 const lineItems = ((line && line.split(',')) || []).map(item => item && item.replace(/\"/g, ''));
@@ -49,6 +49,32 @@ export async function getPlanesOpenFlights(): Promise<void> {
                     }
                 }
             });
+        } else {
+            return res();
         }
+	});
+}
+
+// Populate remaining airports from datahub list
+export async function getPlanesOpenFlights(): Promise<void> {
+    return new Promise((resolve, reject) => {
+        const url = 'https://raw.githubusercontent.com/jpatokal/openflights/master/data/planes.dat';
+		rp(url, { timeout: consts.BASE.DATA_REQUEST_TIMEOUT })
+			.then(results => {
+				try {
+					fs.writeFileSync(path.join('assets', 'planes-openflights-updated.dat'), results);
+					parseData(path.join('assets', 'planes-openflights-updated.dat'));
+					resolve();
+				} catch(err) {
+					store.errorLogger(`Filed to fetch planes from ${url}. Falling back to local copy. ${err}`);
+					parseData(path.join('assets', 'planes-openflights.dat'));
+					resolve();
+				};
+			})
+			.catch(err => {
+				store.errorLogger(`Filed to fetch planes from ${url}. Falling back to local copy. ${err}`);
+				parseData(path.join('assets', 'planes-openflights.dat'));
+				resolve();
+			});
     });
 }
