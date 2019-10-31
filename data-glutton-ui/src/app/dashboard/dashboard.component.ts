@@ -140,12 +140,14 @@ export class DashboardComponent implements OnDestroy, OnInit {
     source.status = 1;
     const start = async () => {
       await this.asyncForEach(source.subRefs, async (sub) => {
-        await this.fetchService.fetchDashboard().toPromise()
+        await this.fetchService.fetchDashboard()
+          .pipe(catchError(err => {
+            console.error('fetchDashboard error: ', err.message);
+            return of(this.dashboard);
+          }))
+          .toPromise()
           .then(data => {
             this.dashboard = data.dashboard;
-          })
-          .catch(err => {
-            console.error('fetchDashboard error: ', err.message);
           });
         if (sub.status === -1 || sub.status === 0) {
           sub.status = 1;
