@@ -102,7 +102,10 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
 			const arbLandRef = objectPropArable[consts.ONTOLOGY.HAS_ARABLE_LAND];
 			store.arableLands.insert(arbLandRef);
 			map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_ARABLE_LAND, objectPropArable));
-			arbLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percentages[0] || null;
+			let percent = percentages[0] || null;
+			if (percent) {
+				arbLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percent;
+			}
 			arbLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = dates[0] || 'N/A';
 			// Permanent Crops Land
 			const pcId = consts.ONTOLOGY.INST_PERMANENT_CROPS_LAND + getUuid.default(country);
@@ -114,7 +117,10 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
 			const pcLandRef = objectPropPermCrop[consts.ONTOLOGY.HAS_PERMANENT_CROPS_LAND];
 			store.permanentCropsLands.insert(pcLandRef);
 			map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_PERMANENT_CROPS_LAND, objectPropPermCrop));
-			pcLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percentages[1] || null;
+			percent = percentages[1] || null;
+			if (percent) {
+				pcLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percent;
+			}
 			pcLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = dates[1] || 'N/A';
 			// Permanent Pasture Land
 			const ppId = consts.ONTOLOGY.INST_PERMANENT_PASTURE_LAND + getUuid.default(country);
@@ -126,7 +132,10 @@ export function getLandUses(cheerioElem: CheerioSelector, country: string, count
 			const ppLandRef = objectPropPermPast[consts.ONTOLOGY.HAS_PERMANENT_PASTURE_LAND];
 			store.permanentPastureLands.insert(ppLandRef);
 			map.objectProperties.push(entityRefMaker(consts.ONTOLOGY.HAS_PERMANENT_PASTURE_LAND, objectPropPermPast));
-			ppLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percentages[2] || null;
+			percent = percentages[2] || null;
+			if (percent) {
+				ppLandRef.datatypeProperties[consts.ONTOLOGY.DT_PERCENTAGE] = percent;
+			}
 			ppLandRef.datatypeProperties[consts.ONTOLOGY.DT_LAST_ESTIMATED] = dates[2] || 'N/A';
 		}
 	});

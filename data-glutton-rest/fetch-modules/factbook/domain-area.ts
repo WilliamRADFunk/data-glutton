@@ -36,16 +36,19 @@ export function getArea(cheerioElem: CheerioSelector, country: string, countryId
 	cheerioElem('#field-area > div.category_data.subfield.numeric').each((index: number, element: CheerioElement) => {
 		const areaSwitch = cheerioElem(element).find('span.subfield-name').text().trim();
 		const areaData = cheerioElem(element).find('span.subfield-number').text().trim();
-		switch (areaSwitch) {
-			case 'total:':
-				map.datatypeProperties[consts.ONTOLOGY.DT_TOTAL_AREA] = areaData.replace(/,|[a-z]/g, '').trim();
-				break;
-			case 'land:':
-				map.datatypeProperties[consts.ONTOLOGY.DT_LAND_AREA] = areaData.replace(/,|[a-z]/g, '').trim();
-				break;
-			case 'water:':
-				map.datatypeProperties[consts.ONTOLOGY.DT_WATER_AREA] = areaData.replace(/,|[a-z]/g, '').trim();
-				break;
+		const area = areaData.replace(/,|[a-z]/g, '').trim();
+		if (area) {
+			switch (areaSwitch) {
+				case 'total:':
+					map.datatypeProperties[consts.ONTOLOGY.DT_TOTAL_AREA] = area;
+					break;
+				case 'land:':
+					map.datatypeProperties[consts.ONTOLOGY.DT_LAND_AREA] = area;
+					break;
+				case 'water:':
+					map.datatypeProperties[consts.ONTOLOGY.DT_WATER_AREA] = area;
+					break;
+			}
 		}
 	});
 	cheerioElem('#field-area > div > span.category_data').each((index: number, element: CheerioElement) => {

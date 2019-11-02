@@ -54,9 +54,10 @@ export function getElevation(cheerioElem: CheerioSelector, country: string, coun
 					map.datatypeProperties[consts.ONTOLOGY.DT_LOWEST_POINT_DESCRIPTION] = 'sea level';
 					break;
 				}
-				map.datatypeProperties[consts.ONTOLOGY.DT_LOWEST_POINT] = lowPointTxt.replace(/[^0-9\-]/g, '').trim() || null;
-				if (map.datatypeProperties[consts.ONTOLOGY.DT_LOWEST_POINT]) {
-					map.datatypeProperties[consts.ONTOLOGY.DT_LOWEST_POINT_DESCRIPTION] = lowPointTxt.substring(0, lowPointTxt.search(/[0-9\-]/g)).trim();
+				const lastNumberInSentence = lowPointTxt.match(/(\-)*(\d+)(?![^0-9\,]*(\-)\d)/g);
+				if (lastNumberInSentence.length) {
+					map.datatypeProperties[consts.ONTOLOGY.DT_LOWEST_POINT] = lastNumberInSentence.join('');
+					map.datatypeProperties[consts.ONTOLOGY.DT_LOWEST_POINT_DESCRIPTION] = lowPointTxt.substring(0, lowPointTxt.search(/(\-)*(\d+)(?![^0-9\,]*(\-)\d)/g)).trim();
 				}
 				break;
 			}
@@ -68,9 +69,10 @@ export function getElevation(cheerioElem: CheerioSelector, country: string, coun
 					map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT_DESCRIPTION] = 'sea level';
 					break;
 				}
-				map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT] = highPointTxt.replace(/[^0-9\-]/g, '').trim() || null;
-				if (map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT]) {
-					map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT_DESCRIPTION] = highPointTxt.substring(0, highPointTxt.search(/[0-9\-]/g)).trim();
+				const lastNumberInSentence = highPointTxt && highPointTxt.replace(',', '').match(/(\-)?(\d+)(?![^0-9\,]*(\-)?\d)/g);
+				if (lastNumberInSentence.length) {
+					map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT] = lastNumberInSentence.join('');
+					map.datatypeProperties[consts.ONTOLOGY.DT_HIGHEST_POINT_DESCRIPTION] = highPointTxt.substring(0, highPointTxt.search(/(\-)?(\d+)(?![^0-9\,]*(\-)?\d)/g)).trim();
 				}
 				break;
 			}

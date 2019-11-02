@@ -64,7 +64,9 @@ export async function getBorderMapImg(cheerioElem: CheerioSelector, country: str
 					store.debugLogger(`File saved to ${filename}`);
 				} catch (err) {
 					store.errorLogger(`~~~~ Failed to download: ${fileName}, ${err}`);
-					throw Error(`~~~~ Failed to download image from : ${country}, ${err}`);
+					if (err.message.indexOf('404') < 0) {
+						throw Error(`~~~~ Failed to download image from : ${country}, ${err}`);
+					}
 				}
 			}
 

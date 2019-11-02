@@ -11,6 +11,7 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 		store.errorLogger(`Couldn't translate ${storeName} into a store value for ${fileName}.json`);
 		return;
 	}
+	store.debugLogger(`Attempting to write files for ${fileName}`);
 	// Create normal JSON file for this entity type.
 	folders[0].file(`${fileName}.json`, JSON.stringify(store[storeName].chain().simplesort(consts.RDFS.label).data()));
 	store.debugLogger(`Finished writing ${fileName}.json`);
@@ -72,9 +73,10 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 	fs.appendFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`), ']');
 	// Reading jsonld file in order to add it to the bundle.
 	try {
-		const jsonldFileData = fs.readFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`));
+		let jsonldFileData = fs.readFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`));
 		folders[1].file(`${fileName}.schema.jsonld`, jsonldFileData);
 		store.debugLogger(`Finished writing ${fileName}.schema.jsonld`);
+		jsonldFileData = null;
 	} catch(err) {
 		store.errorLogger(`Failed to read jsonld file ${fileName}: ${err}`);
 	}
@@ -82,9 +84,10 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 	convertJsonldToNTriples(fileName);
 	// Reading n-triples file in order to add it to the bundle.
 	try {
-		const ntriplesFileData = fs.readFileSync(path.join('temp', 'entities', 'n-triples', `${fileName}.schema.nt`));
+		let ntriplesFileData = fs.readFileSync(path.join('temp', 'entities', 'n-triples', `${fileName}.schema.nt`));
 		folders[2].file(`${fileName}.schema.nt`, ntriplesFileData);
 		store.debugLogger(`Finished writing ${fileName}.schema.nt`);
+		ntriplesFileData = null;
 	} catch(err) {
 		store.errorLogger(`Failed to read ntriples file ${fileName}: ${err}`);
 	}
@@ -127,8 +130,9 @@ function convertJsonldToNTriples(fileName: string): void {
 					}
 				}
 			});
-			
+
 			fs.appendFileSync(path.join('temp', 'entities', 'n-triples', `${fileName}.schema.nt`), jsonNT);
+			store.debugLogger(`    Appended ${mainId} to file: ${fileName}.schema.nt`);
 		}
 	}
 };

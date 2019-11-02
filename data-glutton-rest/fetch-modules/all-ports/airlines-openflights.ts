@@ -50,7 +50,7 @@ function parseData(dataString: string): Promise<void> {
 							consts.ONTOLOGY.ONT_AIRLINE,
 							airlineId,
 							`The Airline of ${name} (${country})`);
-						if (alias && alias !== '\\N') {
+						if (alias && alias !== '\\N' && alias !== 'null') {
 							airlineObjectProp[consts.ONTOLOGY.HAS_AIRLINE].datatypeProperties[consts.ONTOLOGY.DT_ALIAS] = alias;
 						}
 						if (iata && iata !== '\\N') {

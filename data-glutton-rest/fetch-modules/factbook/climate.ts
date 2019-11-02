@@ -63,7 +63,10 @@ export function getClimate(cheerioElem: CheerioSelector, country: string, countr
 		if (climGrd) {
 			const tempSplit = climGrd.replace(/\\n/g, '').trim().split(';');
 			mapZone.datatypeProperties[consts.ONTOLOGY.DT_CLIMATE_ZONE_NAME] = tempSplit[0].trim();
-			mapZone.datatypeProperties[consts.ONTOLOGY.DT_CLIMATE_ZONE_DESCRIPTION] = tempSplit.slice(1).join(';').trim();
+			const climateZoneDesc = tempSplit.slice(1).join(';').trim();
+			if (climateZoneDesc) {
+				mapZone.datatypeProperties[consts.ONTOLOGY.DT_CLIMATE_ZONE_DESCRIPTION] = climateZoneDesc
+			}
 			mapZone[consts.RDFS.label] = `Climate Zone (${mapZone.datatypeProperties[consts.ONTOLOGY.DT_CLIMATE_ZONE_NAME]})`;
 		}
 	});

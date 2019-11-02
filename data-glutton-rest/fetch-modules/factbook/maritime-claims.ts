@@ -36,32 +36,41 @@ export function getMaritimeClaims(cheerioElem: CheerioSelector, country: string,
 	cheerioElem('#field-maritime-claims > div.category_data.subfield.numeric').each((index: number, element: CheerioElement) => {
 		const seaSwitch = cheerioElem(element).find('span.subfield-name').text().trim();
 		const seaData = cheerioElem(element).find('span.subfield-number').text().trim();
-		switch (seaSwitch) {
-			case 'territorial sea:': {
-				map.datatypeProperties[consts.ONTOLOGY.DT_TERRITORIAL_SEA] = seaData.replace(/,|[a-z]/g, '').trim();
-				break;
-			}
-			case 'exclusive economic zone:': {
-				map.datatypeProperties[consts.ONTOLOGY.DT_EXCLUSIVE_ECONOMIC_ZONE] = seaData.replace(/,|[a-z]/g, '').trim();
-				break;
-			}
-			case 'contiguous zone:': {
-				map.datatypeProperties[consts.ONTOLOGY.DT_CONTIGUOUS_ZONE] = seaData.replace(/,|[a-z]/g, '').trim();
-				break;
-			}
-			case 'exclusive fishing zone:': {
-				map.datatypeProperties[consts.ONTOLOGY.DT_EXCLUSIVE_FISHING_ZONE] = seaData.replace(/,|[a-z]/g, '').trim();
-				break;
-			}
-			case 'continental shelf:': {
-				map.datatypeProperties[consts.ONTOLOGY.DT_CONTINENTAL_SHELF] = seaData.replace(/,|[a-z]/g, '').trim();
-				map.datatypeProperties[consts.ONTOLOGY.DT_CONTINENTAL_SHELF_MODIFIER] = seaData.substring(seaData.indexOf('nm or') + 5).trim();
-				break;
+		const zoneTxt = seaData.replace(/,|[a-z]/g, '').trim() || null;
+		if (zoneTxt) {
+			switch (seaSwitch) {
+				case 'territorial sea:': {
+					map.datatypeProperties[consts.ONTOLOGY.DT_TERRITORIAL_SEA] = zoneTxt;
+					break;
+				}
+				case 'exclusive economic zone:': {
+					map.datatypeProperties[consts.ONTOLOGY.DT_EXCLUSIVE_ECONOMIC_ZONE] = zoneTxt;
+					break;
+				}
+				case 'contiguous zone:': {
+					map.datatypeProperties[consts.ONTOLOGY.DT_CONTIGUOUS_ZONE] = zoneTxt;
+					break;
+				}
+				case 'exclusive fishing zone:': {
+					map.datatypeProperties[consts.ONTOLOGY.DT_EXCLUSIVE_FISHING_ZONE] = zoneTxt;
+					break;
+				}
+				case 'continental shelf:': {
+					map.datatypeProperties[consts.ONTOLOGY.DT_CONTINENTAL_SHELF] = zoneTxt;
+					const modifier = seaData.substring(seaData.indexOf('nm or') + 5).trim() || null;
+					if (modifier) {
+						map.datatypeProperties[consts.ONTOLOGY.DT_CONTINENTAL_SHELF_MODIFIER] = modifier;
+					}
+					break;
+				}
 			}
 		}
 	});
 	map.datatypeProperties[consts.ONTOLOGY.DT_UNIT] = 'nm';
 	cheerioElem('#field-maritime-claims > div.category_data.note').each((index: number, element: CheerioElement) => {
-		map.datatypeProperties[consts.ONTOLOGY.DT_SUPPLEMENTAL_EXPLANATION] = cheerioElem(element).text().replace(/\\n/g, ' ').trim();
+		const supplementalExplanation = cheerioElem(element).text().replace(/\\n/g, ' ').trim();
+		if (supplementalExplanation) {
+			map.datatypeProperties[consts.ONTOLOGY.DT_SUPPLEMENTAL_EXPLANATION] = supplementalExplanation;
+		}
 	});
 }

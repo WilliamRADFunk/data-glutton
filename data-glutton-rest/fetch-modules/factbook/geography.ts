@@ -32,16 +32,18 @@ function parseSingleLocation(cheerio: Cheerio, country: string, countryId: strin
 
 function parseMultipleLocations(cheerioElem: CheerioSelector, country: string, countryId: string, scope: CheerioElement) {
 	cheerioElem(scope).find('p').each((index: number, element: CheerioElement) => {
-		const content = cheerioElem(element).text().trim();
+		const content = cheerioElem(element).text().trim() || null;
 		const strongTag = cheerioElem(element).find('strong').text().trim().slice(0, -1);
 		const locations = store.countries.find({ '@id': { $eq: countryId } })[0].objectProperties
 			.filter((objProp: EntityContainer) => objProp[consts.ONTOLOGY.HAS_LOCATION])
 			.map((objProp: EntityContainer) => objProp[consts.ONTOLOGY.HAS_LOCATION]);
 		let objectProp: EntityContainer = {};
-		if (!strongTag) {
-			const description = content.substring(0, content.indexOf(strongTag)).trim();
-			store.countries.find({ '@id': { $eq: countryId } })[0].datatypeProperties[consts.ONTOLOGY.DT_LOCATION_REF_DESCRIPTION] = description;
-		} else {
+		if (!strongTag && content) {
+			const description = content.substring(0, content.indexOf(strongTag)).trim() || null;
+			if (description) {
+				store.countries.find({ '@id': { $eq: countryId } })[0].datatypeProperties[consts.ONTOLOGY.DT_LOCATION_REF_DESCRIPTION] = description;
+			}
+		} else if (content) {
 			const geoId = consts.ONTOLOGY.INST_GEO_LOCATION + getUuid.default(country) + getUuid.default(strongTag);
 			let geoAttr = locations.find((loc: Entity) => loc && loc['@id'] === geoId);
 			if (!geoAttr) {

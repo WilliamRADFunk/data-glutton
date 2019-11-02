@@ -94,7 +94,7 @@ function parseData(dataString: string): Promise<void> {
 
                         if (airlineRef && sourceAirportRef  && destinationAirportRef) {
                             // Fetch or create route entity
-                            const routeId = consts.ONTOLOGY.INST_ROUTE + getUuid.default(sourceAirportOpenFlightsId) + ' ' +  + getUuid.default(destinationAirportOpenFlightsId);
+                            const routeId = consts.ONTOLOGY.INST_ROUTE + getUuid.default(sourceAirportOpenFlightsId) + '-' + getUuid.default(destinationAirportOpenFlightsId);
                             let routeObjectProp: EntityContainer = {};
                             if (store.routes.find({ '@id': { $eq: routeId } })[0] ) {
                                 routeObjectProp[consts.ONTOLOGY.HAS_ROUTE] = store.routes.find({ '@id': { $eq: routeId } })[0];

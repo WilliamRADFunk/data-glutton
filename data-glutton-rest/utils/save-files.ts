@@ -32,16 +32,6 @@ export function saveFiles(files: string[], excludeOntology?: boolean): Promise<a
 		}).filter(x => !!x);
 
 		const zip = JSZip();
-		const imgsFolder = zip.folder('images');
-		fs.readdirSync(path.join('temp', 'images')).forEach(async (fileName) => {
-			try {
-				const fileData = fs.readFileSync(path.join('temp', 'images', fileName));
-				imgsFolder.file(fileName, fileData);
-			} catch (err) {
-				store.errorLogger(`Failed to read ${fileName} for downloading purposes.`);
-			}
-		});
-		store.debugLogger(`Finished writing image files`);
 
 		if (!excludeOntology) {
 			const ontsFolder = zip.folder('ontologies');
@@ -81,6 +71,17 @@ export function saveFiles(files: string[], excludeOntology?: boolean): Promise<a
 			});
 			store.debugLogger(`Finished writing entities files`);
 		}
+
+		const imgsFolder = zip.folder('images');
+		fs.readdirSync(path.join('temp', 'images')).forEach(async (fileName) => {
+			try {
+				const fileData = fs.readFileSync(path.join('temp', 'images', fileName));
+				imgsFolder.file(fileName, fileData);
+			} catch (err) {
+				store.errorLogger(`Failed to read ${fileName} for downloading purposes.`);
+			}
+		});
+		store.debugLogger(`Finished writing image files`);
 
 		zip.generateAsync({ type: 'nodebuffer' })
 			.then((content: Buffer) => {
