@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, timer, of } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { delayWhen, retryWhen, switchMap, tap } from 'rxjs/operators';
 
 import { Entity } from '../../models/entity';
 
@@ -26,7 +26,17 @@ export class FetchCoordinator {
   }
 
   fetchDashboardStream(): Observable<any> {
-    return timer(0, 3000).pipe(switchMap(() => this.http.get<any>('http://localhost:3000/dashboard')));
+    return timer(0, 3000).pipe(
+      switchMap(() => {
+        return this.http.get<any>('http://localhost:3000/dashboard');
+      }),
+      retryWhen(errors =>
+        errors.pipe(
+          tap(err => console.error(`fetchDashboardStream error: , ${err.message}`)),
+          delayWhen(err => timer(3000))
+        )
+      )
+    );
   }
 
   fetchEntity(key: string, field: string, text: string): Observable<any> {

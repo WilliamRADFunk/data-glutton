@@ -27,7 +27,7 @@ _If the download of files process in interrupted on the frontend, it may not dow
 
 3. Run `npm run start`
 
-4. Open a browser (preferably Chrome)
+4. Open a browser (preferably Chrome in incognito-mode)
 
 5. Navigate to `http://localhost:4200/`
 
