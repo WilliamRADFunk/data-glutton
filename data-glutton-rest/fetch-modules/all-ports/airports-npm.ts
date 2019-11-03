@@ -17,7 +17,7 @@ function parseData(airportData: AirportNpmSourceObject[], totalItems: number): v
 			store.progressLogger('AirportsFromNpm', index / totalItems);
 			lastPercentageEmitted = Math.floor((index / totalItems) * 100);
 		}
-		if (!ap.iata) {
+		if (!ap.iata || !ap.name) {
 			return; // No IATA code, no id. No id, no airport.
 		}
 		// Fetch or create airport entity

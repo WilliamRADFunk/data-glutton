@@ -62,12 +62,12 @@ export function saveFiles(files: string[], excludeOntology?: boolean): Promise<a
 
 		if (storeNames.length) {
 			const entsFolder = zip.folder('entities');
-			const entsJsonFolder = entsFolder.folder('json');
+			// const entsJsonFolder = entsFolder.folder('json');
 			const entsJsonLdFolder = entsFolder.folder('jsonld');
 			const entsNTriplesFolder = entsFolder.folder('n-triples');
 
 			storeNames.forEach((name: string, index: number) => {
-				saveFile(name, fileNames[index], consts.ONTOLOGY.ONT_COUNTRY, [entsJsonFolder, entsJsonLdFolder, entsNTriplesFolder]);
+				saveFile(name, fileNames[index], consts.ONTOLOGY.ONT_COUNTRY, [entsJsonLdFolder, entsNTriplesFolder]);
 			});
 			store.debugLogger(`Finished writing entities files`);
 		}

@@ -111,7 +111,7 @@ function parseData(airportDatahub: AirportDatahubSourceObject[], totalItems: num
 			return;
 		}
 
-		if (!ap.ident) {
+		if (!ap.ident || !ap.name) {
 			return; // No ident, no id. No id, no airport.
 		}
 		// Fetch or create airport entity

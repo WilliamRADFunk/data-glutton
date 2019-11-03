@@ -12,9 +12,6 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 		return;
 	}
 	store.debugLogger(`Attempting to write files for ${fileName}`);
-	// Create normal JSON file for this entity type.
-	folders[0].file(`${fileName}.json`, JSON.stringify(store[storeName].chain().simplesort(consts.RDFS.label).data()));
-	store.debugLogger(`Finished writing ${fileName}.json`);
 	// Create json-ld file for this entity type.
 	try {
 		fs.writeFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`), '[\n');
@@ -74,7 +71,7 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 	// Reading jsonld file in order to add it to the bundle.
 	try {
 		let jsonldFileData = fs.readFileSync(path.join('temp', 'entities', 'jsonld', `${fileName}.schema.jsonld`));
-		folders[1].file(`${fileName}.schema.jsonld`, jsonldFileData);
+		folders[0].file(`${fileName}.schema.jsonld`, jsonldFileData);
 		store.debugLogger(`Finished writing ${fileName}.schema.jsonld`);
 		jsonldFileData = null;
 	} catch(err) {
@@ -85,7 +82,7 @@ export function saveFile(storeName: string, fileName: string, context: string, f
 	// Reading n-triples file in order to add it to the bundle.
 	try {
 		let ntriplesFileData = fs.readFileSync(path.join('temp', 'entities', 'n-triples', `${fileName}.schema.nt`));
-		folders[2].file(`${fileName}.schema.nt`, ntriplesFileData);
+		folders[1].file(`${fileName}.schema.nt`, ntriplesFileData);
 		store.debugLogger(`Finished writing ${fileName}.schema.nt`);
 		ntriplesFileData = null;
 	} catch(err) {

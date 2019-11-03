@@ -147,12 +147,14 @@ export class DashboardComponent implements OnDestroy, OnInit {
           }))
           .toPromise()
           .then(data => {
+            console.log('fetchDashboard success: ', data);
             this.dashboard = data.dashboard;
           });
         if (sub.status === -1 || sub.status === 0) {
           sub.status = 1;
           this.reassignStatusWithSubResources(source);
-          await this.fetchService.fetchSubResource(source.name, sub.name).toPromise()
+          await this.fetchService.fetchSubResource(source.name, sub.name)
+            .toPromise()
             .then(done => {
               sub.status = 2;
               this.reassignStatusWithSubResources(source);
