@@ -30,18 +30,35 @@
     white-space: nowrap;
 }
 
+.dashboard-item-icon {
+  height: 25px;
+  max-width: 25px;
+  max-height: 25px;
+  min-height: 25px;
+  min-width: 25px;
+  position: absolute;
+  width: 25px;
+
+  i {
+    position: relative;
+    top: 0;
+  }
+}
+
 .dashboard-item-label {
-    max-width: 85%;
-    min-width: 85%;
+    left: 25px;
+    max-width: calc(85% - 25px);
+    min-width: calc(85% - 25px);
+    position: relative;
     overflow-x: hidden;
     text-overflow: ellipsis;
-    width: 85%;
+    width: calc(85% - 25px);
 }
 
 .dashboard-item-value {
-    max-width: 15%;
-    min-width: 15%;
-    width: 15%;
+    max-width: calc(15% - 25px);
+    min-width: calc(15% - 25px);
+    width: calc(15% - 25px);
 }
 
 .dashboard-list-fragment {

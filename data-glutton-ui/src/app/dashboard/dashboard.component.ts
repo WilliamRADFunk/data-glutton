@@ -29,15 +29,15 @@ export class DashboardComponent implements OnDestroy, OnInit {
   private _subs: Subscription[] = [];
   activeOntFormat: string = 'both';
   countries: CountryReference[] = [];
-  dashboard: { [key: string]: { [key: string]: number } } = {
+  dashboard: { [key: string]: { [key: string]: { count: number; icon: string; } } } = {
     'Factbook': {},
     'Ports & Related': {},
     'World Leader': {}
   };
   downloadable: boolean = true;
-  exportOptions: { [key: string]: { [key: string]: boolean } } = {
+  exportOptions: { [key: string]: { [key: string]: { checked: boolean; icon: string; } } } = {
     'Factbook': {},
-    'Ontologies': { 'Download Ontologies': false },
+    'Ontologies': { 'Download Ontologies': { checked: false, icon: '' } },
     'Ports & Related': {},
     'World Leader': {}
   };
@@ -96,7 +96,10 @@ export class DashboardComponent implements OnDestroy, OnInit {
           Object.keys(this.dashboard).forEach((majorKey: string) => {
             Object.keys(this.dashboard[majorKey]).forEach((minorKey: string) => {
               if (this.exportOptions[majorKey.toString()][minorKey] === undefined) {
-                this.exportOptions[majorKey][minorKey] = false;
+                this.exportOptions[majorKey][minorKey] = {
+                  checked: false,
+                  icon: this.dashboard[majorKey][minorKey].icon
+                };
               }
             });
           });
@@ -113,7 +116,7 @@ export class DashboardComponent implements OnDestroy, OnInit {
     this.selectedFileCount = 0;
     Object.keys(this.exportOptions).forEach((majorKey: string) => {
       Object.keys(this.exportOptions[majorKey]).forEach((minorKey: string) => {
-        if (this.exportOptions[majorKey][minorKey] === true) {
+        if (this.exportOptions[majorKey][minorKey].checked === true) {
           this.selectedFileCount++;
         }
       });
@@ -223,15 +226,15 @@ export class DashboardComponent implements OnDestroy, OnInit {
   public exportAll(key: string): void {
     if (key) {
       Object.keys(this.exportOptions[key]).forEach(expOptKey => {
-        this.exportOptions[key][expOptKey] = true;
+        this.exportOptions[key][expOptKey].checked = true;
       });
     } else {
       Object.keys(this.exportOptions).forEach(majorKey => {
         Object.keys(this.exportOptions[majorKey]).forEach(minorKey => {
-          this.exportOptions[majorKey][minorKey] = true;
+          this.exportOptions[majorKey][minorKey].checked = true;
         });
       });
-      this.exportOptions.Ontologies['Download Ontologies'] = true;
+      this.exportOptions.Ontologies['Download Ontologies'].checked = true;
     }
     this.countSelectedFiles();
   }
@@ -239,22 +242,22 @@ export class DashboardComponent implements OnDestroy, OnInit {
   public exportNone(key?: string): void {
     if (key) {
       Object.keys(this.exportOptions[key]).forEach(expOptKey => {
-        this.exportOptions[key][expOptKey] = false;
+        this.exportOptions[key][expOptKey].checked = false;
       });
     } else {
       Object.keys(this.exportOptions).forEach(majorKey => {
         Object.keys(this.exportOptions[majorKey]).forEach(minorKey => {
-          this.exportOptions[majorKey][minorKey] = false;
+          this.exportOptions[majorKey][minorKey].checked = false;
         });
       });
-      this.exportOptions.Ontologies['Download Ontologies'] = false;
+      this.exportOptions.Ontologies['Download Ontologies'].checked = false;
     }
     this.countSelectedFiles();
   }
 
   public exportSelectChange(majorKey: string, minorKey: string, e: Event): void {
     e.stopPropagation();
-    this.exportOptions[majorKey][minorKey] = !this.exportOptions[majorKey][minorKey];
+    this.exportOptions[majorKey][minorKey].checked = !this.exportOptions[majorKey][minorKey];
     this.countSelectedFiles();
   }
 

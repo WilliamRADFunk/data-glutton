@@ -21,9 +21,10 @@
                         <div *ngFor="let listNumber of getListNumber(key); let index=index;" class="col-lg-6 dashboard-list-fragment">
                           <ul class="list-unstyled px-0">
                             <li *ngFor="let item of getDashboardFragment(key, index) | keyvalue">
-                              <div class="dashboard-item">
-                                <span class="dashboard-item-label d-inline-block" ngbTooltip="{{item.key}}" container="body">{{ item.key }}:</span>
-                                <span class="dashboard-item-value d-inline-block pull-right text-right">{{ item.value }}</span>
+                              <div class="dashboard-item" ngbTooltip="{{item.key}}" container="body">
+                                <span class="dashboard-item-icon d-inline-block"><i class="{{item.value?.icon}}"></i></span>
+                                <span class="dashboard-item-label d-inline-block">{{ item.key }}:</span>
+                                <span class="dashboard-item-value d-inline-block pull-right text-right">{{ item.value?.count }}</span>
                               </div>
                             </li>
                           </ul>
@@ -257,6 +258,7 @@
                           <li>
                             <div class="dashboard-item">
                               <label class="w-100 my-0" (click)="exportSelectChange('Ontologies', 'Download Ontologies', $event)">
+                                <div class="dashboard-item-icon d-inline-block"><i class="fa fa-chain-broken"></i></div>
                                 <div
                                   class="dashboard-item-label d-inline-block"
                                   ngbTooltip="Due to linked nature of the data. Ontologies are either all downloaded, or not at all."
@@ -264,8 +266,8 @@
                                 <div class="dashboard-item-value d-inline-block pull-right text-right pt-0">
                                   <input
                                     type="checkbox"
-                                    [checked]="exportOptions.Ontologies['Download Ontologies']"
-                                    value="{{ exportOptions.Ontologies['Download Ontologies'] }}"/>
+                                    [checked]="exportOptions.Ontologies['Download Ontologies'].checked"
+                                    value="{{ exportOptions.Ontologies['Download Ontologies'].checked }}"/>
                                 </div>
                               </label>
                             </div>
@@ -299,9 +301,10 @@
                           <ul class="list-unstyled px-0">
                             <li *ngFor="let item of getExportFragment(key, index) | keyvalue">
                               <div class="dashboard-item">
-                                <label class="w-100 my-0" (click)="exportSelectChange(key, item.key, $event)">
-                                  <div class="dashboard-item-label d-inline-block" ngbTooltip="{{item.key}}" container="body">{{ item.key }}:</div>
-                                  <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input id="{{ key }}~{{ item.key }}" type="checkbox" [checked]="item.value" value="{{ item.value }}"/></div>
+                                <label class="w-100 my-0" (click)="exportSelectChange(key, item.key, $event)" ngbTooltip="{{item.key}}" container="body">
+                                  <div class="dashboard-item-icon d-inline-block"><i class="{{item.value?.icon}}"></i></div>
+                                  <div class="dashboard-item-label d-inline-block">{{ item.key }}:</div>
+                                  <div class="dashboard-item-value d-inline-block pull-right text-right pt-0"><input id="{{ key }}~{{ item.key }}" type="checkbox" [checked]="item.value?.checked" value="{{ item.value?.checked }}"/></div>
                                 </label>
                               </div>
                             </li>
