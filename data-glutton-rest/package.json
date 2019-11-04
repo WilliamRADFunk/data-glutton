@@ -1,6 +1,6 @@
 {
   "name": "data-glutton",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "The backend services for scraping data and delivering it to the ui.",
   "main": "api.js",
   "scripts": {
